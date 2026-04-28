@@ -40,12 +40,18 @@ export default function QuemSomos() {
       .fromTo(".hero-tag",
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.7 })
+      .fromTo(".hero-quem-wrap",
+        { x: -36 },
+        { x: 0, duration: 1.1 }, "-=0.15")
       .fromTo(".hero-quem",
         { scale: 1.24, opacity: 0, filter: "blur(16px)", transformOrigin: "left center" },
         { scale: 1,    opacity: 1, filter: "blur(0px)",  duration: 1.4 }, "-=0.2")
       .fromTo(".hero-photo",
         { opacity: 0, scale: 1.1, y: 30 },
         { opacity: 1, scale: 1,   y: 0,  duration: 1.4 }, "-=1.1")
+      .fromTo(".hero-somos-wrap",
+        { x: 36 },
+        { x: 0, duration: 1.1 }, "-=1.15")
       .fromTo(".hero-somos",
         { scale: 1.24, opacity: 0, filter: "blur(16px)", transformOrigin: "left center" },
         { scale: 1,    opacity: 1, filter: "blur(0px)",  duration: 1.4 }, "-=1.2")
@@ -64,6 +70,29 @@ export default function QuemSomos() {
         start: "top top",
         end: "bottom top",
         scrub: true,
+      },
+    });
+
+    // hero title no scroll — comeca alinhado e descola ao rolar
+    gsap.to(".hero-quem-wrap", {
+      xPercent: -22,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.9,
+      },
+    });
+
+    gsap.to(".hero-somos-wrap", {
+      xPercent: 22,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.9,
       },
     });
 
@@ -290,17 +319,21 @@ export default function QuemSomos() {
           </p>
 
           {/* QUEM */}
-          <h1 className="hero-quem text-[#FF4D00] font-black uppercase leading-[0.9]"
-              style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(64px, 15vw, 210px)" }}>
-            QUEM
-          </h1>
+          <div className="hero-quem-wrap will-change-transform">
+            <h1 className="hero-quem text-[#FF4D00] font-black uppercase leading-[0.9]"
+                style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(64px, 15vw, 210px)" }}>
+              QUEM
+            </h1>
+          </div>
 
           {/* SOMOS + foto sobrepostos */}
           <div className="relative flex items-end">
-            <h1 className="hero-somos text-[#FF4D00] font-black uppercase leading-[0.9] flex-1"
-                style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(64px, 15vw, 210px)" }}>
-              SOMOS
-            </h1>
+            <div className="hero-somos-wrap will-change-transform flex-1">
+              <h1 className="hero-somos text-[#FF4D00] font-black uppercase leading-[0.9]"
+                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(64px, 15vw, 210px)" }}>
+                SOMOS
+              </h1>
+            </div>
 
             {/* Foto do diretor — oculta em telas < sm */}
             <div className="hero-photo hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 z-10"
