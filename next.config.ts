@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const nextConfig: NextConfig = {
-  output: "export",      // gera pasta out/ com HTML/CSS/JS estático
-  trailingSlash: true,   // /quem-somos → /quem-somos/index.html (obrigatório no Pages)
+  output: "export",
+  trailingSlash: true,
+  // basePath necessário quando o repo NÃO é username.github.io
+  basePath: isProd ? "/site_testlibs_amp" : "",
+  assetPrefix: isProd ? "/site_testlibs_amp/" : "",
   images: {
     unoptimized: true,   // GitHub Pages não tem servidor de imagens
     remotePatterns: [
