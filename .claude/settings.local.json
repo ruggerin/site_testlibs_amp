@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "WebFetch(domain:asiaxp.co)",
+      "WebFetch(domain:bbdo.com)",
+      "WebFetch(domain:bferraz.ag)",
+      "WebFetch(domain:builtwith.com)",
+      "WebFetch(domain:www.wappalyzer.com)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-eslint --yes)"
+    ]
+  }
+}
