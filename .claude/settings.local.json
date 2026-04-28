@@ -16,7 +16,10 @@
       "Bash(gh --version)",
       "Bash(gh auth *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git commit -m 'fix: add .nojekyll to unblock _next assets no GitHub Pages *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'fix: basePath e assetPrefix para subdiretório no GitHub Pages *)"
     ]
   }
 }
