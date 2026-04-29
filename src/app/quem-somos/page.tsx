@@ -448,7 +448,7 @@ export default function QuemSomos() {
           {/* SOMOS — esquerda, centro-baixo */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "46%" }}
+            style={{ top: "44%" }}
           >
             <h1
               className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
@@ -477,13 +477,13 @@ export default function QuemSomos() {
             </h1>
           </div>
 
-          {/* Retrato — menor, ancorado perto do O do SOMOS */}
+          {/* Retrato — centro da tela, sobrepõe QUEM (cima) e SOMOS (baixo) */}
           <div
-            className="hero-photo absolute z-[11] will-change-transform
-                       left-[38%] top-[38%] w-[min(56vw,180px)] -translate-x-1/2 -translate-y-1/2
-                       sm:left-[40%] sm:top-[36%] sm:w-[min(22vw,240px)]
-                       md:left-[42%] md:top-[35%] md:w-[min(20vw,260px)]
-                       lg:left-[43%] lg:top-[34%] lg:w-[min(18vw,280px)]"
+            className="hero-photo absolute z-[11] will-change-transform -translate-x-1/2 -translate-y-1/2
+                       left-[46%] top-[48%] w-[min(60vw,200px)]
+                       sm:left-[47%] sm:top-[48%] sm:w-[min(26vw,280px)]
+                       md:w-[min(22vw,300px)]
+                       lg:w-[min(20vw,320px)]"
           >
             <div className="relative overflow-hidden rounded-sm
                             shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
@@ -508,7 +508,7 @@ export default function QuemSomos() {
           <div
             className="hero-director-credit pointer-events-none absolute z-[12]
                        hidden sm:flex flex-row items-center gap-3
-                       right-4 top-[36%] -translate-y-1/2
+                       right-4 top-[44%] -translate-y-1/2
                        sm:right-6 md:right-10 lg:right-14"
           >
             <div className="h-px w-8 shrink-0 bg-[var(--orange)] opacity-90 md:w-12" aria-hidden />
