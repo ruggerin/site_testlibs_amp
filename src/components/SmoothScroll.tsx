@@ -14,18 +14,20 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    // Expõe a instância para que páginas com snap possam chamar lenis.scrollTo()
+    (window as unknown as Record<string, unknown>).__lenis = lenis;
+
     // Sincroniza Lenis com o RAF do GSAP — scroll e animações no mesmo frame
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
+    const ticker = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(ticker);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      delete (window as unknown as Record<string, unknown>).__lenis;
       lenis.destroy();
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      gsap.ticker.remove(ticker);
     };
   }, []);
 
