@@ -445,10 +445,10 @@ export default function QuemSomos() {
             }}
           />
 
-          {/* SOMOS — esquerda, centro da tela */}
+          {/* SOMOS — esquerda, centro-baixo */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "43%" }}
+            style={{ top: "46%" }}
           >
             <h1
               className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
@@ -477,10 +477,13 @@ export default function QuemSomos() {
             </h1>
           </div>
 
-          {/* Retrato — centralizado, sobrepõe as duas palavras */}
+          {/* Retrato — menor, ancorado perto do O do SOMOS */}
           <div
-            className="hero-photo absolute left-1/2 top-[46%] z-[11] w-[min(62vw,240px)] -translate-x-1/2 -translate-y-1/2 will-change-transform
-                       sm:w-[min(34vw,320px)] md:top-[47%] md:w-[min(30vw,360px)] lg:w-[min(26vw,420px)]"
+            className="hero-photo absolute z-[11] will-change-transform
+                       left-[38%] top-[38%] w-[min(56vw,180px)] -translate-x-1/2 -translate-y-1/2
+                       sm:left-[40%] sm:top-[36%] sm:w-[min(22vw,240px)]
+                       md:left-[42%] md:top-[35%] md:w-[min(20vw,260px)]
+                       lg:left-[43%] lg:top-[34%] lg:w-[min(18vw,280px)]"
           >
             <div className="relative overflow-hidden rounded-sm
                             shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
@@ -501,11 +504,11 @@ export default function QuemSomos() {
             </div>
           </div>
 
-          {/* Crédito — fixo ao lado direito, alinhado verticalmente ao centro da foto */}
+          {/* Crédito — alinhado ao centro da foto */}
           <div
             className="hero-director-credit pointer-events-none absolute z-[12]
                        hidden sm:flex flex-row items-center gap-3
-                       right-4 top-[42%] -translate-y-1/2
+                       right-4 top-[36%] -translate-y-1/2
                        sm:right-6 md:right-10 lg:right-14"
           >
             <div className="h-px w-8 shrink-0 bg-[var(--orange)] opacity-90 md:w-12" aria-hidden />
