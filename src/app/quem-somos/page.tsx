@@ -452,30 +452,32 @@ export default function QuemSomos() {
           data-section
           className={`hero-section relative ${SECTION_SCREEN} overflow-hidden bg-[#141414] h-[100svh] min-h-[100svh]`}
         >
-          {/* SOMOS — fundo, encostado à ESQUERDA e sangrando para fora (referência imagem 1) */}
+          {/* SOMOS — esquerda, posicionado no terço inferior (Figma: palavra inteira visível) */}
           <div
-            className="hero-somos-wrap pointer-events-none absolute bottom-0 left-0 z-[3] flex justify-start will-change-transform
-                       translate-y-[10%] sm:translate-y-[12%] lg:translate-y-[14%]"
+            className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
+            style={{ top: "52%" }}
           >
             <h1
-              className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.68] tracking-[-0.07em] whitespace-nowrap
-                         -translate-x-[10vw] sm:-translate-x-[14vw] lg:-translate-x-[18vw]"
+              className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.72] tracking-[-0.05em] whitespace-nowrap
+                         -translate-x-[1vw]"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(5.5rem, 44vw, 64rem)",
+                fontSize: "clamp(4rem, 30vw, 46rem)",
               }}
             >
               SOMOS
             </h1>
           </div>
 
-          {/* QUEM — atrás do retrato onde se cruzam (imagem 1) */}
-          <div className="hero-quem-wrap pointer-events-none absolute right-0 top-[5.25rem] z-[6] flex justify-end will-change-transform sm:top-[6.25rem] -mr-[8vw] sm:-mr-[12vw] lg:-mr-[16vw]">
+          {/* QUEM — direita, topo (Figma: palavra quase inteira visível, ligeiro overflow direito) */}
+          <div className="hero-quem-wrap pointer-events-none absolute right-0 z-[6] flex justify-end will-change-transform"
+               style={{ top: "4.5rem" }}>
             <h1
-              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.68] tracking-[-0.07em] translate-x-[5vw] sm:translate-x-[7vw]"
+              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.72] tracking-[-0.05em] whitespace-nowrap
+                         translate-x-[2vw]"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(4.5rem, 38vw, 60rem)",
+                fontSize: "clamp(3.5rem, 26vw, 40rem)",
               }}
             >
               QUEM
@@ -500,28 +502,41 @@ export default function QuemSomos() {
             </div>
           </div>
 
-          {/* SER 360 — canto superior esquerdo */}
-          <div className="hero-tag-block absolute left-4 top-[6.5rem] z-20 max-w-[min(88vw,22rem)] sm:left-6 sm:top-[7.5rem] md:left-10 md:max-w-[min(34vw,28rem)] lg:left-14">
-            <div className="mb-3 flex w-full justify-center sm:mb-4 sm:justify-start" aria-hidden>
-              <div className="h-[3px] w-11 bg-[var(--orange)] sm:w-14" />
+          {/* SER 360 — centro-esquerdo, entre QUEM e SOMOS (como no Figma) */}
+          <div className="hero-tag-block absolute left-4 z-20 max-w-[min(52vw,20rem)]
+                          top-[34%]
+                          sm:left-8 sm:top-[36%]
+                          md:left-12 md:max-w-[min(38vw,26rem)]
+                          lg:left-16">
+            <div className="mb-3 flex w-full justify-start" aria-hidden>
+              <div className="h-[3px] w-10 bg-[var(--orange)] sm:w-14" />
             </div>
             <p
-              className="hero-tag text-center text-[clamp(0.65rem,2.6vw,0.95rem)] font-bold uppercase leading-snug tracking-[0.14em] text-white sm:text-left sm:text-[clamp(0.65rem,1.4vw,2.1rem)] md:text-[clamp(0.75rem,1.5vw,2.75rem)] md:leading-[1.15]"
-              style={{ fontFamily: "var(--font-inter)" }}
+              className="hero-tag text-left font-bold uppercase leading-snug tracking-[0.12em] text-white"
+              style={{
+                fontFamily: "var(--font-inter)",
+                fontSize: "clamp(0.7rem, 1.6vw, 1.5rem)",
+              }}
             >
-              Ser 360 não é oferecer tudo.
+              Ser 360 não é<br />oferecer tudo.
             </p>
           </div>
 
-          {/* Crédito — traço horizontal + texto à direita do retrato (imagem 1) */}
-          <div className="hero-director-credit absolute right-4 top-[52%] z-20 hidden max-w-[min(42vw,17rem)] -translate-y-1/2 flex flex-row items-center gap-3 sm:right-6 sm:flex md:right-10 md:gap-4 lg:right-14 lg:max-w-[min(36vw,19rem)]">
-            <div className="hidden h-[2px] w-8 shrink-0 bg-[var(--orange)] sm:block md:w-12" aria-hidden />
+          {/* Crédito — seta laranja + texto à direita do retrato (como no Figma) */}
+          <div className="hero-director-credit absolute z-20
+                          hidden sm:flex flex-row items-center gap-3
+                          right-4 top-[42%]
+                          sm:right-6
+                          md:right-8 md:gap-4
+                          lg:right-12">
+            <div className="h-[2px] w-8 shrink-0 bg-[var(--orange)] md:w-14" aria-hidden />
             <div className="flex flex-col">
-              <p className="text-lg font-bold leading-tight text-white md:text-2xl lg:text-3xl" style={{ fontFamily: "var(--font-inter)" }}>
+              <p className="font-bold leading-tight text-white"
+                 style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.9rem, 1.4vw, 1.6rem)" }}>
                 Jalim Ra&apos;Banis
               </p>
               <p
-                className="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--orange)] sm:text-xs md:text-sm"
+                className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--orange)] md:text-xs"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
                 Diretor de criação
