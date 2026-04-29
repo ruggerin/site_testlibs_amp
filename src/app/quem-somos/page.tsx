@@ -254,25 +254,6 @@ export default function QuemSomos() {
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // BLOCOS LARANJA (quotes) — escala no scroll
-    // ─────────────────────────────────────────────────────────────────────────
-    gsap.utils.toArray<HTMLElement>(".orange-quote-box").forEach((el) => {
-      gsap.fromTo(el,
-        { scale: 0.94, opacity: 0 },
-        {
-          scale: 1, opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 92%",
-            end: "top 55%",
-            scrub: 1.2,
-          },
-        }
-      );
-    });
-
-    // ─────────────────────────────────────────────────────────────────────────
     // MANIFESTO — parallax na foto do edifício (slide 1)
     // ─────────────────────────────────────────────────────────────────────────
     gsap.to(".manifesto-building-inner", {
@@ -452,121 +433,136 @@ export default function QuemSomos() {
           data-section
           className={`hero-section relative ${SECTION_SCREEN} overflow-hidden bg-[#141414] h-[100svh] min-h-[100svh]`}
         >
-          {/* SOMOS — esquerda, posicionado no terço inferior (Figma: palavra inteira visível) */}
+          {/* ── Glow ambiente atrás da foto ─────────────────────────────── */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-[48%] z-[2] h-[60vh] w-[50vw]
+                       -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(255,77,0,0.22) 0%, rgba(255,77,0,0.08) 40%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+
+          {/* SOMOS — esquerda, centro da tela */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "52%" }}
+            style={{ top: "43%" }}
           >
             <h1
-              className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.72] tracking-[-0.05em] whitespace-nowrap
-                         -translate-x-[1vw]"
+              className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(4rem, 30vw, 46rem)",
+                fontSize: "clamp(4.5rem, 32vw, 52rem)",
               }}
             >
               SOMOS
             </h1>
           </div>
 
-          {/* QUEM — direita, topo (Figma: palavra quase inteira visível, ligeiro overflow direito) */}
-          <div className="hero-quem-wrap pointer-events-none absolute right-0 z-[6] flex justify-end will-change-transform"
-               style={{ top: "4.5rem" }}>
+          {/* QUEM — direita, colado ao topo */}
+          <div
+            className="hero-quem-wrap pointer-events-none absolute right-0 top-0 z-[6] flex justify-end will-change-transform"
+          >
             <h1
-              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.72] tracking-[-0.05em] whitespace-nowrap
-                         translate-x-[2vw]"
+              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap
+                         translate-x-[1.5vw]"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(3.5rem, 26vw, 40rem)",
+                fontSize: "clamp(4rem, 28vw, 46rem)",
               }}
             >
               QUEM
             </h1>
           </div>
 
-          {/* Retrato — por CIMA do "QUEM", alinhado à zona do Q (imagem 1) */}
+          {/* Retrato — centralizado, sobrepõe as duas palavras */}
           <div
-            className="hero-photo absolute left-[47%] top-[50%] z-[11] w-[min(76vw,300px)] -translate-x-1/2 -translate-y-1/2 will-change-transform
-                       sm:left-[48%] sm:top-[48%] sm:w-[min(38vw,420px)] lg:left-[49%] lg:w-[min(34vw,460px)]"
+            className="hero-photo absolute left-1/2 top-[46%] z-[11] w-[min(62vw,240px)] -translate-x-1/2 -translate-y-1/2 will-change-transform
+                       sm:w-[min(34vw,320px)] md:top-[47%] md:w-[min(30vw,360px)] lg:w-[min(26vw,420px)]"
           >
-            <div
-              className="relative rounded-sm shadow-[0_0_70px_rgba(255,91,0,0.5),0_0_140px_rgba(255,91,0,0.22)] ring-1 ring-white/15"
-            >
+            <div className="relative overflow-hidden rounded-sm
+                            shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
+                            ring-1 ring-white/20">
               <ZoomImage
                 src="/diretor_img.png"
                 alt="Jalim Ra'Banis — diretor de criação"
                 className="w-full aspect-[3/4]"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/45 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/50 via-transparent to-transparent" />
               </ZoomImage>
+              {/* Sparkle decorativo */}
+              <span
+                aria-hidden
+                className="absolute bottom-3 right-3 text-white/70 select-none"
+                style={{ fontSize: "clamp(10px, 1.2vw, 18px)" }}
+              >✦</span>
             </div>
           </div>
 
-          {/* SER 360 — centro-esquerdo, entre QUEM e SOMOS (como no Figma) */}
-          <div className="hero-tag-block absolute left-4 z-20 max-w-[min(52vw,20rem)]
-                          top-[34%]
-                          sm:left-8 sm:top-[36%]
-                          md:left-12 md:max-w-[min(38vw,26rem)]
-                          lg:left-16">
-            <div className="mb-3 flex w-full justify-start" aria-hidden>
-              <div className="h-[3px] w-10 bg-[var(--orange)] sm:w-14" />
-            </div>
-            <p
-              className="hero-tag text-left font-bold uppercase leading-snug tracking-[0.12em] text-white"
-              style={{
-                fontFamily: "var(--font-inter)",
-                fontSize: "clamp(0.7rem, 1.6vw, 1.5rem)",
-              }}
-            >
-              Ser 360 não é<br />oferecer tudo.
-            </p>
-          </div>
-
-          {/* Crédito — seta laranja + texto à direita do retrato (como no Figma) */}
-          <div className="hero-director-credit absolute z-20
-                          hidden sm:flex flex-row items-center gap-3
-                          right-4 top-[42%]
-                          sm:right-6
-                          md:right-8 md:gap-4
-                          lg:right-12">
-            <div className="h-[2px] w-8 shrink-0 bg-[var(--orange)] md:w-14" aria-hidden />
+          {/* Crédito — fixo ao lado direito, alinhado verticalmente ao centro da foto */}
+          <div
+            className="hero-director-credit pointer-events-none absolute z-[12]
+                       hidden sm:flex flex-row items-center gap-3
+                       right-4 top-[42%] -translate-y-1/2
+                       sm:right-6 md:right-10 lg:right-14"
+          >
+            <div className="h-px w-8 shrink-0 bg-[var(--orange)] opacity-90 md:w-12" aria-hidden />
             <div className="flex flex-col">
-              <p className="font-bold leading-tight text-white"
-                 style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.9rem, 1.4vw, 1.6rem)" }}>
+              <p
+                className="font-bold leading-tight text-white"
+                style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
+              >
                 Jalim Ra&apos;Banis
               </p>
               <p
-                className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--orange)] md:text-xs"
-                style={{ fontFamily: "var(--font-inter)" }}
+                className="mt-1 font-semibold uppercase tracking-[0.22em] text-[var(--orange)]"
+                style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(8px, 0.7vw, 11px)" }}
               >
                 Diretor de criação
               </p>
             </div>
           </div>
 
-          {/* Mobile: crédito */}
-          <div className="absolute bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-1/2 z-20 flex w-full max-w-[18rem] -translate-x-1/2 flex-col px-4 sm:hidden">
-            <div className="mb-2 h-px w-10 bg-[var(--orange)]" aria-hidden />
-            <p className="text-base font-bold text-white" style={{ fontFamily: "var(--font-inter)" }}>
-              Jalim Ra&apos;Banis
-            </p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--orange)]" style={{ fontFamily: "var(--font-inter)" }}>
-              Diretor de criação
+          {/* SER 360 — esquerda, entre QUEM e SOMOS */}
+          <div
+            className="hero-tag-block absolute left-4 z-20
+                       top-[30%]
+                       sm:left-8 sm:top-[32%]
+                       md:left-12 lg:left-16"
+          >
+            <div className="mb-2.5 h-[3px] w-10 bg-[var(--orange)] sm:w-14" aria-hidden />
+            <p
+              className="hero-tag font-bold uppercase leading-[1.15] tracking-[0.1em] text-white"
+              style={{
+                fontFamily: "var(--font-inter)",
+                fontSize: "clamp(0.75rem, 1.8vw, 1.75rem)",
+                maxWidth: "min(48vw, 22rem)",
+              }}
+            >
+              Ser 360 não é<br />oferecer tudo.
             </p>
           </div>
 
-          {/* É fazer… — canto inferior direito */}
-          <div className="absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-20 flex max-w-[min(92vw,28rem)] flex-col items-end gap-2 sm:right-6 md:right-10 lg:right-14">
-            <div className="h-px w-12 bg-[var(--orange)] sm:w-16" aria-hidden />
+          {/* É FAZER — abaixo do SOMOS, direita */}
+          <div
+            className="absolute z-20 flex flex-col items-end gap-2
+                       right-4 bottom-[6%]
+                       sm:right-8 sm:bottom-[7%]
+                       md:right-12 lg:right-16"
+          >
+            <div className="h-[2px] w-10 bg-[var(--orange)] sm:w-16" aria-hidden />
             <p
-              className="hero-tagline text-right text-white uppercase leading-snug sm:font-semibold"
+              className="hero-tagline text-right font-bold uppercase text-white"
               style={{
                 fontFamily: "var(--font-inter)",
-                fontSize: "clamp(0.6rem, 2vw, 2.5rem)",
-                letterSpacing: "0.08em",
+                fontSize: "clamp(1rem, 2.6vw, 3.2rem)",
+                letterSpacing: "0.06em",
+                lineHeight: 1.1,
               }}
             >
-              É fazer tudo funcionar junto.
+              É fazer tudo<br />funcionar junto.
             </p>
           </div>
         </section>
@@ -579,7 +575,7 @@ export default function QuemSomos() {
           className={`manifesto-slide-1 ${SECTION_SCREEN} flex flex-col justify-center bg-[#141414] py-14 sm:py-20`}
         >
           <div
-            className={`${FRAME} grid grid-cols-1 items-center gap-10 px-5 sm:px-8 md:gap-14 md:px-16 lg:grid-cols-2 lg:gap-x-16`}
+            className="grid w-full max-w-none grid-cols-1 items-center gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0"
           >
             <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] lg:min-h-[min(58vh,520px)]">
               <div className="manifesto-building-inner absolute inset-0 will-change-transform">
@@ -594,33 +590,35 @@ export default function QuemSomos() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-6 lg:gap-8">
-              <div className="orange-quote-box overflow-hidden bg-[var(--orange)] px-5 py-5 sm:px-7 sm:py-6">
+            <div className="flex flex-col gap-8 lg:gap-10">
+              <div className="manifesto-marker-wrap w-full">
                 <p
-                  className="reveal-quote text-[var(--ink)] font-black uppercase leading-[0.92] tracking-[-0.06em]"
+                  className="reveal-quote m-0 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)]"
                   style={{
                     fontFamily: "var(--font-darker-grotesque)",
                     fontSize: "clamp(1.05rem, 2.7vw, 3.25rem)",
                   }}
                 >
-                  {QUOTE_DECADA}
+                  <span className="marker-quote-bg">{QUOTE_DECADA}</span>
                 </p>
               </div>
 
-              <p
-                className="reveal-text text-[var(--cream)]/90 font-medium uppercase leading-normal tracking-wide
-                           text-[clamp(14px,1.65vw,32px)]"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {BRIDGE_HARMONIA}
-              </p>
+              <div className="flex flex-col gap-6 px-5 pb-8 sm:px-8 lg:px-10 lg:pb-0">
+                <p
+                  className="reveal-text text-[var(--cream)] font-bold uppercase leading-snug tracking-[0.04em]
+                             text-[clamp(14px,1.65vw,32px)]"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  {BRIDGE_HARMONIA}
+                </p>
 
-              <p
-                className="reveal-text text-[var(--cream)]/90 font-medium leading-[2.2] text-[clamp(15px,1.45vw,28px)]"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {MANIFESTO_INTRO}
-              </p>
+                <p
+                  className="reveal-text text-[var(--cream)]/90 font-medium leading-[2.2] text-[clamp(15px,1.45vw,28px)]"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  {MANIFESTO_INTRO}
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -633,21 +631,21 @@ export default function QuemSomos() {
           className={`manifesto-slide-2 ${SECTION_SCREEN} flex flex-col justify-center bg-[#141414] py-14 sm:py-20`}
         >
           <div
-            className={`${FRAME} grid grid-cols-1 items-start gap-10 px-5 sm:px-8 md:gap-14 md:px-16 lg:grid-cols-2 lg:gap-x-16`}
+            className="grid w-full max-w-none grid-cols-1 items-stretch gap-0 lg:grid-cols-2 lg:gap-0"
           >
-            <div className="orange-quote-box overflow-hidden bg-[var(--orange)] px-5 py-5 sm:px-7 sm:py-6">
+            <div className="manifesto-marker-wrap flex w-full items-center py-8 sm:py-10 lg:min-h-0 lg:py-12">
               <p
-                className="reveal-quote text-[var(--ink)] font-black uppercase leading-[0.92] tracking-[-0.06em]"
+                className="reveal-quote m-0 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)]"
                 style={{
                   fontFamily: "var(--font-darker-grotesque)",
                   fontSize: "clamp(1.05rem, 2.7vw, 3.25rem)",
                 }}
               >
-                {QUOTE_CRIATIVO}
+                <span className="marker-quote-bg">{QUOTE_CRIATIVO}</span>
               </p>
             </div>
 
-            <div className="manifesto-slide-2-parallax will-change-transform">
+            <div className="manifesto-slide-2-parallax will-change-transform px-5 pb-8 pt-6 sm:px-8 lg:px-10 lg:pb-10 lg:pt-8">
               <p
                 className="reveal-text whitespace-pre-line text-[var(--cream)]/90 font-medium leading-[2.2]
                            text-[clamp(15px,1.45vw,28px)]"
