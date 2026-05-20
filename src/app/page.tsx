@@ -83,7 +83,7 @@ export default function Home() {
               playsInline
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
             >
-              <source src="/assets/VIDEO_COMPILADO_2.mp4" type="video/mp4" />
+              <source src="/assets/COMPILADO.mp4" type="video/mp4" />
             </video>
           </foreignObject>
         </svg>

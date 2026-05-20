@@ -513,30 +513,31 @@ export default function QuemSomos() {
           {/* SOMOS — esquerda, centro-baixo */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "46%" }}
+            style={{ top: "40%" }}
           >
             <h1
               className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(3rem, 20vw, 34rem)",
+                fontSize: "clamp(3rem, 25vw, 40rem)",
+                transform: "translateX(1vw)",
               }}
             >
               SOMOS
             </h1>
           </div>
 
-          {/* QUEM — direita, colado ao topo */}
+          {/* QUEM — direita, sangra para fora da tela */}
           <div
             className="hero-quem-wrap pointer-events-none absolute right-0 z-[6] flex justify-end will-change-transform"
-            style={{ top: "-70px" }}
+            style={{ top: "calc(-6vw)" }}
           >
             <h1
-              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap
-                         translate-x-[1.5vw]"
+              className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(3rem, 20vw, 34rem)",
+                fontSize: "clamp(3rem, 27vw, 44rem)",
+                transform: "translateX(-2vw)",
               }}
             >
               QUEM
@@ -545,13 +546,12 @@ export default function QuemSomos() {
 
           {/* Foto + Crédito — grupo único sobre o "O" do SOMOS */}
           <div
-            className="hero-photo absolute z-[11] will-change-transform -translate-x-1/2 -translate-y-1/2
-                       left-[44%] top-[57%]
-                       sm:left-[45%] sm:top-[57%]"
+            className="hero-photo absolute z-[11] will-change-transform -translate-x-1/2 -translate-y-1/2"
+            style={{ left: "52.5%", top: "59.8%" }}
           >
             {/* Foto */}
             <div
-              className="relative w-[min(60vw,200px)] sm:w-[min(26vw,280px)] md:w-[min(22vw,300px)] lg:w-[min(20vw,320px)]"
+              className="relative w-[min(47vw,176px)] sm:w-[min(19vw,250px)] md:w-[min(17vw,270px)] lg:w-[min(15vw,291px)]"
             >
               <div className="relative overflow-hidden rounded-sm
                               shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
@@ -572,10 +572,10 @@ export default function QuemSomos() {
 
               {/* Crédito — ancorado ao centro-direito da foto */}
               <div
-                className="hero-director-credit pointer-events-none absolute top-1/2 left-full -translate-y-1/2
-                           hidden sm:flex flex-row items-center gap-3 pl-4 md:pl-5"
+                className="hero-director-credit pointer-events-none absolute top-1/10 left-full -translate-y-1/2
+                           hidden sm:flex flex-row items-center gap-3 pl-4 md:pl-0"
               >
-                <div className="h-[3px] w-10 shrink-0 bg-[var(--orange)] md:w-14" aria-hidden />
+                <div className="h-[15px] w-10 shrink-0 bg-[var(--orange)] md:w-25" aria-hidden />
                 <div className="flex flex-col">
                   <p
                     className="font-bold leading-tight text-white whitespace-nowrap"
@@ -597,16 +597,16 @@ export default function QuemSomos() {
           {/* SER 360 — esquerda, entre QUEM e SOMOS */}
           <div
             className="hero-tag-block absolute left-4 z-20
-                       top-[30%]
-                       sm:left-8 sm:top-[32%]
+                       top-[22%]
+                       sm:left-8 sm:top-[24%]
                        md:left-12 lg:left-16"
           >
-            <div className="mb-2.5 h-[3px] w-10 bg-[var(--orange)] sm:w-14" aria-hidden />
+            <div className="ml-auto mb-2.5 h-[3px] w-10 bg-[var(--orange)] sm:w-14" aria-hidden />
             <p
-              className="hero-tag font-bold uppercase leading-[1.15] tracking-[0.1em] text-white"
+              className="hero-tag text-right font-bold uppercase leading-[1.15] tracking-[0.1em] text-white"
               style={{
                 fontFamily: "var(--font-inter)",
-                fontSize: "clamp(0.75rem, 1.8vw, 1.75rem)",
+                fontSize: "clamp(0.72rem, 1.76vw, 2.24rem)",
                 maxWidth: "min(48vw, 22rem)",
               }}
             >
@@ -616,17 +616,15 @@ export default function QuemSomos() {
 
           {/* É FAZER — abaixo do SOMOS, direita */}
           <div
-            className="absolute z-20 flex flex-col items-end gap-3
-                       right-[50px] bottom-[4%]
-                       sm:right-[50px] sm:bottom-[5%]
-                       md:right-[50px] lg:right-[50px]"
+            className="absolute z-20 flex flex-col items-end gap-3"
+            style={{ right: "clamp(80px, 25vw, 140px)", bottom: "4%" }}
           >
             <div className="self-start h-[3px] w-12 bg-[var(--orange)] sm:w-16" aria-hidden />
             <p
-              className="hero-tagline text-right font-bold uppercase text-white"
+              className="hero-tagline  font-bold uppercase text-white"
               style={{
                 fontFamily: "var(--font-inter)",
-                fontSize: "clamp(1rem, 2.6vw, 3.2rem)",
+                fontSize: "clamp(0.72rem, 1.76vw, 2.24rem)",
                 letterSpacing: "0.06em",
                 lineHeight: 1.1,
               }}
