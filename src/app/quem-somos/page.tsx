@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import ClientsMarquee from "@/components/ClientsMarquee";
+import TeamSection from "@/components/TeamSection";
 import ZoomImage from "@/components/ZoomImage";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -22,16 +23,6 @@ const SECTION_SCREEN =
 /** Imagem do edifício / fachada AMP (public). */
 const MANIFESTO_BUILDING_SRC =
   "/freepik_aplique-efeitos-fotografi_2853326270%201.png";
-
-const TEAM = [
-  { name: "Jalim Ra'Banis",   role: "diretor de criação" },
-  { name: "Nome Sobrenome",  role: "Função" },
-  { name: "Nome Sobrenome",  role: "Função" },
-  { name: "Nome Sobrenome",  role: "Função" },
-  { name: "Nome Sobrenome",  role: "Função" },
-  { name: "Nome Sobrenome",  role: "Função" },
-  { name: "Nome Sobrenome",  role: "Função" },
-];
 
 const STATES = ["Acre", "Amapá", "Amazonas", "Pará", "Rondônia", "Roraima"];
 
@@ -81,7 +72,9 @@ export default function QuemSomos() {
       const threshold = window.scrollY + window.innerHeight * 0.35;
       let idx = 0;
       for (let i = 0; i < sections.length; i++) {
-        if (sections[i].offsetTop <= threshold) idx = i;
+        // getBCR + scrollY gives the correct document position for sticky/absolute elements
+        const docTop = sections[i].getBoundingClientRect().top + window.scrollY;
+        if (docTop <= threshold) idx = i;
       }
       return idx;
     };
@@ -106,6 +99,19 @@ export default function QuemSomos() {
     const onWheel = (e: WheelEvent) => {
       if (isAnimating || Math.abs(e.deltaY) < 20) return;
       const idx = getActiveIdx();
+      const section = sections[idx];
+
+      // Seções com data-free-scroll: scroll livre interno, snap apenas nas bordas
+      if (section?.dataset.freeScroll !== undefined) {
+        const rect = section.getBoundingClientRect();
+        const atBottom = e.deltaY > 0 && rect.bottom <= window.innerHeight + 60;
+        const atTop    = e.deltaY < 0 && rect.top    >= -60;
+        if (!atBottom && !atTop) return;
+        if (atBottom) goTo(idx + 1);
+        else          goTo(idx - 1);
+        return;
+      }
+
       if (e.deltaY > 0) goTo(idx + 1);
       else goTo(idx - 1);
     };
@@ -117,6 +123,18 @@ export default function QuemSomos() {
       const dy = touchY - e.changedTouches[0].clientY;
       if (Math.abs(dy) < 40) return;
       const idx = getActiveIdx();
+      const section = sections[idx];
+
+      if (section?.dataset.freeScroll !== undefined) {
+        const rect = section.getBoundingClientRect();
+        const atBottom = dy > 0 && rect.bottom <= window.innerHeight + 60;
+        const atTop    = dy < 0 && rect.top    >= -60;
+        if (!atBottom && !atTop) return;
+        if (atBottom) goTo(idx + 1);
+        else          goTo(idx - 1);
+        return;
+      }
+
       if (dy > 0) goTo(idx + 1);
       else goTo(idx - 1);
     };
@@ -146,9 +164,9 @@ export default function QuemSomos() {
       .fromTo(".hero-quem",
         { scale: 1.24, opacity: 0, filter: "blur(16px)", transformOrigin: "left center" },
         { scale: 1,    opacity: 1, filter: "blur(0px)",  duration: 1.4 }, "-=0.2")
-      .fromTo(".hero-photo",
-        { opacity: 0, scale: 1.1, y: 30 },
-        { opacity: 1, scale: 1,   y: 0,  duration: 1.4 }, "-=1.1")
+      .fromTo(".hero-center-cluster",
+        { opacity: 0, scale: 1.06, y: 28 },
+        { opacity: 1, scale: 1,    y: 0,  duration: 1.4 }, "-=1.1")
       .fromTo(".hero-somos-wrap",
         { x: 36 },
         { x: 0, duration: 1.1 }, "-=1.15")
@@ -235,40 +253,67 @@ export default function QuemSomos() {
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // QUOTES LARANJA — desliza da esquerda com scrub
+    // QUOTES LARANJA — desliza da esquerda (play once ao entrar no viewport)
+    // Não usa scrub pois com section-snap o progresso completaria sem ser visto
     // ─────────────────────────────────────────────────────────────────────────
     gsap.utils.toArray<HTMLElement>(".reveal-quote").forEach((el) => {
       gsap.fromTo(el,
         { opacity: 0, x: -80 },
         {
           opacity: 1, x: 0,
-          ease: "none",
+          duration: 1.1,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: el,
-            start: "top 92%",
-            end: "top 50%",
-            scrub: 1,
+            start: "top 90%",
+            toggleActions: "play none none none",
           },
         }
       );
     });
 
+    // Citação criativo — trigger no bloco inteiro: entra cedo, fica visível no meio, só sai ao deixar o bloco
+    gsap.utils.toArray<HTMLElement>(".reveal-quote-criativo").forEach((el) => {
+      const block = el.closest(".manifesto-block-2");
+      if (!block) return;
+
+      gsap.set(el, { autoAlpha: 0, xPercent: -105 });
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: block,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.85,
+            invalidateOnRefresh: true,
+          },
+        })
+        .fromTo(
+          el,
+          { autoAlpha: 0, xPercent: -105 },
+          { autoAlpha: 1, xPercent: 0, duration: 0.12, ease: "none" }
+        )
+        .to(el, { autoAlpha: 1, xPercent: 0, duration: 0.76, ease: "none" })
+        .to(el, { autoAlpha: 0, xPercent: -105, duration: 0.12, ease: "none" });
+    });
+
     // ─────────────────────────────────────────────────────────────────────────
-    // MANIFESTO — parallax na foto do edifício (slide 1)
+    // MANIFESTO — parallax na foto do edifício
     // ─────────────────────────────────────────────────────────────────────────
     gsap.to(".manifesto-building-inner", {
       yPercent: 10,
       scale: 1.08,
       ease: "none",
       scrollTrigger: {
-        trigger: ".manifesto-slide-1",
+        trigger: ".manifesto-section",
         start: "top bottom",
         end: "bottom top",
         scrub: true,
       },
     });
 
-    // MANIFESTO — coluna direita do slide 2 desliza leve (parallax inverso)
+    // MANIFESTO — coluna direita (texto longo) parallax suave
     gsap.fromTo(
       ".manifesto-slide-2-parallax",
       { yPercent: 6 },
@@ -276,7 +321,7 @@ export default function QuemSomos() {
         yPercent: -6,
         ease: "none",
         scrollTrigger: {
-          trigger: ".manifesto-slide-2",
+          trigger: ".manifesto-section",
           start: "top bottom",
           end: "bottom top",
           scrub: 0.85,
@@ -284,39 +329,59 @@ export default function QuemSomos() {
       }
     );
 
-    // Sensação de "troca de página": slide inteiro ganha leve perspectiva ao entrar
-    gsap.utils.toArray<HTMLElement>(".manifesto-slide-1, .manifesto-slide-2").forEach((slide) => {
-      gsap.fromTo(
-        slide,
-        { opacity: 0.88 },
-        {
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: slide,
-            start: "top 95%",
-            end: "top 55%",
-            scrub: 1.2,
-          },
-        }
-      );
-    });
+    // MANIFESTO — fade de entrada na borda superior (sem deslocar a seção)
+    gsap.fromTo(".manifesto-section",
+      { opacity: 0.4 },
+      {
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".manifesto-section",
+          start: "top 80%",
+          end: "top 20%",
+          scrub: true,
+        },
+      }
+    );
 
     // ─────────────────────────────────────────────────────────────────────────
-    // PHOTO GRID — cada foto entra em y diferente (paralaxe stagger)
+    // PHOTO GRID — reveal clip-path por coluna
     // ─────────────────────────────────────────────────────────────────────────
     gsap.utils.toArray<HTMLElement>(".photo-grid-item").forEach((el, i) => {
-      // reveal com clip-path
       gsap.fromTo(el,
-        { clipPath: "inset(100% 0% 0% 0%)", y: 0 },
+        { clipPath: "inset(100% 0% 0% 0%)" },
         {
-          clipPath: "inset(0% 0% 0% 0%)", y: 0,
+          clipPath: "inset(0% 0% 0% 0%)",
           ease: "none",
           scrollTrigger: {
             trigger: ".photo-grid",
             start: "top 90%",
             end: "top 40%",
-            scrub: 0.6 + i * 0.2,  // velocidades diferentes por coluna
+            scrub: 0.6 + i * 0.2,
+          },
+        }
+      );
+    });
+
+    // PHOTO GRID — parallax dentro de cada foto (inner move dentro do clip)
+    // Col 0: sobe conforme scroll; Col 1: estática; Col 2: desce
+    const photoParallaxMap: Record<number, [number, number]> = {
+      0: [20, -20],  // fromY, toY
+      2: [-20, 20],
+    };
+    Object.entries(photoParallaxMap).forEach(([idxStr, [fromY, toY]]) => {
+      const inner = document.querySelectorAll<HTMLElement>(".photo-parallax-inner")[Number(idxStr)];
+      if (!inner) return;
+      gsap.fromTo(inner,
+        { y: fromY },
+        {
+          y: toY,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".photo-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
           },
         }
       );
@@ -448,13 +513,13 @@ export default function QuemSomos() {
           {/* SOMOS — esquerda, centro-baixo */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "44%" }}
+            style={{ top: "46%" }}
           >
             <h1
               className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(4.5rem, 32vw, 52rem)",
+                fontSize: "clamp(3rem, 20vw, 34rem)",
               }}
             >
               SOMOS
@@ -463,68 +528,69 @@ export default function QuemSomos() {
 
           {/* QUEM — direita, colado ao topo */}
           <div
-            className="hero-quem-wrap pointer-events-none absolute right-0 top-0 z-[6] flex justify-end will-change-transform"
+            className="hero-quem-wrap pointer-events-none absolute right-0 z-[6] flex justify-end will-change-transform"
+            style={{ top: "-70px" }}
           >
             <h1
               className="hero-quem text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap
                          translate-x-[1.5vw]"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
-                fontSize: "clamp(4rem, 28vw, 46rem)",
+                fontSize: "clamp(3rem, 20vw, 34rem)",
               }}
             >
               QUEM
             </h1>
           </div>
 
-          {/* Retrato — centro da tela, sobrepõe QUEM (cima) e SOMOS (baixo) */}
+          {/* Foto + Crédito — grupo único sobre o "O" do SOMOS */}
           <div
             className="hero-photo absolute z-[11] will-change-transform -translate-x-1/2 -translate-y-1/2
-                       left-[46%] top-[48%] w-[min(60vw,200px)]
-                       sm:left-[47%] sm:top-[48%] sm:w-[min(26vw,280px)]
-                       md:w-[min(22vw,300px)]
-                       lg:w-[min(20vw,320px)]"
+                       left-[44%] top-[57%]
+                       sm:left-[45%] sm:top-[57%]"
           >
-            <div className="relative overflow-hidden rounded-sm
-                            shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
-                            ring-1 ring-white/20">
-              <ZoomImage
-                src="/diretor_img.png"
-                alt="Jalim Ra'Banis — diretor de criação"
-                className="w-full aspect-[3/4]"
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/50 via-transparent to-transparent" />
-              </ZoomImage>
-              {/* Sparkle decorativo */}
-              <span
-                aria-hidden
-                className="absolute bottom-3 right-3 text-white/70 select-none"
-                style={{ fontSize: "clamp(10px, 1.2vw, 18px)" }}
-              >✦</span>
-            </div>
-          </div>
+            {/* Foto */}
+            <div
+              className="relative w-[min(60vw,200px)] sm:w-[min(26vw,280px)] md:w-[min(22vw,300px)] lg:w-[min(20vw,320px)]"
+            >
+              <div className="relative overflow-hidden rounded-sm
+                              shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
+                              ring-1 ring-white/20">
+                <ZoomImage
+                  src="/diretor_img.png"
+                  alt="Jalim Ra'Banis — diretor de criação"
+                  className="w-full aspect-[3/4]"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/50 via-transparent to-transparent" />
+                </ZoomImage>
+                <span
+                  aria-hidden
+                  className="absolute bottom-3 right-3 text-white/70 select-none"
+                  style={{ fontSize: "clamp(10px, 1.2vw, 18px)" }}
+                >✦</span>
+              </div>
 
-          {/* Crédito — alinhado ao centro da foto */}
-          <div
-            className="hero-director-credit pointer-events-none absolute z-[12]
-                       hidden sm:flex flex-row items-center gap-3
-                       right-4 top-[44%] -translate-y-1/2
-                       sm:right-6 md:right-10 lg:right-14"
-          >
-            <div className="h-px w-8 shrink-0 bg-[var(--orange)] opacity-90 md:w-12" aria-hidden />
-            <div className="flex flex-col">
-              <p
-                className="font-bold leading-tight text-white"
-                style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
+              {/* Crédito — ancorado ao centro-direito da foto */}
+              <div
+                className="hero-director-credit pointer-events-none absolute top-1/2 left-full -translate-y-1/2
+                           hidden sm:flex flex-row items-center gap-3 pl-4 md:pl-5"
               >
-                Jalim Ra&apos;Banis
-              </p>
-              <p
-                className="mt-1 font-semibold uppercase tracking-[0.22em] text-[var(--orange)]"
-                style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(8px, 0.7vw, 11px)" }}
-              >
-                Diretor de criação
-              </p>
+                <div className="h-[3px] w-10 shrink-0 bg-[var(--orange)] md:w-14" aria-hidden />
+                <div className="flex flex-col">
+                  <p
+                    className="font-bold leading-tight text-white whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
+                  >
+                    Jalim Ra&apos;Banis
+                  </p>
+                  <p
+                    className="mt-1 font-semibold uppercase tracking-[0.22em] text-[var(--orange)] whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(8px, 0.7vw, 11px)" }}
+                  >
+                    Diretor de criação
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -550,12 +616,12 @@ export default function QuemSomos() {
 
           {/* É FAZER — abaixo do SOMOS, direita */}
           <div
-            className="absolute z-20 flex flex-col items-end gap-2
-                       right-4 bottom-[6%]
-                       sm:right-8 sm:bottom-[7%]
-                       md:right-12 lg:right-16"
+            className="absolute z-20 flex flex-col items-end gap-3
+                       right-[50px] bottom-[4%]
+                       sm:right-[50px] sm:bottom-[5%]
+                       md:right-[50px] lg:right-[50px]"
           >
-            <div className="h-[2px] w-10 bg-[var(--orange)] sm:w-16" aria-hidden />
+            <div className="self-start h-[3px] w-12 bg-[var(--orange)] sm:w-16" aria-hidden />
             <p
               className="hero-tagline text-right font-bold uppercase text-white"
               style={{
@@ -571,16 +637,25 @@ export default function QuemSomos() {
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            MANIFESTO — slide 1 (imagem + citação / ponte / intro)
+            MANIFESTO — seção única com scroll livre (flip ao entrar)
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
-          className={`manifesto-slide-1 ${SECTION_SCREEN} flex flex-col justify-center bg-[#141414] py-14 sm:py-20`}
+          data-free-scroll
+          className="manifesto-section w-full bg-[#141414]"
+          style={{
+            position: "relative",
+            boxShadow: "0 -32px 80px rgba(0,0,0,0.7)",
+            paddingTop: "clamp(1.5rem, 4svh, 5rem)",
+            paddingBottom: "clamp(1.5rem, 4svh, 5rem)",
+          }}
         >
+          {/* ── Bloco 1: foto + quote da década + intro ── */}
           <div
             className="grid w-full max-w-none grid-cols-1 items-center gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0"
+            style={{ marginBottom: "clamp(2rem, 6svh, 5rem)" }}
           >
-            <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] lg:min-h-[min(58vh,520px)]">
+            <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] lg:min-h-[min(50svh,460px)]">
               <div className="manifesto-building-inner absolute inset-0 will-change-transform">
                 <Image
                   src={MANIFESTO_BUILDING_SRC}
@@ -593,10 +668,10 @@ export default function QuemSomos() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-8 lg:gap-10">
+            <div className="flex flex-col" style={{ gap: "clamp(1rem, 2.5svh, 2.5rem)" }}>
               <div className="manifesto-marker-wrap w-full">
                 <p
-                  className="reveal-quote m-0 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)]"
+                  className="reveal-quote m-0 ml-10 mr-15 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)]"
                   style={{
                     fontFamily: "var(--font-darker-grotesque)",
                     fontSize: "clamp(1.05rem, 2.7vw, 3.25rem)",
@@ -614,7 +689,6 @@ export default function QuemSomos() {
                 >
                   {BRIDGE_HARMONIA}
                 </p>
-
                 <p
                   className="reveal-text text-[var(--cream)]/90 font-medium leading-[2.2] text-[clamp(15px,1.45vw,28px)]"
                   style={{ fontFamily: "var(--font-inter)" }}
@@ -624,21 +698,14 @@ export default function QuemSomos() {
               </div>
             </div>
           </div>
-        </section>
 
-        {/* ══════════════════════════════════════════════════════════════════
-            MANIFESTO — slide 2 (citação + texto longo)
-        ══════════════════════════════════════════════════════════════════ */}
-        <section
-          data-section
-          className={`manifesto-slide-2 ${SECTION_SCREEN} flex flex-col justify-center bg-[#141414] py-14 sm:py-20`}
-        >
+          {/* ── Bloco 2: quote criativo + texto longo (citação no topo do bloco) ── */}
           <div
-            className="grid w-full max-w-none grid-cols-1 items-stretch gap-0 lg:grid-cols-2 lg:gap-0"
+            className="manifesto-block-2 grid w-full max-w-none grid-cols-1 items-start gap-0 lg:grid-cols-2 lg:items-start lg:gap-0"
           >
-            <div className="manifesto-marker-wrap flex w-full items-center py-8 sm:py-10 lg:min-h-0 lg:py-12">
+            <div className="manifesto-marker-wrap manifesto-quote-criativo-wrap mt-[25px] flex w-full items-start justify-start overflow-hidden pb-8 sm:pb-10 lg:pb-12">
               <p
-                className="reveal-quote m-0 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)]"
+                className="reveal-quote-criativo m-0 ml-10 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)] will-change-transform"
                 style={{
                   fontFamily: "var(--font-darker-grotesque)",
                   fontSize: "clamp(1.05rem, 2.7vw, 3.25rem)",
@@ -648,9 +715,10 @@ export default function QuemSomos() {
               </p>
             </div>
 
-            <div className="manifesto-slide-2-parallax will-change-transform px-5 pb-8 pt-6 sm:px-8 lg:px-10 lg:pb-10 lg:pt-8">
+            <div className="manifesto-slide-2-parallax will-change-transform px-5 sm:px-8 lg:px-10"
+                 style={{ paddingTop: 0, paddingBottom: "clamp(0.75rem, 2svh, 2.5rem)" }}>
               <p
-                className="reveal-text whitespace-pre-line text-[var(--cream)]/90 font-medium leading-[2.2]
+                className="reveal-text whitespace-pre-line text-[var(--cream)]/90 font-medium leading-[1.8] lg:leading-[2.2]
                            text-[clamp(15px,1.45vw,28px)]"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
@@ -669,95 +737,42 @@ export default function QuemSomos() {
           >
           {PHOTOS.map(({ seed, label }) => (
             <div key={seed} className="photo-grid-item overflow-hidden">
-              <ZoomImage
-                src={`https://picsum.photos/seed/${seed}/800/450`}
-                alt={label}
-                className="w-full aspect-video sm:aspect-[4/5]"
-                overlayClassName="bg-black/20"
-              />
+              {/* inner levemente maior que o container → y parallax revela partes diferentes da foto */}
+              <div
+                className="photo-parallax-inner will-change-transform"
+                style={{ marginTop: "-28px", marginBottom: "-28px" }}
+              >
+                <ZoomImage
+                  src={`https://picsum.photos/seed/${seed}/800/450`}
+                  alt={label}
+                  className="w-full aspect-video sm:aspect-[4/5]"
+                  overlayClassName="bg-black/20"
+                />
+              </div>
             </div>
           ))}
           </div>
         </section>
-
-        {/* ══════════════════════════════════════════════════════════════════
-            TIME
-        ══════════════════════════════════════════════════════════════════ */}
-        <section data-section className={`${SECTION_SCREEN} team-section flex flex-col justify-center py-16 sm:py-20`}>
-          <div className={`${FRAME} grid gap-12 px-5 sm:px-8 md:grid-cols-2 md:gap-20 md:px-16`}>
-          {/* Foto */}
-          <div className="team-photo">
-            <ZoomImage
-              src="https://picsum.photos/seed/member01/600/800"
-              alt="Colaborador"
-              className="w-full sm:max-w-sm aspect-[3/4]"
-            />
-            <p className="reveal-text mt-4 text-white/45 text-xs sm:text-sm"
-               style={{ fontFamily: "var(--font-inter)" }}>
-              Aqui vai um breve histórico da jornada profissional do colaborador.
-            </p>
-          </div>
-
-          {/* Lista */}
-          <div>
-            <div className="relative mb-8 sm:mb-12">
-              <h2 className="reveal-title text-white font-black lowercase leading-[0.9] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(48px, 13vw, 156px)" }}>
-                time
-              </h2>
-              <svg viewBox="0 0 120 120"
-                   className="absolute top-0 right-0 w-14 sm:w-20 h-14 sm:h-20 opacity-25 animate-spin"
-                   style={{ animationDuration: "14s" }}>
-                <defs>
-                  <path id="ct" d="M60,10 a50,50 0 1,1 -0.01,0" />
-                </defs>
-                <text fill="white" fontSize="11" letterSpacing="3"
-                      style={{ fontFamily: "var(--font-inter)" }}>
-                  <textPath href="#ct">NOSSAS TRÊS LETRAS · </textPath>
-                </text>
-              </svg>
-            </div>
-
-            <ul className="team-list divide-y divide-white/[0.08]">
-              {TEAM.map((m, i) => (
-                <li key={i}
-                    className="team-item flex items-center py-3.5 sm:py-4 group cursor-pointer hover:pl-2 sm:hover:pl-3 transition-all duration-300">
-                  <span className="font-medium text-white group-hover:text-[var(--orange)] transition-colors text-[clamp(15px,1.65vw,32px)]"
-                        style={{ fontFamily: "var(--font-inter)" }}>
-                    {m.name}
-                    <span className="text-white/35 group-hover:text-white/55"> — </span>
-                    <span className="text-white/40 group-hover:text-white/70">{m.role}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <button className="mt-8 sm:mt-10 text-[var(--orange)] text-[11px] font-bold uppercase tracking-[0.2em]
-                               flex items-center gap-2 hover:gap-4 transition-all duration-300"
-                    style={{ fontFamily: "var(--font-inter)" }}>
-              + Ver mais
-            </button>
-          </div>
-          </div>
-        </section>
+        <TeamSection frameClassName={FRAME} />
 
         {/* ══════════════════════════════════════════════════════════════════
             ESTAMOS AQUI
         ══════════════════════════════════════════════════════════════════ */}
-        <section data-section className={`${SECTION_SCREEN} flex flex-col justify-center bg-[#232323] py-16 sm:py-20`}>
+        <section data-section className={`${SECTION_SCREEN} flex flex-col justify-center bg-[#232323]`}
+                 style={{ paddingTop: "clamp(1.5rem, 4svh, 5rem)", paddingBottom: "clamp(1.5rem, 4svh, 5rem)" }}>
           <div className={`${FRAME} grid items-center gap-12 px-5 sm:px-8 md:grid-cols-2 md:gap-20 md:px-16`}>
             <div>
-              <h2 className="reveal-title text-[var(--cream)] font-black lowercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(40px, 13vw, 156px)" }}>
-                estamos
+              <h2 className="reveal-title text-[var(--cream)] font-black uppercase leading-[0.65] tracking-[-0.06em]"
+                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, min(10vw, 14svh), 130px)" }}>
+                ESTAMOS
               </h2>
-              <h2 className="reveal-title text-[var(--cream)] font-black lowercase leading-[0.65] tracking-[-0.06em] mb-8"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(40px, 13vw, 156px)" }}>
-                aqui
+              <h2 className="reveal-title text-[var(--cream)] font-black uppercase leading-[0.65] tracking-[-0.06em]"
+                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, min(10vw, 14svh), 130px)", marginBottom: "clamp(0.5rem, 1.5svh, 2rem)" }}>
+                AQUI
               </h2>
 
-              <p className="reveal-text text-[var(--cream)]/85 font-medium leading-[2.2] text-[clamp(14px,1.45vw,28px)] mb-10 max-w-xl"
-                 style={{ fontFamily: "var(--font-inter)" }}>
+              <p className="reveal-text text-[var(--cream)]/85 font-medium leading-[2.2] text-[clamp(14px,1.45vw,28px)] max-w-xl"
+                 style={{ marginBottom: "clamp(0.75rem, 2svh, 2.5rem)", fontFamily: "var(--font-inter)" }}>
                 Presença estratégica com alcance nacional.
                 <br />
                 <br />
@@ -767,9 +782,10 @@ export default function QuemSomos() {
               <ul className="states-list space-y-0 lowercase">
                 {STATES.map((s) => (
                   <li key={s}
-                      className="state-item flex items-center gap-3 py-2.5 border-b border-white/[0.06]">
+                      className="state-item flex items-center gap-3 border-b border-white/[0.06]"
+                      style={{ paddingTop: "clamp(4px, 0.9svh, 10px)", paddingBottom: "clamp(4px, 0.9svh, 10px)" }}>
                     <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s === "Amazonas" ? "bg-[var(--orange)]" : "bg-white/18"}`} />
-                    <span className={`text-[clamp(14px,1.65vw,32px)] font-medium ${s === "Amazonas" ? "text-[var(--orange)]" : "text-[var(--cream)]/55"}`}
+                    <span className={`text-[clamp(13px,min(1.4vw,2svh),26px)] font-medium ${s === "Amazonas" ? "text-[var(--orange)]" : "text-[var(--cream)]/55"}`}
                           style={{ fontFamily: "var(--font-inter)" }}>
                       {s.toLowerCase()}
                     </span>
@@ -807,23 +823,24 @@ export default function QuemSomos() {
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
-          className={`${SECTION_SCREEN} clients-section flex flex-col justify-center bg-[var(--cream)] py-16 text-[var(--ink)] sm:py-20`}
+          className={`${SECTION_SCREEN} clients-section flex flex-col justify-center bg-[var(--cream)] text-[var(--ink)]`}
+          style={{ paddingTop: "clamp(1.5rem, 4svh, 5rem)", paddingBottom: "clamp(1.5rem, 4svh, 5rem)" }}
         >
           <div className={`${FRAME} px-5 sm:px-8 md:px-16`}>
             <div className="clients-title">
               <h2 className="text-right font-black uppercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, 13vw, 156px)" }}>
+                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(32px, min(10vw, 14svh), 130px)" }}>
                 Em excelente
               </h2>
-              <h2 className="font-black uppercase leading-[0.65] tracking-[-0.06em] mb-10 sm:mb-12"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, 13vw, 156px)" }}>
+              <h2 className="font-black uppercase leading-[0.65] tracking-[-0.06em]"
+                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(32px, min(10vw, 14svh), 130px)", marginBottom: "clamp(1.5rem, 3svh, 3rem)" }}>
                 companhia
               </h2>
             </div>
 
-            <p className="clients-sub text-[var(--ink)]/85 font-medium mb-14 sm:mb-16 max-w-[53ch] leading-[2.2]
+            <p className="clients-sub text-[var(--ink)]/85 font-medium max-w-[53ch] leading-[2.2]
                         text-[clamp(14px,1.45vw,28px)]"
-               style={{ fontFamily: "var(--font-inter)" }}>
+               style={{ marginBottom: "clamp(1.5rem, 3svh, 4rem)", fontFamily: "var(--font-inter)" }}>
               {CLIENTS_COPY}
             </p>
 

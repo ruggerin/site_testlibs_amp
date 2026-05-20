@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --orange: #FF4D00;
+  --orange: #ff5b00;
   --dark: #181818;
+  --ink: #232323;
+  --cream: #f7f7f7;
   --font-title: var(--font-darker-grotesque);
   --font-body: var(--font-inter);
 }
@@ -10,6 +12,8 @@
 @theme inline {
   --color-orange: var(--orange);
   --color-dark: var(--dark);
+  --color-ink: var(--ink);
+  --color-cream: var(--cream);
   --font-title: var(--font-darker-grotesque);
   --font-body: var(--font-inter);
 }
@@ -27,4 +31,14 @@ h1, h2, h3, h4, h5, h6 {
 /* Remove scroll durante o loader */
 body.loading {
   overflow: hidden;
+}
+
+/* Citação manifesto — fundo laranja por linha (highlighter), estilo Figma */
+.marker-quote-bg {
+  background-color: var(--orange);
+  color: var(--ink);
+  padding: 0.1em 0.22em 0.14em;
+  line-height: 1.32;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }

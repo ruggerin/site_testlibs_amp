@@ -45,13 +45,22 @@ const ROWS = [
 ];
 
 // ─── Subcomponente: card individual ───────────────────────────────────────────
-function LogoCard({ name, seed }: { name: string; seed: string }) {
+function LogoCard({
+  name,
+  seed,
+  theme = "dark",
+}: {
+  name: string;
+  seed: string;
+  theme?: "dark" | "light";
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const light = theme === "light";
 
   const handleEnter = () => {
     gsap.to(cardRef.current, {
       scale: 1.06,
-      borderColor: "rgba(255,77,0,0.5)",
+      borderColor: "rgba(255, 91, 0, 0.45)",
       duration: 0.3,
       ease: "power2.out",
     });
@@ -67,7 +76,7 @@ function LogoCard({ name, seed }: { name: string; seed: string }) {
   const handleLeave = () => {
     gsap.to(cardRef.current, {
       scale: 1,
-      borderColor: "rgba(255,255,255,0.07)",
+      borderColor: light ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.07)",
       duration: 0.4,
       ease: "power2.inOut",
     });
@@ -83,7 +92,9 @@ function LogoCard({ name, seed }: { name: string; seed: string }) {
       ref={cardRef}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="relative flex-shrink-0 w-[180px] h-[80px] overflow-hidden border border-white/[0.07] cursor-pointer"
+      className={`relative flex-shrink-0 w-[180px] h-[80px] overflow-hidden border cursor-pointer ${
+        light ? "border-black/[0.08]" : "border-white/[0.07]"
+      }`}
       style={{ willChange: "transform" }}
     >
       {/* Imagem placeholder (picsum com seed) */}
@@ -97,10 +108,16 @@ function LogoCard({ name, seed }: { name: string; seed: string }) {
         unoptimized
       />
 
-      {/* Overlay escuro + nome da marca */}
-      <div className="absolute inset-0 bg-[#181818]/70 flex items-center justify-center">
+      {/* Overlay + nome da marca */}
+      <div
+        className={`absolute inset-0 flex items-center justify-center ${
+          light ? "bg-[var(--cream)]/85" : "bg-[#181818]/70"
+        }`}
+      >
         <span
-          className="text-white/80 text-xs font-black uppercase tracking-widest text-center px-2 leading-tight"
+          className={`text-xs font-black uppercase tracking-widest text-center px-2 leading-tight ${
+            light ? "text-[var(--ink)]/80" : "text-white/80"
+          }`}
           style={{ fontFamily: "var(--font-darker-grotesque)" }}
         >
           {name}
@@ -109,7 +126,7 @@ function LogoCard({ name, seed }: { name: string; seed: string }) {
 
       {/* Borda laranja no bottom — aparece no hover via GSAP */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FF4D00]"
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--orange)]"
         style={{ transform: "scaleX(0)", transformOrigin: "left" }}
         data-underline
       />
@@ -118,7 +135,7 @@ function LogoCard({ name, seed }: { name: string; seed: string }) {
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-export default function ClientsMarquee() {
+export default function ClientsMarquee({ theme = "dark" }: { theme?: "dark" | "light" }) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -180,11 +197,16 @@ export default function ClientsMarquee() {
           >
             {/* Set 1 */}
             {row.data.map((client) => (
-              <LogoCard key={client.seed} name={client.name} seed={client.seed} />
+              <LogoCard key={client.seed} name={client.name} seed={client.seed} theme={theme} />
             ))}
             {/* Set 2 — cópia exata para loop seamless */}
             {row.data.map((client) => (
-              <LogoCard key={`dup-${client.seed}`} name={client.name} seed={client.seed} />
+              <LogoCard
+                key={`dup-${client.seed}`}
+                name={client.name}
+                seed={client.seed}
+                theme={theme}
+              />
             ))}
           </div>
         </div>

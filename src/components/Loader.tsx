@@ -147,7 +147,7 @@ export default function Loader({ onComplete, duration = 5 }: LoaderProps) {
           y={0}
           width={0}
           height={SVG_H}
-          fill="#FF4D00"
+          fill="var(--orange)"
           clipPath="url(#amp-clip)"
         />
       </svg>
