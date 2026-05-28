@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import ClientsMarquee from "@/components/ClientsMarquee";
 import TeamSection from "@/components/TeamSection";
+import PhotoDriftStrip from "@/components/PhotoDriftStrip";
 import ZoomImage from "@/components/ZoomImage";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -27,9 +28,16 @@ const MANIFESTO_BUILDING_SRC =
 const STATES = ["Acre", "Amapá", "Amazonas", "Pará", "Rondônia", "Roraima"];
 
 const PHOTOS = [
-  { seed: "office01", label: "Escritório" },
-  { seed: "meeting2", label: "Reunião de time" },
-  { seed: "creative", label: "Ambiente criativo" },
+  { src: "/assets/ambiente/01.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/02.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/03.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/04.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/05.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/06.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/07.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/08.jpeg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/09.jpg", label: "Ambiente AMP" },
+  { src: "/assets/ambiente/10.jpg", label: "Ambiente AMP" },
 ];
 
 const MANIFESTO_INTRO =
@@ -344,47 +352,26 @@ export default function QuemSomos() {
       }
     );
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // PHOTO GRID — reveal clip-path por coluna
-    // ─────────────────────────────────────────────────────────────────────────
-    gsap.utils.toArray<HTMLElement>(".photo-grid-item").forEach((el, i) => {
-      gsap.fromTo(el,
-        { clipPath: "inset(100% 0% 0% 0%)" },
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".photo-grid",
-            start: "top 90%",
-            end: "top 40%",
-            scrub: 0.6 + i * 0.2,
-          },
-        }
-      );
+    // PHOTO DRIFT — Horizontal Drift no scroll (demo #drift)
+    gsap.to(".photo-drift-l", {
+      xPercent: -22,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".photo-drift-section",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.8,
+      },
     });
-
-    // PHOTO GRID — parallax dentro de cada foto (inner move dentro do clip)
-    // Col 0: sobe conforme scroll; Col 1: estática; Col 2: desce
-    const photoParallaxMap: Record<number, [number, number]> = {
-      0: [20, -20],  // fromY, toY
-      2: [-20, 20],
-    };
-    Object.entries(photoParallaxMap).forEach(([idxStr, [fromY, toY]]) => {
-      const inner = document.querySelectorAll<HTMLElement>(".photo-parallax-inner")[Number(idxStr)];
-      if (!inner) return;
-      gsap.fromTo(inner,
-        { y: fromY },
-        {
-          y: toY,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".photo-grid",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        }
-      );
+    gsap.to(".photo-drift-r", {
+      xPercent: 22,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".photo-drift-section",
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.8,
+      },
     });
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -727,28 +714,16 @@ export default function QuemSomos() {
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            PHOTO GRID
+            PHOTO DRIFT — faixas horizontais, sangra na tela, drift no scroll
         ══════════════════════════════════════════════════════════════════ */}
-        <section data-section className={`${SECTION_SCREEN} flex flex-col justify-center py-12 sm:py-16`}>
-          <div
-            className={`photo-grid ${FRAME} grid grid-cols-1 gap-2 px-5 sm:grid-cols-3 sm:gap-3 sm:px-8 md:gap-3 md:px-16`}
-          >
-          {PHOTOS.map(({ seed, label }) => (
-            <div key={seed} className="photo-grid-item overflow-hidden">
-              {/* inner levemente maior que o container → y parallax revela partes diferentes da foto */}
-              <div
-                className="photo-parallax-inner will-change-transform"
-                style={{ marginTop: "-28px", marginBottom: "-28px" }}
-              >
-                <ZoomImage
-                  src={`https://picsum.photos/seed/${seed}/800/450`}
-                  alt={label}
-                  className="w-full aspect-video sm:aspect-[4/5]"
-                  overlayClassName="bg-black/20"
-                />
-              </div>
+        <section
+          data-section
+          className={`photo-drift-section ${SECTION_SCREEN} flex flex-col justify-center overflow-x-clip overflow-y-visible py-8 sm:py-10`}
+        >
+          <div className="-my-16 w-full sm:-my-20 md:-my-28 lg:-my-32">
+            <div className="relative left-1/2 w-[118vw] max-w-none -translate-x-1/2 px-0">
+              <PhotoDriftStrip photos={PHOTOS} />
             </div>
-          ))}
           </div>
         </section>
         <TeamSection frameClassName={FRAME} />

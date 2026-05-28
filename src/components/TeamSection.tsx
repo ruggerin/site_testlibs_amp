@@ -17,7 +17,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: "Sérgio Brandão",
     role: "Founder & CEO",
     image: "https://s2-ge.glbimg.com/rAo4zUBmcAAUcvRztwpp9f5Bcik=/0x0:1366x2048/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2022/w/p/m4AO9zTfOx8vTrTIggsA/52510101648-208d23f180-k.jpg",
-    bio: "Breve histórico da jornada profissional do colaborador.",
+    bio: "Comecei em 2009 no atendimento, participando da criação até migrar definitivamente para a redação. Desde 2025, estou como Head da AMP.",
   },
   {
     id: "matheus-abitbol",
@@ -82,13 +82,13 @@ export default function TeamSection({
   return (
     <section
       data-section
-      className="team-section flex min-h-[100svh] w-full max-w-[100vw] flex-col justify-center overflow-x-hidden"
+      className="team-section flex min-h-[100svh] w-full max-w-[100vw] flex-col justify-center overflow-x-clip overflow-y-visible"
       style={{ paddingTop: "clamp(1.5rem, 4svh, 5rem)", paddingBottom: "clamp(1.5rem, 4svh, 5rem)" }}
     >
       <div
-        className={`${frameClassName} grid gap-12 px-5 sm:px-8 md:grid-cols-[min(320px,38%)_minmax(0,1fr)] md:items-start md:gap-16 md:px-16 lg:gap-20`}
+        className={`${frameClassName} grid w-full grid-cols-1 gap-1 md:grid-cols-[minmax(0,48%)_minmax(0,1fr)] md:items-center md:gap-2 lg:gap-4`}
       >
-        <div className="order-2 md:order-2">
+        <div className="order-2 px-4 sm:px-6 md:order-2 md:px-0 md:pr-10 lg:pr-16">
           <div className="relative" style={{ marginBottom: "clamp(0.75rem, 2svh, 3rem)" }}>
             <h2
               className="reveal-title font-black  leading-[0.9] tracking-[-0.06em] text-white"
@@ -153,8 +153,12 @@ export default function TeamSection({
           </button>
         </div>
 
-        <div className="team-photo order-1 md:order-1 md:justify-self-start">
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-[min(100%,420px)] overflow-hidden bg-[#1a1a1a] sm:max-w-sm md:mx-0 md:mr-auto">
+        <div className="team-photo order-1 z-10 w-full p-px will-change-transform md:order-1 md:self-stretch">
+          <div
+            className="team-photo-frame relative w-full overflow-hidden bg-[#1a1a1a]
+              h-[min(58svh,680px)] max-md:mx-auto max-md:max-w-[min(100%,520px)]
+              md:h-[min(80svh,900px)] md:max-w-none"
+          >
             {members.map((member) => {
               const visible = member.id === activeId;
               return (
@@ -167,8 +171,8 @@ export default function TeamSection({
                     src={member.image}
                     alt={member.name}
                     fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 768px) 100vw, 420px"
+                    className="object-cover object-[center_18%]"
+                    sizes="(max-width: 768px) 92vw, 55vh"
                     priority={member.id === members[0]?.id}
                   />
                 </div>
@@ -177,7 +181,7 @@ export default function TeamSection({
           </div>
           {activeMember?.bio ? (
             <p
-              className="reveal-text mt-4 max-w-sm text-xs text-white/45 sm:text-sm"
+              className="reveal-text mt-px px-px text-xs text-white/45 sm:text-sm"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               {activeMember.bio}

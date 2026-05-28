@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  /* Figma Início — retângulo bg (2:172) */
   --orange: #ff5b00;
   --dark: #181818;
   --ink: #232323;
@@ -34,6 +35,14 @@ body.loading {
 }
 
 /* Citação manifesto — fundo laranja por linha (highlighter), estilo Figma */
+/* Home — imagem de fundo wppr_orange (protótipo Figma) */
+.home-bg-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .marker-quote-bg {
   background-color: var(--orange);
   color: var(--ink);
@@ -41,4 +50,25 @@ body.loading {
   line-height: 1.32;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

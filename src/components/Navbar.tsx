@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 /** Itens centrais — Figma 2:121 (textCase UPPER no arquivo; rótulos como no layout). */
 const MENU_PRIMARY: { label: string; href: string }[] = [
   { label: "Quem Somos", href: "/quem-somos" },
-  { label: "Nossa Cultura", href: "/quem-somos" },
+  { label: "Nossa Cultura", href: "/nossa-cultura" },
   { label: "Serviços", href: "/servicos" },
   { label: "Projetos", href: "/cases" },
-  { label: "Prêmios", href: "#" },
-  { label: "Blog", href: "#" },
+  { label: "Prêmios", href: "/premios" },
+  { label: "Blog", href: "/blog" },
 ];
 
 const SOCIAL: { label: string; href: string }[] = [
@@ -70,9 +71,22 @@ function IconLinkedin({ className }: { className?: string }) {
 
 const SOCIAL_ICONS = [IconInstagram, IconFacebook, IconYoutube, IconBehance, IconLinkedin] as const;
 
-export default function Navbar() {
+const LOGO_DARK = "/assets/logo_amp_blackfont.svg";
+const LOGO_LIGHT = "/logo_AMP-NEW_1.png";
+
+type NavbarProps = {
+  /** Páginas claras usam ícone escuro; home e quem-somos mantêm o padrão claro. */
+  theme?: "dark" | "light";
+};
+
+export default function Navbar({ theme = "dark" }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) => href !== "#" && pathname === href;
+  const isHome = pathname === "/";
+  const useDarkChrome = theme === "light" || isHome;
+  const barColor = menuOpen ? "bg-[var(--orange)]" : useDarkChrome ? "bg-[#232323]" : "bg-white";
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -87,14 +101,18 @@ export default function Navbar() {
       >
         <Link
           href="/"
-          className="relative z-50 block h-8 w-[7.5rem] shrink-0 transition-opacity hover:opacity-90 sm:h-9 sm:w-[8.5rem] md:h-10 md:w-40"
+          className={`relative z-50 block shrink-0 transition-opacity hover:opacity-90 ${
+            useDarkChrome
+              ? "h-[26px] w-[4.6rem] sm:h-[30px] sm:w-[5.35rem] md:h-[34px] md:w-[6.1rem]"
+              : "h-8 w-[7.5rem] sm:h-9 sm:w-[8.5rem] md:h-10 md:w-40"
+          }`}
         >
           <Image
-            src="/logo_AMP-NEW_1.png"
+            src={useDarkChrome ? LOGO_DARK : LOGO_LIGHT}
             alt="Agência AMP"
             fill
             className="object-contain object-left"
-            sizes="(max-width: 768px) 140px, 180px"
+            sizes={useDarkChrome ? "(max-width: 768px) 74px, 98px" : "(max-width: 768px) 140px, 180px"}
             priority
           />
         </Link>
@@ -107,29 +125,23 @@ export default function Navbar() {
           className="relative z-50 flex cursor-pointer flex-col gap-[6px] group"
         >
           <span
-            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${
-              menuOpen ? "bg-[#232323]" : "bg-white"
-            }`}
+            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${barColor}`}
             style={{ transform: menuOpen ? "translateY(8px) rotate(45deg)" : "none" }}
           />
           <span
-            className={`block h-[2px] w-8 transition-opacity duration-300 ${
-              menuOpen ? "bg-[#232323]" : "bg-white"
-            }`}
+            className={`block h-[2px] w-8 transition-opacity duration-300 ${barColor}`}
             style={{ opacity: menuOpen ? 0 : 1 }}
           />
           <span
-            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${
-              menuOpen ? "bg-[#232323]" : "bg-white"
-            }`}
+            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${barColor}`}
             style={{ transform: menuOpen ? "translateY(-8px) rotate(-45deg)" : "none" }}
           />
         </button>
       </nav>
 
-      {/* Overlay menu — Figma node 2:121: fundo branco, tipografia laranja, redes à direita */}
+      {/* Overlay menu — fundo #232323, tipografia laranja, redes à direita */}
       <div
-        className={`fixed inset-0 z-30 flex w-full max-w-[100vw] flex-col bg-[#FFFFFF] transition-[clip-path] duration-700 ease-[cubic-bezier(0.77,0,0.18,1)] ${
+        className={`fixed inset-0 z-30 flex w-full max-w-[100vw] flex-col bg-[#232323] transition-[clip-path] duration-700 ease-[cubic-bezier(0.77,0,0.18,1)] ${
           menuOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{
@@ -137,29 +149,26 @@ export default function Navbar() {
         }}
         aria-hidden={!menuOpen}
       >
-        {/*
-          Figma 2:121 (1920×1080): logo ~30×29; menu txt grupo x≈253, barra #FF5B00 + links #F15702 73/900/LH1.356;
-          ícones 48×48 em x≈1380, step y≈85; rótulos redes x≈1458, Darker 40/500 UPPER.
-        */}
         <div
-          className="flex min-h-0 min-w-0 flex-1 flex-col px-7 pt-[7.25rem] pb-10 sm:px-10 sm:pt-32 md:pt-36
+          className="flex min-h-0 min-w-0 flex-1 flex-col px-10 pt-[7.25rem] pb-10 sm:px-16 sm:pt-32 md:px-20 md:pt-36
                      lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:pb-16 lg:pt-[9.5rem]
-                     lg:pl-[max(1.75rem,calc(13.19vw-0.5rem))] lg:pr-[max(1.75rem,calc(12.6vw-0.5rem))]"
+                     lg:pl-[max(4rem,calc(17vw))] lg:pr-[max(1.75rem,calc(12.6vw-0.5rem))]"
         >
-          {/* Navegação — barra vertical + lista (alinhado ao protótipo) */}
+          {/* Navegação */}
           <div className="relative flex min-h-0 min-w-0 flex-1 flex-col justify-center lg:max-w-[min(100%,42rem)] xl:max-w-[50rem]">
-            <div className="flex flex-row items-stretch gap-4 sm:gap-5 md:gap-[2.6875rem]">
-              <div
-                className="w-2 shrink-0 bg-[#FF5B00] sm:w-2.5 md:w-3"
-                aria-hidden
-              />
-              <ul className="min-w-0 flex-1 space-y-0">
-                {MENU_PRIMARY.map((item) => (
+            <ul className="min-w-0 flex-1 space-y-0">
+              {MENU_PRIMARY.map((item) => {
+                const active = isActive(item.href);
+                return (
                   <li key={`${item.href}-${item.label}`}>
                     <Link
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
-                      className="block py-[0.2em] font-black uppercase leading-[1.356] tracking-[-0.02em] text-[#F15702] transition-opacity hover:opacity-75"
+                      className={`flex items-center w-full px-5 py-[0.12em] uppercase leading-none tracking-[-0.02em] transition-colors duration-200
+                        ${active
+                          ? "font-black bg-[var(--orange)] text-[#232323]"
+                          : "font-medium text-[var(--orange)] hover:bg-[var(--orange)] hover:text-[#232323] hover:font-black"
+                        }`}
                       style={{
                         fontFamily: "var(--font-darker-grotesque)",
                         fontSize: "clamp(1.85rem, 5.2vw, 4.5625rem)",
@@ -168,15 +177,13 @@ export default function Navbar() {
                       {item.label}
                     </Link>
                   </li>
-                ))}
-              </ul>
-            </div>
+                );
+              })}
+            </ul>
           </div>
 
-          {/* Redes — Figma: ícone 48px + rótulo na mesma linha; step vertical ~85px entre ícones */}
-          <aside
-            className="mt-12 shrink-0 border-t border-[#F15702]/12 pt-10 sm:pt-12 lg:mt-0 lg:border-t-0 lg:pt-0"
-          >
+          {/* Redes sociais */}
+          <aside className="mt-12 shrink-0 border-t border-white/10 pt-10 sm:pt-12 lg:mt-0 lg:border-t-0 lg:pt-0">
             <ul className="flex flex-col gap-[37px]">
               {SOCIAL.map((s, i) => {
                 const Icon = SOCIAL_ICONS[i] ?? IconLinkedin;
@@ -186,7 +193,7 @@ export default function Navbar() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex size-12 shrink-0 items-center justify-center bg-[#F15702] text-white transition-opacity hover:opacity-90"
+                      className="flex size-12 shrink-0 items-center justify-center bg-[var(--orange)] text-white transition-opacity hover:opacity-90"
                       aria-label={s.label}
                     >
                       <Icon className="h-[22px] w-[22px]" />
@@ -195,7 +202,7 @@ export default function Navbar() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-w-0 font-medium uppercase leading-[1.356] text-[#F15702] transition-opacity hover:opacity-75"
+                      className="min-w-0 font-medium uppercase leading-[1.356] text-[var(--orange)] transition-opacity hover:opacity-75"
                       style={{
                         fontFamily: "var(--font-darker-grotesque)",
                         fontSize: "clamp(1.125rem, 2.35vw, 2.5rem)",
