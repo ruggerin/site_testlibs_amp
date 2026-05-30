@@ -5,6 +5,8 @@ export type BlogPost = {
   date: string;
   image: string;
   body: string;
+  lead?: string;
+  author?: string;
 };
 
 export const POSTS: BlogPost[] = [
@@ -15,6 +17,9 @@ export const POSTS: BlogPost[] = [
     excerpt:
       "Após 10 longos anos de espera, finalmente o novo site da agência mais laranja de Manaux surge em meio a mata com seu novo design, mais moderno, clean e brutal...",
     date: "22 de abril . 2026",
+    author: "Por: Aline Cardoso Berdinazzi 🤌🏼",
+    lead:
+      "Após 10 longos anos de espera, finalmente o novo site da agência mais laranja de Manaux surge em meio a mata com seu novo design, mais moderno, clean e brutal.",
     body: `Ser 360 não é oferecer tudo. É fazer tudo funcionar junto. Ao longo de mais de uma década, a AMP entendeu que resultados consistentes não nascem de esforços isolados. Eles nascem da harmonia entre estratégia, criatividade e análise.
 
 Ser uma agência de marketing 360 vai além de reunir serviços sob o mesmo teto. Trata-se de operar como um verdadeiro hub de marketing, sendo um sistema onde cada frente conversa, se alimenta e evolui em conjunto.

@@ -4,6 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { SOCIAL_ICON_BY_LABEL } from "@/components/SocialIconButtons";
+import { SOCIAL_LINKS } from "@/lib/social";
+import {
+  HOME_EDGE_X,
+  HOME_LOGO_OFFSET,
+  HOME_MENU_INSET_RIGHT,
+  HOME_NAV_WIDTH,
+} from "@/lib/site";
 
 /** Itens centrais — Figma 2:121 (textCase UPPER no arquivo; rótulos como no layout). */
 const MENU_PRIMARY: { label: string; href: string }[] = [
@@ -14,62 +22,6 @@ const MENU_PRIMARY: { label: string; href: string }[] = [
   { label: "Prêmios", href: "/premios" },
   { label: "Blog", href: "/blog" },
 ];
-
-const SOCIAL: { label: string; href: string }[] = [
-  { label: "instagram", href: "https://instagram.com" },
-  { label: "facebook", href: "https://facebook.com" },
-  { label: "youtube", href: "https://youtube.com" },
-  { label: "behance", href: "https://behance.net" },
-  { label: "linkedin", href: "https://linkedin.com" },
-];
-
-function IconInstagram({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconFacebook({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M14 8h3V5h-3c-2.2 0-4 1.8-4 4v3H7v3h3v8h3v-8h3l1-3h-4V9c0-.6.4-1 1-1z" />
-    </svg>
-  );
-}
-
-function IconYoutube({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.9C16.2 4 12 4 12 4s-4.2 0-6.8.3c-.4 0-1.2 0-2 .9-.6.6-.8 2-.8 2S2 9 2 10.8v2.4c0 1.8.2 3.6.2 3.6s.2 1.4.8 2c.8.8 1.9.8 2.4.9 1.8.2 7.6.2 7.6.2s4.2 0 6.8-.3c.4 0 1.2 0 2-.9.6-.6.8-2 .8-2s.2-1.8.2-3.6v-2.4c0-1.8-.2-3.6-.2-3.6zM10 14.5V8.5L15.2 11.5 10 14.5z" />
-    </svg>
-  );
-}
-
-function IconBehance({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M7.8 5.6h5.5c1.5 0 2.8 1 2.8 2.5 0 1.2-.6 2-1.5 2.4 1.3.4 2.2 1.4 2.2 3 0 2.2-1.7 3.5-4 3.5H7.8V5.6zm2.4 4.3h2.4c.9 0 1.5-.4 1.5-1.2 0-.8-.6-1.2-1.5-1.2h-2.4v2.4zm0 4.4h2.8c1 0 1.7-.5 1.7-1.5s-.7-1.5-1.8-1.5h-2.7V14.3zM18.4 9.2h4.1v1.5h-4.1V9.2z" />
-    </svg>
-  );
-}
-
-function IconLinkedin({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M5 3a2 2 0 100 4 2 2 0 000-4zm-2 7h4v11H3V10zm7 0h3.8v1.5h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6v5.5h-4v-4.9c0-1.2 0-2.7-1.7-2.7-1.7 0-2 1.3-2 2.7V21h-4V10z" />
-    </svg>
-  );
-}
-
-const SOCIAL_ICONS = [IconInstagram, IconFacebook, IconYoutube, IconBehance, IconLinkedin] as const;
 
 const LOGO_DARK = "/assets/logo_amp_blackfont.svg";
 const LOGO_LIGHT = "/logo_AMP-NEW_1.png";
@@ -82,11 +34,23 @@ type NavbarProps = {
 export default function Navbar({ theme = "dark" }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isActive = (href: string) => href !== "#" && pathname === href;
   const isHome = pathname === "/";
-  const useDarkChrome = theme === "light" || isHome;
-  const barColor = menuOpen ? "bg-[var(--orange)]" : useDarkChrome ? "bg-[#232323]" : "bg-white";
+  const isCulturaHero = pathname === "/nossa-cultura";
+  const useDarkChrome = theme === "light" || isHome || isCulturaHero;
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Quando a barra escura aparece no scroll, elementos devem ser claros (fundo escuro)
+  const showScrollBar = scrolled && !isHome && !menuOpen;
+  const effectiveDarkChrome = showScrollBar ? false : useDarkChrome;
+  const barColor = menuOpen ? "bg-[var(--orange)]" : effectiveDarkChrome ? "bg-[#232323]" : "bg-white";
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -97,22 +61,36 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-6 md:px-16"
+        className={`z-40 flex items-center justify-between transition-[background-color,padding,box-shadow] duration-300 ease-out ${
+          isHome
+            ? "fixed top-0 py-6"
+            : `fixed top-0 left-0 right-0 px-8 md:px-16 ${
+                showScrollBar
+                  ? "bg-[#232323]/95 py-4 shadow-[0_2px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+                  : "py-6"
+              }`
+        }`}
+        style={
+          isHome
+            ? { left: HOME_EDGE_X, width: HOME_NAV_WIDTH, paddingLeft: 0, paddingRight: 0 }
+            : undefined
+        }
       >
         <Link
           href="/"
           className={`relative z-50 block shrink-0 transition-opacity hover:opacity-90 ${
-            useDarkChrome
+            effectiveDarkChrome
               ? "h-[26px] w-[4.6rem] sm:h-[30px] sm:w-[5.35rem] md:h-[34px] md:w-[6.1rem]"
               : "h-8 w-[7.5rem] sm:h-9 sm:w-[8.5rem] md:h-10 md:w-40"
           }`}
+          style={isHome ? { marginLeft: HOME_LOGO_OFFSET } : undefined}
         >
           <Image
-            src={useDarkChrome ? LOGO_DARK : LOGO_LIGHT}
+            src={effectiveDarkChrome ? LOGO_DARK : LOGO_LIGHT}
             alt="Agência AMP"
             fill
             className="object-contain object-left"
-            sizes={useDarkChrome ? "(max-width: 768px) 74px, 98px" : "(max-width: 768px) 140px, 180px"}
+            sizes={effectiveDarkChrome ? "(max-width: 768px) 74px, 98px" : "(max-width: 768px) 140px, 180px"}
             priority
           />
         </Link>
@@ -123,6 +101,7 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
           aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
           className="relative z-50 flex cursor-pointer flex-col gap-[6px] group"
+          style={isHome ? { marginRight: HOME_MENU_INSET_RIGHT } : undefined}
         >
           <span
             className={`block h-[2px] w-8 origin-center transition-all duration-300 ${barColor}`}
@@ -164,10 +143,11 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
                     <Link
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
-                      className={`flex items-center w-full px-5 py-[0.12em] uppercase leading-none tracking-[-0.02em] transition-colors duration-200
-                        ${active
-                          ? "font-black bg-[var(--orange)] text-[#232323]"
-                          : "font-medium text-[var(--orange)] hover:bg-[var(--orange)] hover:text-[#232323] hover:font-black"
+                      className={`flex w-full items-center px-5 py-[0.12em] uppercase leading-none tracking-[-0.02em] transition-[background-color,color] duration-300 ease-out
+                        ${
+                          active
+                            ? "bg-[var(--orange)] font-black text-[var(--ink)]"
+                            : "font-medium text-[var(--orange)] hover:bg-[var(--orange)] hover:text-[var(--ink)]"
                         }`}
                       style={{
                         fontFamily: "var(--font-darker-grotesque)",
@@ -185,15 +165,16 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
           {/* Redes sociais */}
           <aside className="mt-12 shrink-0 border-t border-white/10 pt-10 sm:pt-12 lg:mt-0 lg:border-t-0 lg:pt-0">
             <ul className="flex flex-col gap-[37px]">
-              {SOCIAL.map((s, i) => {
-                const Icon = SOCIAL_ICONS[i] ?? IconLinkedin;
+              {SOCIAL_LINKS.map((s) => {
+                const Icon =
+                  SOCIAL_ICON_BY_LABEL[s.label] ?? SOCIAL_ICON_BY_LABEL.LinkedIn;
                 return (
                   <li key={s.label} className="flex flex-row items-center gap-7 sm:gap-8">
                     <a
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex size-12 shrink-0 items-center justify-center bg-[var(--orange)] text-white transition-opacity hover:opacity-90"
+                      className="flex size-12 shrink-0 items-center justify-center bg-[var(--orange)] text-[var(--ink)] transition-colors duration-300 ease-out hover:bg-[var(--ink)] hover:text-[var(--orange)]"
                       aria-label={s.label}
                     >
                       <Icon className="h-[22px] w-[22px]" />
@@ -202,13 +183,13 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-w-0 font-medium uppercase leading-[1.356] text-[var(--orange)] transition-opacity hover:opacity-75"
+                      className="min-w-0 font-medium uppercase leading-[1.356] text-[var(--orange)] transition-[color,opacity] duration-300 ease-out hover:text-[var(--ink)] hover:opacity-90"
                       style={{
                         fontFamily: "var(--font-darker-grotesque)",
                         fontSize: "clamp(1.125rem, 2.35vw, 2.5rem)",
                       }}
                     >
-                      {s.label}
+                      {s.label.toLowerCase()}
                     </a>
                   </li>
                 );

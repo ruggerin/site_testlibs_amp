@@ -76,7 +76,8 @@ Arquivo de acompanhamento das telas do [Figma (canvas raiz)](https://www.figma.c
 - [x] Hero, sec1, processo (4 etapas), banner, footer
 - [x] Infográfico em ciclo (desktop) + ícones Figma
 - [x] Hero com fundo laranja (`hero-bg.svg`)
-- [ ] Revisão pixel-perfect final vs. Figma Desktop
+- [x] Revisão alinhada ao Figma Desktop (clamp proporcional, layout sec1/infográfico/banner)
+- [x] Revisão pixel-perfect final (ajustes finos pós-preview)
 
 ### 2. Serviços — `/servicos`
 

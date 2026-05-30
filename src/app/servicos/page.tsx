@@ -1,38 +1,38 @@
+import Navbar from "@/components/Navbar";
 import PageFooter from "@/components/PageFooter";
-import PageHero from "@/components/PageHero";
-import PageShell from "@/components/PageShell";
 import ScrollReveal from "@/components/ScrollReveal";
 import ServiceBlock from "@/components/ServiceBlock";
+import ServicosConnectBanner from "@/components/ServicosConnectBanner";
+import ServicosHero from "@/components/ServicosHero";
 import { SERVICES } from "@/data/services";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Serviços",
+  description:
+    "Tecnologia, conteúdo, performance e branding integrados — marketing 360 da Agência AMP em Manaus.",
+  path: "/servicos",
+});
 
 export default function ServicosPage() {
   return (
-    <PageShell theme="light">
-      <PageHero
-        taglines={[
-          { text: "Tudo conectado.", align: "right" },
-          { text: "Do jeito que deve ser.", align: "left" },
-        ]}
-        className="min-h-[min(70svh,720px)]"
-      >
-        <h1
-          className="font-black uppercase leading-[0.85] tracking-[-0.06em] text-[#232323]"
-          style={{
-            fontFamily: "var(--font-darker-grotesque)",
-            fontSize: "clamp(4rem, 16vw, 18rem)",
-          }}
-        >
-          serviços
-        </h1>
-      </PageHero>
+    <div className="min-h-screen bg-white text-[#232323]">
+      <div className="relative">
+        <Navbar theme="light" />
+        <ServicosHero />
+      </div>
 
       {SERVICES.map((service, i) => (
-        <ScrollReveal key={service.id} delay={i * 80}>
+        <ScrollReveal key={service.id} delay={i * 60}>
           <ServiceBlock service={service} />
         </ScrollReveal>
       ))}
 
+      <ScrollReveal className="overflow-visible">
+        <ServicosConnectBanner />
+      </ScrollReveal>
+
       <PageFooter />
-    </PageShell>
+    </div>
   );
 }

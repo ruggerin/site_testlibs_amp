@@ -1,0 +1,240 @@
+{
+  "team": [
+    {
+      "id": "aline",
+      "ordem_exibicao": 1,
+      "nome_completo": "Aline Cardoso",
+      "funcao": "Copywriter",
+      "historico": "Expertise nacional e internacional como jornalista e copywriter. Narrativas completas do ON ao OFF, de SEO e Inbound a matérias e podcasts.",
+      "fotos": [
+        "/assets/team/ALINE/magnific_ultra-realistic-cinematic_3019957374.png",
+        "/assets/team/ALINE/magnific_ultra-realistic-cinematic_3019990216.png",
+        "/assets/team/ALINE/magnific_ultra-realistic-cinematic_3020047838.png"
+      ]
+    },
+    {
+      "id": "marcio",
+      "ordem_exibicao": 2,
+      "nome_completo": "Márcio Borges",
+      "funcao": "Head",
+      "historico": "Comecei em 2009 no atendimento, participando da criação até migrar definitivamente para a redação. Desde 2025, estou como Head da AMP.",
+      "fotos": [
+        "/assets/team/M%C3%81RCIO/Ultra_realistic_cinematic_editorial_portrait_202605250237.jpeg",
+        "/assets/team/M%C3%81RCIO/Ultra_realistic_cinematic_editorial_portrait_202605250238.jpeg"
+      ]
+    },
+    {
+      "id": "gabriel",
+      "ordem_exibicao": 3,
+      "nome_completo": "Gabriel",
+      "funcao": "Diretor de Criação",
+      "historico": "Iniciei como Diretor de Arte na criação de campanhas e marcas. Hoje, como Diretor de Criação, lidero equipes, processos e ideias estratégicas.",
+      "fotos": [
+        "/assets/team/GABRIEL/Gabriel%20-%20Foto%201.png"
+      ]
+    },
+    {
+      "id": "sam",
+      "ordem_exibicao": 4,
+      "nome_completo": "Sam Held",
+      "funcao": "Diretor de Arte",
+      "historico": "Senior Content Designer e Art Director na AMP, desenvolvendo KVs, identidades visuais, criativos para redes sociais e soluções digitais.",
+      "fotos": [
+        "/assets/team/SAM/Sam%20-%20Foto%201.png",
+        "/assets/team/SAM/Sam%20-%20Foto%202.png",
+        "/assets/team/SAM/Sam%20-%20Foto%203.png"
+      ]
+    },
+    {
+      "id": "lucas",
+      "ordem_exibicao": 5,
+      "nome_completo": "Lucas Reis",
+      "funcao": "Diretor de Arte",
+      "historico": "Diretor de Arte Pleno na AMP, desenvolvendo KVs, identidades visuais, criativos para redes sociais e soluções digitais.",
+      "fotos": [
+        "/assets/team/LUCAS/Ultra_realistic_cinematic_editorial_portrait_202605250218.jpeg",
+        "/assets/team/LUCAS/Ultra_realistic_cinematic_editorial_portrait_202605250222.jpeg",
+        "/assets/team/LUCAS/Ultra_realistic_cinematic_editorial_portrait_202605250223.jpeg"
+      ]
+    },
+    {
+      "id": "engels",
+      "ordem_exibicao": 6,
+      "nome_completo": "Engels Belchior",
+      "funcao": "Redator",
+      "historico": "Redator Criativo e de Performance na publicidade, desenvolvendo campanhas, motes, roteiros para TV/redes sociais e ações promocionais.",
+      "fotos": [
+        "/assets/team/ENGELS/magnific_ultra-realistic-cinematic_2997052255.png",
+        "/assets/team/ENGELS/magnific__ultra-realistic-cinematic-editorial-portrait-photo__76263.png"
+      ]
+    },
+    {
+      "id": "emanuel",
+      "ordem_exibicao": 7,
+      "nome_completo": "Emanuel Lucas",
+      "funcao": "Social Media",
+      "historico": "Atuação em marketing digital com foco em varejo, planejamento estratégico, criação de conteúdo, edição e produção audiovisual.",
+      "fotos": [
+        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019865954.png",
+        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019881265.png",
+        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019920572.png"
+      ]
+    },
+    {
+      "id": "michelle",
+      "ordem_exibicao": 8,
+      "nome_completo": "Michelle Soares",
+      "funcao": "Social Media",
+      "historico": "Social Media com atuação em criação de conteúdo, produção audiovisual, edição de vídeos e estratégias para fortalecimento digital de marcas.",
+      "fotos": [
+        "/assets/team/MICHELLE/magnific_ultra-realistic-cinematic_3012761543.png",
+        "/assets/team/MICHELLE/magnific_ultra-realistic-cinematic_3019571363.png"
+      ]
+    },
+    {
+      "id": "antonio",
+      "ordem_exibicao": 9,
+      "nome_completo": "Antonio Costa",
+      "funcao": "Designer",
+      "historico": "Designer especializado em desenvolvimento de KVs para campanhas publicitárias e identidades visuais On/Off.",
+      "fotos": [
+        "/assets/team/ANT%C3%94NIO/magnific_ultra-realistic-cinematic_2991578687.png",
+        "/assets/team/ANT%C3%94NIO/magnific_ultra-realistic-cinematic_2991586153.png",
+        "/assets/team/ANT%C3%94NIO/magnific_ultra-realistic-cinematic_2991635191.png"
+      ]
+    },
+    {
+      "id": "murilo",
+      "ordem_exibicao": 10,
+      "nome_completo": "Murilo Chaves",
+      "funcao": "Atendimento Publicitário",
+      "historico": "De assistente a atendimento publicitário: cada etapa ampliou minha visão, fortaleceu conexões e impulsionou minha evolução.",
+      "fotos": [
+        "/assets/team/MURILO/magnific_ultra-realistic-cinematic_SOme5PvUb8.png",
+        "/assets/team/MURILO/magnific_ultra-realistic-cinematic_UyhdH5iwny.png"
+      ]
+    },
+    {
+      "id": "hannah",
+      "ordem_exibicao": 11,
+      "nome_completo": "Hannah Veras",
+      "funcao": "Atendimento Publicitário",
+      "historico": "Formada em Relações Públicas, atuo com comunicação ON, OFF e live marketing, unindo visão de cliente e agência para fortalecer marcas.",
+      "fotos": [
+        "/assets/team/HANNAH/Ultra_realistic_cinematic_editorial_portrait_202605250324.jpeg"
+      ]
+    },
+    {
+      "id": "jarson",
+      "ordem_exibicao": 12,
+      "nome_completo": "Jarson Larry",
+      "funcao": "Videomaker / Editor",
+      "historico": "Bagagem de 6 anos unindo design e audiovisual. Experiência em KVs, campanhas, fotografia, captação, edição e direção criativa.",
+      "fotos": [
+        "/assets/team/JARSON/Ultra_realistic_cinematic_editorial_portrait_202605250250.jpeg",
+        "/assets/team/JARSON/Ultra_realistic_cinematic_editorial_portrait_202605250252.jpeg"
+      ]
+    },
+    {
+      "id": "gibson",
+      "ordem_exibicao": 13,
+      "nome_completo": "Gibson Araújo",
+      "funcao": "CEO e fundador da AMP",
+      "historico": "Especialista em marketing e estratégia comercial, com atuação no setor de comunicação. Pós graduado pela UFAM e USP/ESALQ",
+      "fotos": [
+        "/assets/team/GIBSON/magnific_ultra-realistic-cinematic_EqniheHuuO.png",
+        "/assets/team/GIBSON/deixe_a_camisa_sem_amassados%2C_202605251316.jpeg"
+      ]
+    },
+    {
+      "id": "leonardo",
+      "ordem_exibicao": 14,
+      "nome_completo": "Leonardo Tayah",
+      "funcao": "Editor / Motion Designer",
+      "historico": "Com 10 anos de bagagem em design e audiovisual, assino a pós-produção. Entrego edição, VFX e animação técnica para campanhas de impacto.",
+      "fotos": [
+        "/assets/team/LEONARDO/Ultra_realistic_cinematic_editorial_portrait_202605250306.jpeg",
+        "/assets/team/LEONARDO/Ultra_realistic_cinematic_editorial_portrait_202605250309.jpeg"
+      ]
+    },
+    {
+      "id": "gustavo",
+      "ordem_exibicao": 15,
+      "nome_completo": "Gustavo Araújo",
+      "funcao": "Designer gráfico",
+      "historico": "Especializado em branding, direção de arte e campanhas criativas de alto impacto.",
+      "fotos": [
+        "/assets/team/GUSTAVO/Ultra_realistic_cinematic_editorial_portrait_202605250241.jpeg",
+        "/assets/team/GUSTAVO/Ultra_realistic_cinematic_editorial_portrait_202605250245.jpeg"
+      ]
+    },
+    {
+      "id": "hugo",
+      "ordem_exibicao": 16,
+      "nome_completo": "Hugo Figueiredo",
+      "funcao": "Digital Planner/Gestor de Tráfego",
+      "historico": "Especialista em conteúdo, estratégias digitais e dados. Desde 2023, migrei para o tráfego pago. Formado em Publicidade e Administração Pública.",
+      "fotos": [
+        "/assets/team/HUGO/magnific_ultra-realistic-cinematic_2991621192.png"
+      ]
+    },
+    {
+      "id": "giselly",
+      "ordem_exibicao": 17,
+      "nome_completo": "Gisely Araújo",
+      "funcao": "Atendimento Publicitário",
+      "historico": "Evolui de assistente a atendimento e planner. Hoje lidero grandes marcas com foco em relacionamento próximo e olhar de mercado.",
+      "fotos": [
+        "/assets/team/GISELLY/magnific_ultra-realistic-cinematic_2997296169.png",
+        "/assets/team/GISELLY/magnific_ultra-realistic-cinematic_2997360634.png",
+        "/assets/team/GISELLY/magnific_ultra-realistic-cinematic_2997374323.png"
+      ]
+    },
+    {
+      "id": "illana",
+      "ordem_exibicao": 18,
+      "nome_completo": "Ilana Retto",
+      "funcao": "Mídia Performance",
+      "historico": "Publicitária especialista em estratégias digitais de Tráfego Pago e em análise dados para performance, com experiência internacional.",
+      "fotos": [
+        "/assets/team/ILLANA/Ultra_realistic_cinematic_editorial_portrait_202605250220.jpeg",
+        "/assets/team/ILLANA/Ultra_realistic_cinematic_editorial_portrait_202605250234.jpeg"
+      ]
+    },
+    {
+      "id": "vinicius",
+      "ordem_exibicao": 19,
+      "nome_completo": "Vinícius Araújo",
+      "funcao": "Estagiário Administrativo",
+      "historico": "Construindo carreira profissional e desenvolvendo talento na AMP.",
+      "fotos": [
+        "/assets/team/VINICIUS/Ultra_realistic_cinematic_editorial_portrait_202605250248.jpeg",
+        "/assets/team/VINICIUS/Ultra_realistic_cinematic_editorial_portrait_202605250249.jpeg",
+        "/assets/team/VINICIUS/Ultra_realistic_cinematic_editorial_portrait_202605250248%20%281%29.jpeg"
+      ]
+    },
+    {
+      "id": "geise",
+      "ordem_exibicao": 20,
+      "nome_completo": "Geise Araújo",
+      "funcao": "Coordenadora Financeira e Mídia AMP",
+      "historico": "Organiza e otimiza processos para decisões mais eficientes da empresa e clientes, através de negociações com parceiros e veículos.",
+      "fotos": [
+        "/assets/team/GEISE/Ultra_realistic_cinematic_editorial_portrait_202605250228.jpeg",
+        "/assets/team/GEISE/Ultra_realistic_cinematic_editorial_portrait_202605250232.jpeg"
+      ]
+    },
+    {
+      "id": "leticia",
+      "ordem_exibicao": 21,
+      "nome_completo": "Letícia Milome",
+      "funcao": "Tráfego",
+      "historico": "Fotógrafa, videomaker e social media desenvolvendo estratégias criativas e conteúdos voltados para fortalecer a presença digital de marcas.",
+      "fotos": [
+        "/assets/team/LET%C3%8DCIA/Ultra_realistic_cinematic_editorial_portrait_202605250256.jpeg",
+        "/assets/team/LET%C3%8DCIA/Ultra_realistic_cinematic_editorial_portrait_202605250257.jpeg",
+        "/assets/team/LET%C3%8DCIA/Ultra_realistic_cinematic_editorial_portrait_202605250302.jpeg"
+      ]
+    }
+  ]
+}

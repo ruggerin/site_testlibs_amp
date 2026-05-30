@@ -1,216 +1,278 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-// ─── Dados dos clientes ────────────────────────────────────────────────────────
-// seed: string única → gera imagem consistente no picsum.photos
-const ROW_1 = [
-  { name: "COEMA",               seed: "coema01" },
-  { name: "Ramsons",             seed: "ramsons2" },
-  { name: "AmazonGás",           seed: "amazg003" },
-  { name: "Mispiato",            seed: "misp0044" },
-  { name: "Bebidas Monte",       seed: "montero5" },
-  { name: "Coca-Cola",           seed: "cocacol6" },
-  { name: "Heineken",            seed: "heinek07" },
-];
-
-const ROW_2 = [
-  { name: "Monster",             seed: "monst008" },
-  { name: "Leão",                seed: "leaotea9" },
-  { name: "Del Valle",           seed: "delvall0" },
-  { name: "JEN",                 seed: "jentxxx1" },
-  { name: "JOMIX",               seed: "jomixv12" },
-  { name: "Barotobé",            seed: "baro0013" },
-  { name: "Brahma",              seed: "brahma14" },
-];
-
-const ROW_3 = [
-  { name: "Amazon",              seed: "amazon15" },
-  { name: "MAGPEL",              seed: "magpel16" },
-  { name: "Shopping",            seed: "shopp017" },
-  { name: "Salomão",             seed: "salom018" },
-  { name: "Powertech",           seed: "powt0019" },
-  { name: "Caixa",               seed: "caixa020" },
-  { name: "Eletronorte",         seed: "elet0021" },
-];
-
-// ─── Config das fileiras ───────────────────────────────────────────────────────
-const ROWS = [
-  { data: ROW_1, duration: 28, direction: -1 }, // esq → dir
-  { data: ROW_2, duration: 40, direction:  1 }, // dir → esq (invertido)
-  { data: ROW_3, duration: 22, direction: -1 }, // esq → dir (mais rápido)
-];
-
-// ─── Subcomponente: card individual ───────────────────────────────────────────
-function LogoCard({
-  name,
-  seed,
-  theme = "dark",
-}: {
+export type PartnerLogo = {
   name: string;
-  seed: string;
-  theme?: "dark" | "light";
+  src: string;
+};
+
+/** Ordem Figma — 4 fileiras de referência. */
+const PARTNER_ROWS: PartnerLogo[][] = [
+  [
+    { name: "Supermercados COEMA", src: "/assets/parceiros/LogoSupermercadosCoema.png" },
+    { name: "Ramsons", src: "/assets/parceiros/LOGORAMSON%20NOVA.png" },
+    { name: "AmazonGás", src: "/assets/parceiros/AmazonGasLOGO.png" },
+    { name: "Missiato", src: "/assets/parceiros/MISSIATOMARCAS.png" },
+    {
+      name: "Bebidas Monte Roraima",
+      src: "/assets/parceiros/LogoBebidasMonteRoraimaAzul.png",
+    },
+  ],
+  [
+    { name: "Coca-Cola", src: "/assets/parceiros/cocacola.png" },
+    { name: "Heineken", src: "/assets/parceiros/heineken.png" },
+    { name: "Monster Energy", src: "/assets/parceiros/moster.png" },
+    { name: "Leão", src: "/assets/parceiros/leao.png" },
+    { name: "del Valle", src: "/assets/parceiros/delvalle.png" },
+  ],
+  [
+    { name: "JLN", src: "/assets/parceiros/LOGO_NOVA_JLN.png" },
+    { name: "JB MIX", src: "/assets/parceiros/LogotipoJBMIX01.png" },
+    { name: "Baratão da Construção", src: "/assets/parceiros/BarataoDaConstrucao.png" },
+    {
+      name: "Real Equipamentos",
+      src: "/assets/parceiros/Logotipo_Real%20Equipamento.png",
+    },
+    { name: "MAQPEL", src: "/assets/parceiros/MAQPEL_COLORIDA.png" },
+    { name: "Fecha com Tecidos", src: "/assets/parceiros/FCTLOGO.png" },
+  ],
+  [
+    { name: "Powertech", src: "/assets/parceiros/PowertechLogo.png" },
+    {
+      name: "Frios & Cia",
+      src: "/assets/parceiros/LogotipoFriosCiaTransparente01.png",
+    },
+    { name: "Friotrans Atacado", src: "/assets/parceiros/FriotransLogo.png" },
+    {
+      name: "Amazon Distribuidora",
+      src: "/assets/parceiros/AmazonDistribuidoraLogoTransparente.png",
+    },
+    { name: "Shopping São José", src: "/assets/parceiros/logossj.png" },
+    { name: "Salmo 91 Express", src: "/assets/parceiros/Salmo91Logo.png" },
+  ],
+];
+
+const ALL_PARTNERS = PARTNER_ROWS.flat();
+
+function buildRowTrack(rowIndex: number, loops = 10): PartnerLogo[] {
+  const step = Math.max(1, Math.floor(ALL_PARTNERS.length / 2));
+  const offset = rowIndex * step;
+  const out: PartnerLogo[] = [];
+  const total = ALL_PARTNERS.length * loops;
+  for (let i = 0; i < total; i++) {
+    out.push(ALL_PARTNERS[(i + offset) % ALL_PARTNERS.length]);
+  }
+  return out;
+}
+
+const MARQUEE_COPIES = 2;
+
+const MARQUEE_ROWS = [
+  { track: buildRowTrack(0), duration: 880, reverse: false },
+  { track: buildRowTrack(1), duration: 1040, reverse: true },
+];
+
+const GAP = "clamp(0.25rem,0.5vw,0.5rem)";
+
+function PartnerLogoSquare({
+  partner,
+  className = "",
+}: {
+  partner: PartnerLogo;
+  className?: string;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const light = theme === "light";
-
-  const handleEnter = () => {
-    gsap.to(cardRef.current, {
-      scale: 1.06,
-      borderColor: "rgba(255, 91, 0, 0.45)",
-      duration: 0.3,
-      ease: "power2.out",
-    });
-    // A imagem dentro vai para colorido via classe CSS,
-    // mas também animamos brightness via GSAP
-    gsap.to(cardRef.current!.querySelector("img"), {
-      filter: "grayscale(0%) brightness(1.15)",
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  };
-
-  const handleLeave = () => {
-    gsap.to(cardRef.current, {
-      scale: 1,
-      borderColor: light ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.07)",
-      duration: 0.4,
-      ease: "power2.inOut",
-    });
-    gsap.to(cardRef.current!.querySelector("img"), {
-      filter: "grayscale(100%) brightness(0.55)",
-      duration: 0.5,
-      ease: "power2.inOut",
-    });
-  };
-
   return (
     <div
-      ref={cardRef}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      className={`relative flex-shrink-0 w-[180px] h-[80px] overflow-hidden border cursor-pointer ${
-        light ? "border-black/[0.08]" : "border-white/[0.07]"
-      }`}
-      style={{ willChange: "transform" }}
+      className={`relative aspect-square shrink-0 overflow-hidden bg-white transition-transform duration-300 hover:z-10 hover:scale-[1.04] ${className}`}
     >
-      {/* Imagem placeholder (picsum com seed) */}
       <Image
-        src={`https://picsum.photos/seed/${seed}/360/160`}
-        alt={name}
-        fill
-        sizes="180px"
-        className="object-cover"
-        style={{ filter: "grayscale(100%) brightness(0.55)" }}
-        unoptimized
-      />
-
-      {/* Overlay + nome da marca */}
-      <div
-        className={`absolute inset-0 flex items-center justify-center ${
-          light ? "bg-[var(--cream)]/85" : "bg-[#181818]/70"
-        }`}
-      >
-        <span
-          className={`text-xs font-black uppercase tracking-widest text-center px-2 leading-tight ${
-            light ? "text-[var(--ink)]/80" : "text-white/80"
-          }`}
-          style={{ fontFamily: "var(--font-darker-grotesque)" }}
-        >
-          {name}
-        </span>
-      </div>
-
-      {/* Borda laranja no bottom — aparece no hover via GSAP */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--orange)]"
-        style={{ transform: "scaleX(0)", transformOrigin: "left" }}
-        data-underline
+        src={partner.src}
+        alt={partner.name}
+        width={400}
+        height={400}
+        className="h-full w-full object-contain p-[clamp(8px,12%,18px)]"
       />
     </div>
   );
 }
 
-// ─── Componente principal ─────────────────────────────────────────────────────
-export default function ClientsMarquee({ theme = "dark" }: { theme?: "dark" | "light" }) {
-  const sectionRef = useRef<HTMLDivElement>(null);
+function MarqueeRow({
+  track,
+  squareClass,
+  duration,
+  reverse,
+}: {
+  track: PartnerLogo[];
+  squareClass: string;
+  duration: number;
+  reverse: boolean;
+}) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useGSAP(
     () => {
-      const tracks = gsap.utils.toArray<HTMLElement>(".marquee-track");
+      const el = trackRef.current;
+      if (!el) return;
 
-      // Array para guardar os tweens de cada fileira
-      const tweens: gsap.core.Tween[] = [];
+      let debounceId = 0;
 
-      tracks.forEach((track, i) => {
-        const { duration, direction } = ROWS[i];
+      const run = () => {
+        const half = el.scrollWidth / MARQUEE_COPIES;
+        if (half < 1) return;
 
-        // xPercent -50 ou +50 (direção alternada)
-        // O track tem as logos DUPLICADAS no DOM, então -50% = exatamente 1 set
-        const tween = gsap.to(track, {
-          xPercent: -50 * direction,
+        tweenRef.current?.kill();
+        gsap.set(el, { x: reverse ? -half : 0 });
+
+        tweenRef.current = gsap.to(el, {
+          x: reverse ? 0 : -half,
           duration,
           ease: "none",
           repeat: -1,
         });
+      };
 
-        tweens.push(tween);
-      });
+      const scheduleRun = () => {
+        window.clearTimeout(debounceId);
+        debounceId = window.setTimeout(run, 80);
+      };
 
-      // ── Hover na SEÇÃO inteira: desacelera TODOS ao mesmo tempo ───────────
-      const section = sectionRef.current!;
+      scheduleRun();
+      const ro = new ResizeObserver(scheduleRun);
+      ro.observe(el);
 
-      section.addEventListener("mouseenter", () => {
-        tweens.forEach((tw) =>
-          gsap.to(tw, { timeScale: 0.15, duration: 0.6, ease: "power2.out" })
-        );
-      });
+      return () => {
+        ro.disconnect();
+        window.clearTimeout(debounceId);
+        tweenRef.current?.kill();
+      };
+    },
+    { scope: rowRef, dependencies: [duration, reverse] }
+  );
 
-      section.addEventListener("mouseleave", () => {
-        tweens.forEach((tw) =>
-          gsap.to(tw, { timeScale: 1, duration: 1.0, ease: "power2.inOut" })
-        );
-      });
+  return (
+    <div ref={rowRef} className="partners-marquee-row min-h-0 flex-1 overflow-hidden">
+      <div
+        ref={trackRef}
+        data-partners-track
+        className="flex w-max will-change-transform"
+        style={{ gap: GAP }}
+      >
+        {Array.from({ length: MARQUEE_COPIES }, (_, copy) => (
+          <div
+            key={copy}
+            className="flex shrink-0 items-stretch"
+            style={{ gap: GAP }}
+            aria-hidden={copy > 0 ? true : undefined}
+          >
+            {track.map((partner, i) => (
+              <PartnerLogoSquare
+                key={`${copy}-${partner.src}-${i}`}
+                partner={partner}
+                className={squareClass}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function ClientsMarquee({
+  fill = false,
+  compact = false,
+}: {
+  theme?: "dark" | "light";
+  compact?: boolean;
+  fill?: boolean;
+}) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const tweensRef = useRef<gsap.core.Tween[]>([]);
+
+  const squareClass = fill
+    ? "size-[clamp(10rem,25svh,21rem)]"
+    : compact
+      ? "size-[clamp(9rem,32vw,13rem)]"
+      : "size-[clamp(10rem,28vw,14rem)]";
+
+  const rows = useMemo(() => MARQUEE_ROWS, []);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      const collectTweens = () => {
+        tweensRef.current = gsap.utils
+          .toArray<HTMLElement>("[data-partners-track]", section)
+          .map((el) => gsap.getTweensOf(el)[0])
+          .filter((t): t is gsap.core.Tween => Boolean(t));
+      };
+
+      collectTweens();
+      const timer = window.setTimeout(collectTweens, 400);
+
+      const pause = () => {
+        collectTweens();
+        tweensRef.current.forEach((tw) => tw.pause());
+      };
+
+      const resume = () => {
+        collectTweens();
+        tweensRef.current.forEach((tw) => tw.resume());
+      };
+
+      const onPointerDown = (e: PointerEvent) => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        pause();
+      };
+
+      const onPointerUp = () => {
+        resume();
+      };
+
+      section.addEventListener("pointerdown", onPointerDown);
+      window.addEventListener("pointerup", onPointerUp);
+      window.addEventListener("pointercancel", onPointerUp);
+
+      return () => {
+        window.clearTimeout(timer);
+        section.removeEventListener("pointerdown", onPointerDown);
+        window.removeEventListener("pointerup", onPointerUp);
+        window.removeEventListener("pointercancel", onPointerUp);
+      };
     },
     { scope: sectionRef }
   );
 
   return (
-    <div ref={sectionRef} className="overflow-hidden space-y-3 py-2">
-      {ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="overflow-hidden">
-          {/*
-            O track tem 2 cópias de cada fileira.
-            GSAP anima xPercent: -50 → seamless loop.
-            Rows ímpares começam deslocadas pra eliminar gap visual.
-          */}
-          <div
-            className="marquee-track flex gap-3"
-            style={{
-              width: "max-content",
-              // fileiras de direção invertida: começa em -50% pra não pular no início
-              transform: row.direction === 1 ? "translateX(-50%)" : "translateX(0%)",
-            }}
-          >
-            {/* Set 1 */}
-            {row.data.map((client) => (
-              <LogoCard key={client.seed} name={client.name} seed={client.seed} theme={theme} />
-            ))}
-            {/* Set 2 — cópia exata para loop seamless */}
-            {row.data.map((client) => (
-              <LogoCard
-                key={`dup-${client.seed}`}
-                name={client.name}
-                seed={client.seed}
-                theme={theme}
-              />
-            ))}
-          </div>
-        </div>
+    <div
+      ref={sectionRef}
+      className={
+        fill
+          ? "flex h-full min-h-0 w-full cursor-grab flex-col justify-end gap-[clamp(0.2rem,0.4svh,0.4rem)] overflow-hidden active:cursor-grabbing"
+          : compact
+            ? "cursor-grab space-y-1.5 overflow-hidden py-1 active:cursor-grabbing"
+            : "cursor-grab space-y-2 overflow-hidden py-2 active:cursor-grabbing"
+      }
+    >
+      {rows.map((row, rowIndex) => (
+        <MarqueeRow
+          key={rowIndex}
+          track={row.track}
+          squareClass={squareClass}
+          duration={row.duration}
+          reverse={row.reverse}
+        />
       ))}
     </div>
   );
 }
+
+export { PARTNER_ROWS };

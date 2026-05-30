@@ -8,11 +8,30 @@ import { useGSAP } from "@gsap/react";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import ClientsMarquee from "@/components/ClientsMarquee";
-import TeamSection from "@/components/TeamSection";
+import TeamSection, { TEAM_MEMBERS } from "@/components/TeamSection";
 import PhotoDriftStrip from "@/components/PhotoDriftStrip";
-import ZoomImage from "@/components/ZoomImage";
-
+import EstamosAquiSection from "@/components/EstamosAquiSection";
+import PageFooter from "@/components/PageFooter";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+/** Manifesto — bloco 1: foto 60%; bloco 2: 50/50 (desproporção vs. coluna de cima). */
+const MANIFESTO_GRID_PHOTO = "md:grid-cols-[minmax(0,60%)_minmax(0,1fr)]";
+const MANIFESTO_GRID_TEXT = "md:grid-cols-2";
+
+/** Hero `head` — Figma node 1:21 (grupo 2053×1417). */
+const HERO_HEAD_FIGMA = { w: 2053, h: 1417 } as const;
+const HERO_SER360_FIGMA = {
+  box: { x: 247.08, y: 444.48, w: 457, h: 127.66 },
+  marker: { x: 620.72, y: 371.37, w: 83.37, h: 15.09 },
+} as const;
+/** Mesma escala das duas chamadas do hero (Ser 360 + É fazer). */
+const HERO_TAGLINE_FONT = "clamp(0.72rem, 1.76vw, 2.24rem)";
+const HERO_SER360_RIGHT_VW =
+  ((HERO_SER360_FIGMA.box.x + HERO_SER360_FIGMA.box.w) / HERO_HEAD_FIGMA.w) * 100;
+const HERO_SER360_WIDTH_VW = (HERO_SER360_FIGMA.box.w / HERO_HEAD_FIGMA.w) * 100;
+const HERO_SER360_TOP_PCT = (HERO_SER360_FIGMA.box.y / HERO_HEAD_FIGMA.h) * 100;
+const HERO_SER360_MARKER_LEFT_PCT =
+  ((HERO_SER360_FIGMA.marker.x - HERO_SER360_FIGMA.box.x) / HERO_SER360_FIGMA.box.w) * 100;
 
 /** Largura de arte / protótipo alinhada à navbar (px-8 md:px-16). */
 const FRAME = "max-w-[1440px] mx-auto w-full";
@@ -24,8 +43,6 @@ const SECTION_SCREEN =
 /** Imagem do edifício / fachada AMP (public). */
 const MANIFESTO_BUILDING_SRC =
   "/freepik_aplique-efeitos-fotografi_2853326270%201.png";
-
-const STATES = ["Acre", "Amapá", "Amazonas", "Pará", "Rondônia", "Roraima"];
 
 const PHOTOS = [
   { src: "/assets/ambiente/01.jpeg", label: "Ambiente AMP" },
@@ -60,8 +77,29 @@ const QUOTE_CRIATIVO =
 const BRIDGE_HARMONIA =
   "Eles nascem da harmonia entre estratégia, criatividade e análise.";
 
+/**
+ * Navbar fixa ocupa ~80px no topo — seções não-hero precisam desse respiro.
+ * Respiro abaixo do título e entre copy e logos (entram no cálculo do título).
+ */
+const NAV_OFFSET = "clamp(5rem, 9svh, 6rem)";
+const CLIENTS_SECTION_PAD_TOP = NAV_OFFSET;
+const CLIENTS_TITLE_GAP = "clamp(2rem, 4.5svh, 3.5rem)";
+const CLIENTS_COPY_GAP = "clamp(2rem, 4svh, 3rem)";
+const CLIENTS_COPY_FONT = "clamp(1.9rem, min(2.9vw, 3.1svh), 3.5rem)";
+/** Largura total da viewport — título pode usar mais área horizontal. */
+const CLIENTS_TITLE_FONT =
+  `min(13rem, 13.2vw, 32svh, calc((100svh - ${NAV_OFFSET} - 1svh - clamp(2rem, 4.5svh, 3.5rem) - clamp(5rem, 18svh, 10rem) - clamp(2rem, 4svh, 3rem) - clamp(10rem, 22svh, 13rem)) / 1.28))`;
+const CLIENTS_TITLE_STYLE = {
+  fontFamily: "var(--font-darker-grotesque)",
+  fontSize: CLIENTS_TITLE_FONT,
+  lineHeight: 0.72,
+  letterSpacing: "-0.05em",
+} as const;
+
 const CLIENTS_COPY =
   "Grandes nomes não aceitam amadorismo. Se elas confiam a estratégia de crescimento delas à AMP, talvez você devesse se perguntar por que a sua marca ainda não está aqui.";
+
+const gibson = TEAM_MEMBERS.find((m) => m.id === "gibson");
 
 export default function QuemSomos() {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -163,12 +201,15 @@ export default function QuemSomos() {
     // HERO — anima no load (sem ScrollTrigger)
     // ─────────────────────────────────────────────────────────────────────────
     gsap.timeline({ defaults: { ease: "power3.out" } })
-      .fromTo(".hero-tag",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7 })
+      .fromTo(".hero-tag-marker",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: "power2.inOut" })
+      .fromTo(".hero-tag-line",
+        { y: "108%" },
+        { y: "0%", duration: 1.5, stagger: 0.28 }, "<0.18")
       .fromTo(".hero-quem-wrap",
         { x: -36 },
-        { x: 0, duration: 1.1 }, "-=0.15")
+        { x: 0, duration: 1.1 }, "-=1.4")
       .fromTo(".hero-quem",
         { scale: 1.24, opacity: 0, filter: "blur(16px)", transformOrigin: "left center" },
         { scale: 1,    opacity: 1, filter: "blur(0px)",  duration: 1.4 }, "-=0.2")
@@ -181,9 +222,12 @@ export default function QuemSomos() {
       .fromTo(".hero-somos",
         { scale: 1.24, opacity: 0, filter: "blur(16px)", transformOrigin: "left center" },
         { scale: 1,    opacity: 1, filter: "blur(0px)",  duration: 1.4 }, "-=1.2")
-      .fromTo(".hero-tagline",
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, "-=0.8");
+      .fromTo(".hero-tagline-marker",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: "power2.inOut" }, "-=0.8")
+      .fromTo(".hero-tagline-line",
+        { y: "108%" },
+        { y: "0%", duration: 1.5, stagger: 0.28 }, "<0.18");
 
     // ─────────────────────────────────────────────────────────────────────────
     // PARALAXE no hero — foto desce levemente ao scrollar
@@ -352,28 +396,6 @@ export default function QuemSomos() {
       }
     );
 
-    // PHOTO DRIFT — Horizontal Drift no scroll (demo #drift)
-    gsap.to(".photo-drift-l", {
-      xPercent: -22,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".photo-drift-section",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.8,
-      },
-    });
-    gsap.to(".photo-drift-r", {
-      xPercent: 22,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".photo-drift-section",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.8,
-      },
-    });
-
     // ─────────────────────────────────────────────────────────────────────────
     // TEAM LIST — stagger com scrub
     // ─────────────────────────────────────────────────────────────────────────
@@ -408,68 +430,62 @@ export default function QuemSomos() {
     );
 
     // ─────────────────────────────────────────────────────────────────────────
-    // ESTAMOS AQUI — mapa entra com scale + rotate leve
+    // ESTAMOS AQUI — play once ao entrar (scrub conflita com section-snap)
     // ─────────────────────────────────────────────────────────────────────────
-    gsap.fromTo(".map-svg",
-      { scale: 0.8, opacity: 0, rotation: -4, transformOrigin: "center center" },
-      {
-        scale: 1, opacity: 1, rotation: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".map-svg",
-          start: "top 90%",
-          end: "top 40%",
-          scrub: 1.2,
-        },
-      }
-    );
-
-    // estados — stagger scrub
-    gsap.fromTo(".state-item",
-      { opacity: 0, x: -20 },
-      {
-        opacity: 1, x: 0,
-        ease: "none",
-        stagger: 0.04,
-        scrollTrigger: {
-          trigger: ".states-list",
-          start: "top 88%",
-          end: "top 50%",
-          scrub: 0.6,
-        },
-      }
-    );
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: ".estamos-aqui",
+        start: "top bottom",
+        toggleActions: "play none none none",
+      },
+      defaults: { ease: "power3.out" },
+    })
+      .fromTo(".estamos-title",
+        { opacity: 0, y: 60, filter: "blur(10px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.0 }
+      )
+      .fromTo(".estamos-text",
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.9 },
+        "<0.25"
+      )
+      .fromTo(".state-item",
+        { opacity: 0, x: -24 },
+        { opacity: 1, x: 0, duration: 0.7, stagger: 0.07 },
+        "<0.2"
+      )
+      .fromTo(".map-svg",
+        { scale: 0.88, opacity: 0, rotation: -3, transformOrigin: "center center" },
+        { scale: 1, opacity: 1, rotation: 0, duration: 1.1, ease: "power2.out" },
+        "<0.15"
+      );
 
     // ─────────────────────────────────────────────────────────────────────────
-    // EM EXCELENTE COMPANHIA — título desliza horizontalmente conforme scroll
+    // EM EXCELENTE COMPANHIA — slide horizontal + blur
+    // once:true garante disparo mesmo com section-snap (seção pula direto pro topo)
     // ─────────────────────────────────────────────────────────────────────────
-    gsap.fromTo(".clients-title",
-      { x: 80, opacity: 0 },
-      {
-        x: 0, opacity: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".clients-section",
-          start: "top 90%",
-          end: "top 40%",
-          scrub: 1,
-        },
-      }
-    );
-
-    gsap.fromTo(".clients-sub",
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1, y: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".clients-sub",
-          start: "top 90%",
-          end: "top 60%",
-          scrub: 0.8,
-        },
-      }
-    );
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: ".clients-section",
+        start: "top 40%",
+        once: true,
+      },
+      defaults: { ease: "power3.out" },
+    })
+      .fromTo(".clients-title-1",
+        { x: 140, opacity: 0, filter: "blur(12px)" },
+        { x: 0, opacity: 1, filter: "blur(0px)", duration: 1.2 }
+      )
+      .fromTo(".clients-title-2",
+        { x: -140, opacity: 0, filter: "blur(12px)" },
+        { x: 0, opacity: 1, filter: "blur(0px)", duration: 1.2 },
+        "<0.22"
+      )
+      .fromTo(".clients-sub",
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1.0 },
+        "<0.35"
+      );
 
   }, { scope: pageRef });
 
@@ -497,20 +513,105 @@ export default function QuemSomos() {
             }}
           />
 
-          {/* SOMOS — esquerda, centro-baixo */}
+          {/* SOMOS — esquerda, sangra pela borda esquerda (espelho do QUEM que sangra pela direita) */}
           <div
             className="hero-somos-wrap pointer-events-none absolute left-0 z-[3] flex justify-start will-change-transform"
-            style={{ top: "40%" }}
+            style={{ top: "31%" }}
           >
+            {/* width=0.65em ≈ largura do glifo "O/M" em Darker Grotesque Black; height=1.15em = retrato esticado acima/abaixo das letras */}
             <h1
+              aria-label="SOMOS"
               className="hero-somos text-[var(--orange)] font-black uppercase leading-[0.78] tracking-[-0.04em] whitespace-nowrap"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
                 fontSize: "clamp(3rem, 25vw, 40rem)",
-                transform: "translateX(1vw)",
+                transform: "translateX(-2vw)",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              SOMOS
+              <span aria-hidden>SOM</span>
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-block",
+                  width: "0.65em",
+                  height: "calc(1em * 0.92)",
+                  position: "relative",
+                  flexShrink: 0,
+                  overflow: "visible",
+                  marginTop: "0.195em",
+                }}
+              >
+                {/* container de clip separado para não cortar o crédito */}
+                <span
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    overflow: "hidden",
+                    borderRadius: "clamp(3px, 0.25vw, 6px)",
+                    boxShadow: "0 0 60px rgba(255,77,0,0.6), 0 0 130px rgba(255,77,0,0.25)",
+                    display: "block",
+                    marginLeft: "8px"
+                  }}
+                >
+                  <Image
+                    src={gibson?.fotos[0] ?? ""}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: "center 45%" }}
+                    sizes="(max-width: 768px) 25vw, 25vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/40 via-transparent to-transparent" />
+                </span>
+
+                {/* Crédito ancorado à direita da imagem inline */}
+                {/* textTransform/letterSpacing/fontWeight resetam a herança do h1 */}
+                <div
+                  className="pointer-events-auto absolute hidden sm:flex flex-row items-center gap-3"
+                  style={{
+                    top: "9%",
+                    left: "100%",
+                    paddingLeft: "clamp(8px, 0.8vw, 20px)",
+                    transform: "translateY(-50%)",
+                    textTransform: "none",
+                    letterSpacing: "normal",
+                    fontWeight: "normal",
+                  }}
+                >
+                  <div
+                    aria-hidden
+                    style={{
+                      height: "15px",
+                      width: "clamp(16px, 15vw, 32px)",
+                      background: "var(--orange)",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div className="flex flex-col">
+                    <p
+                      className="font-bold leading-tight text-white whitespace-nowrap"
+                      style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
+                    >
+                      {gibson?.nome_completo.toUpperCase()}
+                    </p>
+                    <p
+                      className="mt-1 font-semibold whitespace-nowrap"
+                      style={{
+                        fontFamily: "var(--font-inter)",
+                        fontSize: "clamp(8px, 0.7vw, 11px)",
+                        color: "var(--orange)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.22em",
+                      }}
+                    >
+                      {gibson?.funcao}
+                    </p>
+                  </div>
+                </div>
+              </span>
+              <span aria-hidden>S</span>
             </h1>
           </div>
 
@@ -524,81 +625,50 @@ export default function QuemSomos() {
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
                 fontSize: "clamp(3rem, 27vw, 44rem)",
-                transform: "translateX(-2vw)",
+                transform: "translateX(2vw)",
               }}
             >
               QUEM
             </h1>
           </div>
 
-          {/* Foto + Crédito — grupo único sobre o "O" do SOMOS */}
-          <div
-            className="hero-photo absolute z-[11] will-change-transform -translate-x-1/2 -translate-y-1/2"
-            style={{ left: "52.5%", top: "59.8%" }}
-          >
-            {/* Foto */}
-            <div
-              className="relative w-[min(47vw,176px)] sm:w-[min(19vw,250px)] md:w-[min(17vw,270px)] lg:w-[min(15vw,291px)]"
-            >
-              <div className="relative overflow-hidden rounded-sm
-                              shadow-[0_0_60px_rgba(255,77,0,0.6),0_0_130px_rgba(255,77,0,0.25),0_0_260px_rgba(255,77,0,0.1)]
-                              ring-1 ring-white/20">
-                <ZoomImage
-                  src="/diretor_img.png"
-                  alt="Jalim Ra'Banis — diretor de criação"
-                  className="w-full aspect-[3/4]"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/50 via-transparent to-transparent" />
-                </ZoomImage>
-                <span
-                  aria-hidden
-                  className="absolute bottom-3 right-3 text-white/70 select-none"
-                  style={{ fontSize: "clamp(10px, 1.2vw, 18px)" }}
-                >✦</span>
-              </div>
 
-              {/* Crédito — ancorado ao centro-direito da foto */}
+          {/* SER 360 — Figma 1:24: caixa x247 w457, texto à direita; borda direita ~34.3vw */}
+          <div
+            className="hero-tag-block absolute z-20"
+            style={{
+              left: `max(1rem, calc(${HERO_SER360_RIGHT_VW}vw - min(${HERO_SER360_WIDTH_VW}vw, 28.5rem)))`,
+              top: `${HERO_SER360_TOP_PCT}%`,
+              width: `min(${HERO_SER360_WIDTH_VW}vw, 28.5rem)`,
+            }}
+          >
+            <div className="relative">
               <div
-                className="hero-director-credit pointer-events-none absolute top-1/10 left-full -translate-y-1/2
-                           hidden sm:flex flex-row items-center gap-3 pl-4 md:pl-0"
+                className="hero-tag-marker absolute bg-[var(--orange)]"
+                aria-hidden
+                style={{
+                  left: `${HERO_SER360_MARKER_LEFT_PCT}%`,
+                  bottom: "calc(100% + clamp(0.45rem, 1.1em, 1.25rem))",
+                  width: `${(HERO_SER360_FIGMA.marker.w / HERO_SER360_FIGMA.box.w) * 100}%`,
+                  height: "clamp(10px, 0.78vw, 15px)",
+                  transformOrigin: "left center",
+                }}
+              />
+              <p
+                className="hero-tag text-right font-bold uppercase leading-[1.1] tracking-[0.06em] text-white"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  fontSize: HERO_TAGLINE_FONT,
+                }}
               >
-                <div className="h-[15px] w-10 shrink-0 bg-[var(--orange)] md:w-25" aria-hidden />
-                <div className="flex flex-col">
-                  <p
-                    className="font-bold leading-tight text-white whitespace-nowrap"
-                    style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
-                  >
-                    Jalim Ra&apos;Banis
-                  </p>
-                  <p
-                    className="mt-1 font-semibold uppercase tracking-[0.22em] text-[var(--orange)] whitespace-nowrap"
-                    style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(8px, 0.7vw, 11px)" }}
-                  >
-                    Diretor de criação
-                  </p>
-                </div>
-              </div>
+                <span style={{ display: "block", overflow: "hidden" }}>
+                  <span className="hero-tag-line" style={{ display: "inline-block" }}>Ser 360 não é</span>
+                </span>
+                <span style={{ display: "block", overflow: "hidden" }}>
+                  <span className="hero-tag-line" style={{ display: "inline-block" }}>oferecer tudo.</span>
+                </span>
+              </p>
             </div>
-          </div>
-
-          {/* SER 360 — esquerda, entre QUEM e SOMOS */}
-          <div
-            className="hero-tag-block absolute left-4 z-20
-                       top-[22%]
-                       sm:left-8 sm:top-[24%]
-                       md:left-12 lg:left-16"
-          >
-            <div className="ml-auto mb-2.5 h-[3px] w-10 bg-[var(--orange)] sm:w-14" aria-hidden />
-            <p
-              className="hero-tag text-right font-bold uppercase leading-[1.15] tracking-[0.1em] text-white"
-              style={{
-                fontFamily: "var(--font-inter)",
-                fontSize: "clamp(0.72rem, 1.76vw, 2.24rem)",
-                maxWidth: "min(48vw, 22rem)",
-              }}
-            >
-              Ser 360 não é<br />oferecer tudo.
-            </p>
           </div>
 
           {/* É FAZER — abaixo do SOMOS, direita */}
@@ -606,17 +676,26 @@ export default function QuemSomos() {
             className="absolute z-20 flex flex-col items-end gap-3"
             style={{ right: "clamp(80px, 25vw, 140px)", bottom: "4%" }}
           >
-            <div className="self-start h-[3px] w-12 bg-[var(--orange)] sm:w-16" aria-hidden />
+            <div
+              className="hero-tagline-marker self-start h-[14px] w-10 bg-[var(--orange)]"
+              aria-hidden
+              style={{ transformOrigin: "left center" }}
+            />
             <p
-              className="hero-tagline  font-bold uppercase text-white"
+              className="hero-tagline font-bold uppercase text-white"
               style={{
                 fontFamily: "var(--font-inter)",
-                fontSize: "clamp(0.72rem, 1.76vw, 2.24rem)",
+                fontSize: HERO_TAGLINE_FONT,
                 letterSpacing: "0.06em",
                 lineHeight: 1.1,
               }}
             >
-              É fazer tudo<br />funcionar junto.
+              <span style={{ display: "block", overflow: "hidden" }}>
+                <span className="hero-tagline-line" style={{ display: "inline-block" }}>É fazer tudo</span>
+              </span>
+              <span style={{ display: "block", overflow: "hidden" }}>
+                <span className="hero-tagline-line" style={{ display: "inline-block" }}>funcionar junto.</span>
+              </span>
             </p>
           </div>
         </section>
@@ -631,23 +710,23 @@ export default function QuemSomos() {
           style={{
             position: "relative",
             boxShadow: "0 -32px 80px rgba(0,0,0,0.7)",
-            paddingTop: "clamp(1.5rem, 4svh, 5rem)",
+            paddingTop: NAV_OFFSET,
             paddingBottom: "clamp(1.5rem, 4svh, 5rem)",
           }}
         >
           {/* ── Bloco 1: foto + quote da década + intro ── */}
           <div
-            className="grid w-full max-w-none grid-cols-1 items-center gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0"
+            className={`grid w-full max-w-none grid-cols-1 items-center gap-0 md:items-stretch md:gap-0 ${MANIFESTO_GRID_PHOTO}`}
             style={{ marginBottom: "clamp(2rem, 6svh, 5rem)" }}
           >
-            <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] lg:min-h-[min(50svh,460px)]">
+            <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] md:min-h-[min(50svh,460px)]">
               <div className="manifesto-building-inner absolute inset-0 will-change-transform">
                 <Image
                   src={MANIFESTO_BUILDING_SRC}
                   alt="Fachada AMP ao entardecer"
                   fill
                   className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, 60vw"
                   priority
                 />
               </div>
@@ -686,7 +765,7 @@ export default function QuemSomos() {
 
           {/* ── Bloco 2: quote criativo + texto longo (citação no topo do bloco) ── */}
           <div
-            className="manifesto-block-2 grid w-full max-w-none grid-cols-1 items-start gap-0 lg:grid-cols-2 lg:items-start lg:gap-0"
+            className={`manifesto-block-2 grid w-full max-w-none grid-cols-1 items-start gap-0 md:items-start md:gap-0 ${MANIFESTO_GRID_TEXT}`}
           >
             <div className="manifesto-marker-wrap manifesto-quote-criativo-wrap mt-[25px] flex w-full items-start justify-start overflow-hidden pb-8 sm:pb-10 lg:pb-12">
               <p
@@ -714,146 +793,74 @@ export default function QuemSomos() {
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            PHOTO DRIFT — faixas horizontais, sangra na tela, drift no scroll
+            PHOTO DRIFT — loop infinito, sangra na tela, pausa ao clicar
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
-          className={`photo-drift-section ${SECTION_SCREEN} flex flex-col justify-center overflow-x-clip overflow-y-visible py-8 sm:py-10`}
+          className={`photo-drift-section ${SECTION_SCREEN} flex flex-col justify-center overflow-x-clip overflow-y-visible pb-8 pt-20 sm:pb-10 sm:pt-24`}
         >
-          <div className="-my-16 w-full sm:-my-20 md:-my-28 lg:-my-32">
-            <div className="relative left-1/2 w-[118vw] max-w-none -translate-x-1/2 px-0">
-              <PhotoDriftStrip photos={PHOTOS} />
-            </div>
+          <div className="-my-12 w-[100vw] max-w-none overflow-x-clip sm:-my-16 md:-my-20">
+            <PhotoDriftStrip photos={PHOTOS} />
           </div>
         </section>
-        <TeamSection frameClassName={FRAME} />
+        <TeamSection />
 
-        {/* ══════════════════════════════════════════════════════════════════
-            ESTAMOS AQUI
-        ══════════════════════════════════════════════════════════════════ */}
-        <section data-section className={`${SECTION_SCREEN} flex flex-col justify-center bg-[#232323]`}
-                 style={{ paddingTop: "clamp(1.5rem, 4svh, 5rem)", paddingBottom: "clamp(1.5rem, 4svh, 5rem)" }}>
-          <div className={`${FRAME} grid items-center gap-12 px-5 sm:px-8 md:grid-cols-2 md:gap-20 md:px-16`}>
-            <div>
-              <h2 className="reveal-title text-[var(--cream)] font-black uppercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, min(10vw, 14svh), 130px)" }}>
-                ESTAMOS
-              </h2>
-              <h2 className="reveal-title text-[var(--cream)] font-black uppercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(36px, min(10vw, 14svh), 130px)", marginBottom: "clamp(0.5rem, 1.5svh, 2rem)" }}>
-                AQUI
-              </h2>
-
-              <p className="reveal-text text-[var(--cream)]/85 font-medium leading-[2.2] text-[clamp(14px,1.45vw,28px)] max-w-xl"
-                 style={{ marginBottom: "clamp(0.75rem, 2svh, 2.5rem)", fontFamily: "var(--font-inter)" }}>
-                Presença estratégica com alcance nacional.
-                <br />
-                <br />
-                Para quem pensa grande, o Brasil é logo ali e, com a AMP, o destino é sempre o topo.
-              </p>
-
-              <ul className="states-list space-y-0 lowercase">
-                {STATES.map((s) => (
-                  <li key={s}
-                      className="state-item flex items-center gap-3 border-b border-white/[0.06]"
-                      style={{ paddingTop: "clamp(4px, 0.9svh, 10px)", paddingBottom: "clamp(4px, 0.9svh, 10px)" }}>
-                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s === "Amazonas" ? "bg-[var(--orange)]" : "bg-white/18"}`} />
-                    <span className={`text-[clamp(13px,min(1.4vw,2svh),26px)] font-medium ${s === "Amazonas" ? "text-[var(--orange)]" : "text-[var(--cream)]/55"}`}
-                          style={{ fontFamily: "var(--font-inter)" }}>
-                      {s.toLowerCase()}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Mapa */}
-            <div className="flex items-center justify-center mt-8 md:mt-0">
-              <svg viewBox="0 0 400 450" className="map-svg w-full max-w-[320px] md:max-w-md text-[var(--orange)]">
-                <path d="M200 30 L320 80 L370 160 L360 240 L310 310 L260 370 L200 410 L140 370 L90 310 L40 240 L30 160 L80 80 Z"
-                      fill="none" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
-                <path d="M120 100 L200 90 L230 140 L220 200 L160 210 L110 170 Z"
-                      fill="currentColor" fillOpacity="0.9" />
-                <text x="165" y="158" textAnchor="middle" fill="#232332" fontSize="52" fontWeight="900"
-                      style={{ fontFamily: "var(--font-darker-grotesque)" }}>am</text>
-                {[
-                  "M200 90 L270 80 L300 120 L280 160 L230 140 Z",
-                  "M110 170 L160 210 L150 270 L100 280 L70 230 L80 180 Z",
-                  "M220 200 L280 190 L300 250 L260 290 L210 270 L200 230 Z",
-                  "M110 100 L120 100 L110 170 L80 180 L60 140 L80 100 Z",
-                  "M150 60 L200 30 L200 90 L120 100 L110 100 L120 60 Z",
-                ].map((d, i) => (
-                  <path key={i} d={d} fill="white" fillOpacity="0.04"
-                        stroke="white" strokeWidth="0.5" strokeOpacity="0.12" />
-                ))}
-              </svg>
-            </div>
-          </div>
-        </section>
+        <EstamosAquiSection />
 
         {/* ══════════════════════════════════════════════════════════════════
             EM EXCELENTE COMPANHIA
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
-          className={`${SECTION_SCREEN} clients-section flex flex-col justify-center bg-[var(--cream)] text-[var(--ink)]`}
-          style={{ paddingTop: "clamp(1.5rem, 4svh, 5rem)", paddingBottom: "clamp(1.5rem, 4svh, 5rem)" }}
+          className="clients-section grid h-[100svh] min-h-[100svh] max-h-[100svh] w-[100vw] max-w-[100vw] grid-rows-[auto_auto_1fr] overflow-hidden bg-white text-[var(--ink)]"
+          style={{
+            paddingTop: CLIENTS_SECTION_PAD_TOP,
+            paddingBottom: "1svh",
+          }}
         >
-          <div className={`${FRAME} px-5 sm:px-8 md:px-16`}>
-            <div className="clients-title">
-              <h2 className="text-right font-black uppercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(32px, min(10vw, 14svh), 130px)" }}>
+          {/* Título edge-to-edge (0px das bordas laterais) */}
+          <div
+            className="clients-title relative z-10 w-full shrink-0 overflow-x-clip px-0"
+            style={{ paddingBottom: CLIENTS_TITLE_GAP }}
+          >
+            <div style={{ overflow: "hidden" }}>
+              <h2
+                className="clients-title-1 block w-full text-right font-black uppercase whitespace-nowrap"
+                style={CLIENTS_TITLE_STYLE}
+              >
                 Em excelente
               </h2>
-              <h2 className="font-black uppercase leading-[0.65] tracking-[-0.06em]"
-                  style={{ fontFamily: "var(--font-darker-grotesque)", fontSize: "clamp(32px, min(10vw, 14svh), 130px)", marginBottom: "clamp(1.5rem, 3svh, 3rem)" }}>
+            </div>
+            <div style={{ overflow: "hidden" }}>
+              <h2
+                className="clients-title-2 block w-full text-left font-black uppercase whitespace-nowrap"
+                style={{ ...CLIENTS_TITLE_STYLE, marginTop: "-0.04em" }}
+              >
                 companhia
               </h2>
             </div>
+          </div>
 
-            <p className="clients-sub text-[var(--ink)]/85 font-medium max-w-[53ch] leading-[2.2]
-                        text-[clamp(14px,1.45vw,28px)]"
-               style={{ marginBottom: "clamp(1.5rem, 3svh, 4rem)", fontFamily: "var(--font-inter)" }}>
+          <div
+            className="relative z-20 w-full min-h-0 shrink-0 px-0"
+            style={{ marginBottom: CLIENTS_COPY_GAP }}
+          >
+            <p
+              className="clients-sub relative z-20 w-full bg-white text-[var(--ink)]/85 font-medium leading-[1.85]
+                         md:ml-[45.6%] md:max-w-none md:pr-0"
+              style={{ fontFamily: "var(--font-inter)", fontSize: CLIENTS_COPY_FONT }}
+            >
               {CLIENTS_COPY}
             </p>
+          </div>
 
-            <div className="-mx-5 sm:-mx-8 md:-mx-16">
-              <ClientsMarquee theme="light" />
-            </div>
+          {/* Logos — largura total da viewport */}
+          <div className="relative z-0 flex min-h-0 w-full max-w-[100vw] flex-col justify-end self-stretch px-0 pb-[0.25svh]">
+            <ClientsMarquee theme="light" fill />
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════════════════
-            FOOTER
-        ══════════════════════════════════════════════════════════════════ */}
-        <footer className="bg-[#161616] text-[var(--orange)]">
-          <div className={`${FRAME} px-5 sm:px-8 md:px-16 py-10 sm:py-12
-                          flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8`}>
-            <p className="text-[clamp(13px,1.1vw,20px)] leading-snug font-normal"
-               style={{ fontFamily: "var(--font-inter)" }}>
-              Agência AMP ® {new Date().getFullYear()}
-              <br />
-              Todos os direitos reservados.
-            </p>
-
-            <div className="flex flex-wrap gap-6 sm:gap-10 text-[clamp(13px,1.1vw,20px)] font-normal"
-                 style={{ fontFamily: "var(--font-inter)" }}>
-              <div className="text-right">
-                <span className="block">Fale conosco</span>
-                <a href="tel:+5592992345678" className="hover:opacity-80 transition-opacity">
-                  +55 92 99234-5678
-                </a>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-4 text-[10px] sm:text-xs uppercase tracking-widest text-[var(--orange)]/70"
-                 style={{ fontFamily: "var(--font-inter)" }}>
-              {["Instagram", "LinkedIn", "Termos", "Privacidade"].map((l) => (
-                <a key={l} href="#" className="hover:text-[var(--cream)] transition-colors duration-300">{l}</a>
-              ))}
-            </div>
-          </div>
-        </footer>
+        <PageFooter />
       </div>
     </SmoothScroll>
   );

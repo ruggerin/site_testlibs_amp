@@ -65,6 +65,14 @@ body.loading {
   transform: translateY(0);
 }
 
+/* Foto da sec1 — entra da direita */
+.sec1-photo.scroll-reveal {
+  transform: translateX(48px);
+}
+.sec1-photo.scroll-reveal-visible {
+  transform: translateX(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal {
     opacity: 1;

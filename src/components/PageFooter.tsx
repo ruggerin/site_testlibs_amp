@@ -1,8 +1,8 @@
+import SocialIconButtons from "@/components/SocialIconButtons";
+import { FOOTER_SOCIAL_LINKS } from "@/lib/social";
 import { FRAME, SITE } from "@/lib/site";
 
-const FOOTER_LINKS: { label: string; href: string }[] = [
-  { label: "Instagram", href: "#" },
-  { label: "LinkedIn", href: "#" },
+const LEGAL_LINKS: { label: string; href: string }[] = [
   { label: "FAQ", href: "/faq" },
   { label: "Termos", href: "#" },
   { label: "Privacidade", href: "#" },
@@ -26,20 +26,24 @@ export default function PageFooter() {
         </p>
 
         <div
-          className="text-[clamp(13px,1.1vw,20px)] font-normal"
+          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8"
           style={{ fontFamily: "var(--font-inter)" }}
         >
-          <span className="block">Fale conosco</span>
-          <a href={SITE.phoneHref} className="transition-opacity hover:opacity-80">
-            {SITE.phone}
-          </a>
+          <div className="text-[clamp(13px,1.1vw,20px)] font-normal">
+            <span className="block">Fale conosco</span>
+            <a href={SITE.phoneHref} className="transition-opacity hover:opacity-80">
+              {SITE.phone}
+            </a>
+          </div>
+
+          <SocialIconButtons variant="on-dark" links={FOOTER_SOCIAL_LINKS} />
         </div>
 
         <div
           className="flex flex-wrap gap-4 text-[10px] uppercase tracking-widest text-[var(--orange)]/70 sm:text-xs"
           style={{ fontFamily: "var(--font-inter)" }}
         >
-          {FOOTER_LINKS.map(({ label, href }) => (
+          {LEGAL_LINKS.map(({ label, href }) => (
             <a key={label} href={href} className="transition-colors duration-300 hover:text-[var(--cream)]">
               {label}
             </a>

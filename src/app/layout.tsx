@@ -4,13 +4,13 @@ import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
 });
 
 const darkerGrotesque = Darker_Grotesque({
   variable: "--font-darker-grotesque",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
@@ -30,6 +30,11 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${inter.variable} ${darkerGrotesque.variable} h-full antialiased`}
     >
+      <head>
+        {/* Start fetching heavy videos before JS hydrates */}
+        <link rel="preload" as="video" href="/assets/COMPILADO-WEBM0001-1210.webm" />
+        <link rel="preload" as="video" href="/assets/VIDEO_COMPILADO_2.mp4" />
+      </head>
       <body className="min-h-full bg-[#181818] text-white overflow-x-hidden">
         {children}
       </body>

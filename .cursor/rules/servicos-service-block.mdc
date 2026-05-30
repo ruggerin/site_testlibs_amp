@@ -1,0 +1,33 @@
+---
+description: Layout Figma dos blocos ServiceBlock em /servicos (Branding, Performance, etc.)
+globs: src/components/ServiceBlock.tsx,src/data/service-layouts.ts,src/data/services.ts
+alwaysApply: false
+---
+
+# ServiceBlock — padrão Figma 2:893
+
+## Layout (não reverter para grid 2 colunas)
+
+- Coluna vertical: imagem **70,83%** largura (`1360/1920`), **esquerda**, cream à direita → título → `titleTail` → card `718px` + colunas `#D9D9D9`.
+- Título em fluxo com `marginTop: calc(-1 * titleOverlap)`; overlap pequeno (`~2.75rem` max).
+- Posições do display/tags: **absolute em %** do container `titleMaxW`, em `src/data/service-layouts.ts`.
+- Se Figma tiver `titulo` → `txt`: `titleTxtInset` no wrapper do display; `%` de `&`/line1/line2 relativos ao `txt`; tags no container externo.
+
+## Por serviço (obrigatório)
+
+| id | Figma titulo | titleInset |
+|----|--------------|------------|
+| branding | 2:970, 1621×467 | 206px |
+| performance | 2:951, 1881×461 | **20px** (não 206) |
+| tecnologia | 2:910 | 208px |
+| conteudo | 2:931 | 268px |
+
+`sectionPt`: branding maior (pós-hero); demais `clamp(5rem, 10vh, 9.5rem)`.
+
+## Calibrar
+
+1. % = `px / largura|altura` do grupo `titulo` no Figma.
+2. `line1` precisa `maxWidth` para não sobrepor `subtitle2`.
+3. `objectPosition` na imagem se o conteúdo encosta na borda direita.
+
+Playbook completo: `docs/servicos-service-block-playbook.md`.

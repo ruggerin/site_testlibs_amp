@@ -1,0 +1,23 @@
+Nome Completo	Função	Histórico Profissional (IA - Máx 140 carac.)	Qtde caract.	Status Foto
+Aline Cardoso	Copywriter	Expertise nacional e internacional como jornalista e copywriter. Narrativas completas do ON ao OFF, de SEO e Inbound a matérias e podcasts.	139	📷 OK
+Márcio Borges	Head	Comecei em 2009 no atendimento, participando da criação até migrar definitivamente para a redação. Desde 2025, estou como Head da AMP.	134	📷 OK
+Gabriel	Diretor de Criação	Iniciei como Diretor de Arte na criação de campanhas e marcas. Hoje, como Diretor de Criação, lidero equipes, processos e ideias estratégicas.	142	📷 OK
+Sam Held	Diretor de Arte	Senior Content Designer e Art Director na AMP, desenvolvendo KVs, identidades visuais, criativos para redes sociais e soluções digitais.	136	📷 OK
+Fernando Vasques	Diretor de Arte	Designer especializado em UI/UX, desenvolvimento de KVs para campanhas publicitárias e identidades visuais On/Off.	114	📷 OK
+Lucas Reis	Diretor de Arte	Diretor de Arte Pleno na AMP, desenvolvendo KVs, identidades visuais, criativos para redes sociais e soluções digitais.	119	📷 OK
+Engels Belchior	Redator	Redator Criativo e de Performance na publicidade, desenvolvendo campanhas, motes, roteiros para TV/redes sociais e ações promocionais.	134	📷 OK
+Emanuel Lucas	Social Media	Atuação em marketing digital com foco em varejo, planejamento estratégico, criação de conteúdo, edição e produção audiovisual.	126	📷 OK
+Michelle Soares 	Social Media	Social Media com atuação em criação de conteúdo, produção audiovisual, edição de vídeos e estratégias para fortalecimento digital de marcas.	140	📷 OK
+Antonio Costa	Designer 	Designer especializado em desenvolvimento de KVs para campanhas publicitárias e identidades visuais On/Off.	107	📷 OK
+Murilo Chaves	Atendimento Publicitário	De assistente a atendimento publicitário: cada etapa ampliou minha visão, fortaleceu conexões e impulsionou minha evolução.	123	📷 OK
+Hannah Veras	Atendimento Publicitário	Formada em Relações Públicas, atuo com comunicação ON, OFF e live marketing, unindo visão de cliente e agência para fortalecer marcas.	134	📷 OK
+Jarson Larry 	Videomaker / Editor	Bagagem de 6 anos unindo design e audiovisual. Experiência em KVs, campanhas, fotografia, captação, edição e direção criativa.	126	📷 OK
+Gibson Araújo	CEO e fundador da AMP	Especialista em marketing e estratégia comercial, com atuação no setor de comunicação. Pós graduado pela UFAM e USP/ESALQ	121	📷 OK
+Leonardo Tayah	Editor / Motion Designer	Com 10 anos de bagagem em design e audiovisual, assino a pós-produção.Entrego edição, VFX e animação técnica para campanhas de impacto	134	📷 OK
+Gustavo Araújo	Designer gráfico	Especializado em branding, direção de arte e campanhas criativas de alto impacto.	81	📷 OK
+Hugo Figueiredo	Digital Planner/Gestor de Tráfego	Especialista em conteúdo, estratégias digitais e dados. Desde 2023, migrei para o tráfego pago. Formado em Publicidade e Administração Pública.	143	📷 OK
+Gisely  Araújo	Atendimento Publicitário	Evolui de assistente a atendimento e planner. Hoje lidero grandes marcas com foco em relacionamento próximo e olhar de mercado.	127	📷 OK
+Ilana Retto	Mídia Performance	Publicitária especialista em estratégias digitais de Tráfego Pago e em análise dados para performance, com experiência internacional.	133	📷 OK
+Vinícius Araújo 	Estagiário Administrativo	Construindo carreira profissional e desenvolvendo talento na AMP.	65	📷 OK
+Geise Araújo	Coordenadora Financeira e Mídia AMP	Organiza e otimiza processos para decisões mais eficientes da empresa e clientes, através de negociações com parceiros e veículos.	130	📷 OK
+Letícia Milome	Tráfego	Fotógrafa, videomaker e social media desenvolvendo estratégias criativas e conteúdos voltados para fortalecer a presença digital de marcas.	139	📷 OK

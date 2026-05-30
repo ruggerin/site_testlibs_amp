@@ -2,6 +2,7 @@ export type Award = {
   id: string;
   title: string;
   description: string;
+  image?: string;
 };
 
 export const AWARDS: Award[] = [
