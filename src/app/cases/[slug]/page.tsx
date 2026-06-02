@@ -6,6 +6,7 @@ import CaseDetailGallery from "@/components/case-detail/CaseDetailGallery";
 import CaseDetailHero from "@/components/case-detail/CaseDetailHero";
 import CaseDetailRelated from "@/components/case-detail/CaseDetailRelated";
 import PageFooter from "@/components/PageFooter";
+import SmoothScroll from "@/components/SmoothScroll";
 import { CASES, getCaseBySlug } from "@/data/cases";
 import { getAdjacentCases, getCaseGallery } from "@/lib/cases-nav";
 import { pageMetadata } from "@/lib/seo";
@@ -36,13 +37,15 @@ export default async function CaseDetailPage({ params }: Props) {
   const gallery = getCaseGallery(item);
 
   return (
-    <div className="min-h-screen bg-white text-[#232323]">
-      <CaseDetailHero item={item} prev={prev} next={next} />
-      <CaseDetailContent item={item} />
-      <CaseDetailGallery images={gallery} />
-      <CaseDetailRelated slug={slug} />
-      <CaseDetailBanner />
-      <PageFooter />
-    </div>
+    <SmoothScroll>
+      <div className="min-h-screen bg-white text-[#232323]">
+        <CaseDetailHero item={item} prev={prev} next={next} />
+        <CaseDetailContent item={item} />
+        <CaseDetailGallery images={gallery} />
+        <CaseDetailRelated slug={slug} />
+        <CaseDetailBanner />
+        <PageFooter />
+      </div>
+    </SmoothScroll>
   );
 }

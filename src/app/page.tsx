@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import Loader from "@/components/Loader";
 import SocialIconButtons from "@/components/SocialIconButtons";
 import { figmaClamp } from "@/lib/figma-scale";
 import {
@@ -32,11 +30,8 @@ const HERO_TOP = figmaClamp(22, { min: 12, max: 28, vw: (22 / FIGMA_W) * 100 });
 const FOOTER_RESERVE = `calc(${((FIGMA_H - 997) / FIGMA_H) * 100}% + clamp(10px, 0.85vh, 18px))`;
 const FOOTER_BOTTOM = `${((FIGMA_H - 997 - 47) / FIGMA_H) * 100}%`;
 export default function Home() {
-  const [loaderDone, setLoaderDone] = useState(false);
-
   return (
     <>
-      {!loaderDone && <Loader onComplete={() => setLoaderDone(true)} />}
       <div className="relative h-[100svh] w-full overflow-hidden bg-[var(--orange)]">
         <div className="home-bg-texture" aria-hidden>
           <Image

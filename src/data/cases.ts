@@ -21,7 +21,13 @@ export const CASES: CaseStudy[] = [
     slug: "amazongas",
     client: "amazongás",
     campaign: "Comprou, Ganhou!",
-    image: "/assets/ambiente/01.jpeg",
+    image:
+      "/assets/projetos/amazongas/KV%20-%20Comprou%2C%20Ganhou%20AmazonG%C3%A1s%20-%20Foto%20da%20Modelo%20-%20Definido.png",
+    gallery: [
+      "/assets/projetos/amazongas/Mockup%20Outdoor%20-%20AmazonG%C3%A1s.png",
+      "/assets/projetos/amazongas/Mockup%20Frontlight%20-%20Compra%20Premiada%20AmazonG%C3%A1s.jpg",
+      "/assets/projetos/amazongas/KV%20-%20Comprou%2C%20Ganhou%20AmazonG%C3%A1s%20-%20Foto%20da%20Modelo%20-%20Definido.png",
+    ],
     excerpt:
       "Promoção multiplataforma em quatro estados que transformou o consumo em jornada de colecionador — com brindes esgotados em tempo recorde.",
     narrative:
@@ -37,7 +43,12 @@ export const CASES: CaseStudy[] = [
     slug: "ramsons",
     client: "ramsons",
     campaign: "Black Friday Ramsons",
-    image: "/assets/ambiente/02.jpeg",
+    image: "/assets/projetos/ramsons/Black%20Friday%20Ramsons.webp",
+    gallery: [
+      "/assets/projetos/ramsons/Backbus.jpeg",
+      "/assets/projetos/ramsons/Painel%20de%20LED.jpeg",
+      "/assets/projetos/ramsons/Black%20Friday%20Ramsons.webp",
+    ],
     excerpt:
       "Design arrojado e operação baseada em dados para dominar o share de atenção e ser escolhida no momento da decisão.",
     narrative:
@@ -53,7 +64,8 @@ export const CASES: CaseStudy[] = [
     slug: "supermercados-coema",
     client: "supermercados coema",
     campaign: "Inauguração — Unidade Campos Sales",
-    image: "/assets/ambiente/03.jpeg",
+    image:
+      "/assets/projetos/coema/KV%20-%20Inaugura%C3%A7%C3%A3o%20Supermercados%20COEMA%20Campos%20Salles.png",
     excerpt:
       "Narrativa de expectativa que transformou a abertura das portas em evento comunitário e marcou o bairro com um novo supermercado de referência.",
     narrative:
@@ -69,7 +81,12 @@ export const CASES: CaseStudy[] = [
     slug: "skarloff",
     client: "skarloff",
     campaign: "Lançamentos de novos sabores",
-    image: "/assets/ambiente/04.jpeg",
+    image: "/assets/projetos/skarloff/KV%20Skarloff%20Novos%20Sabores.png",
+    gallery: [
+      "/assets/projetos/skarloff/Mockup%201-01.png",
+      "/assets/projetos/skarloff/Mockup%201-02.png",
+      "/assets/projetos/skarloff/Skarloff-01.png",
+    ],
     excerpt:
       "Ativações no PDV e comunicação de curiosidade que levaram Frutas Amarelas e Pink Lemonade a um movimento de experimentação no Norte.",
     narrative:
@@ -117,7 +134,7 @@ export const CASES: CaseStudy[] = [
     slug: "mobili-store",
     client: "mobili store",
     campaign: "Black Friday — Roraima",
-    image: "/assets/ambiente/08.jpeg",
+    image: "/assets/projetos/mobili/KV%20BLACK%20MOBILI.png",
     excerpt:
       "Ofertas selecionadas, urgência e mídia forte para criar a maior Black Friday do estado e um novo padrão de campanha.",
     narrative:

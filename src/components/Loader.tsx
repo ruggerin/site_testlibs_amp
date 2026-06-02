@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { getAllPreloadUrls, PRELOAD_VIDEOS } from "@/lib/preload-assets";
+import { getAllPreloadImageUrls, PRELOAD_VIDEOS } from "@/lib/preload-assets";
 
 // ─── Paths originais de cada letra ────────────────────────────────────────────
 const PATH_A =
@@ -27,8 +27,8 @@ function progressToWidth(pct: number): number {
   return (pct / 100) * SVG_W;
 }
 
-const MIN_MS = 2500;   // minimum loader display time
-const MAX_MS = 12000;  // failsafe exit
+const MIN_MS = 2800; // tempo mínimo de branding no loader
+const MAX_MS = 30000; // failsafe — muitas imagens HD
 
 interface LoaderProps {
   onComplete?: () => void;
@@ -42,7 +42,7 @@ export default function Loader({ onComplete }: LoaderProps) {
   useEffect(() => {
     document.body.classList.add("loading");
 
-    const urls = getAllPreloadUrls();
+    const urls = getAllPreloadImageUrls();
     const total = Math.max(urls.length, 1);
     let loaded = 0;
     const startAt = Date.now();

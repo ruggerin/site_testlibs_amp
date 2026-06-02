@@ -216,7 +216,7 @@ export default function CulturaHero() {
                 }}
               >
                 <span
-                  className="cultura-u-img"
+                  className="cultura-u-img hover-zoom-media"
                   style={{
                     position: "absolute",
                     inset: 0,

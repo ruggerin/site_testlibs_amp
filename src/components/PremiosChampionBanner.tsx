@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { figmaClamp } from "@/lib/figma-scale";
-
-const SIDE_PAD = "clamp(24px, 1.75vw, 36px)";
+import { FULL_BLEED, PREMIOS_PAD_X } from "@/lib/site";
 
 const TITLE_SIZE = figmaClamp(138, { min: 28, max: 96, vw: 5.2 });
 const BODY_SIZE = figmaClamp(38, { min: 14, max: 28, vw: 1.55 });
@@ -10,9 +9,11 @@ const CTA_SIZE = figmaClamp(28, { min: 12, max: 22, vw: 1.2 });
 /** Banner — Figma 2:580 (1860×626 @ x:30). */
 export default function PremiosChampionBanner() {
   return (
-    <section className="w-full bg-white py-10 md:py-14">
-      <div className="w-full" style={{ paddingLeft: SIDE_PAD, paddingRight: SIDE_PAD }}>
-        <div className="w-full overflow-hidden rounded-[28px] bg-[#232323] md:grid md:min-h-[clamp(300px,24vw,520px)] md:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
+    <section
+      className={`${FULL_BLEED} bg-[#232323] py-10 md:py-14`}
+      style={{ paddingLeft: PREMIOS_PAD_X, paddingRight: PREMIOS_PAD_X }}
+    >
+      <div className="w-full max-w-none overflow-hidden rounded-[28px] bg-[#232323] ring-1 ring-white/10 md:grid md:min-h-[clamp(300px,24vw,520px)] md:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
           <div className="flex min-w-0 flex-col justify-center p-6 md:p-8 lg:px-10 lg:py-12">
             <p
               className="max-w-[977px] font-black uppercase leading-[0.87] tracking-[-0.04em] text-[#F7F7F7]"
@@ -41,7 +42,6 @@ export default function PremiosChampionBanner() {
             </Link>
           </div>
         </div>
-      </div>
     </section>
   );
 }

@@ -34,7 +34,7 @@ export default function CaseCard({
       >
         <article className="flex flex-col">
           <div
-            className="relative w-full overflow-hidden bg-[#D9D9D9]"
+            className="hover-zoom-media relative w-full bg-[#D9D9D9]"
             style={{
               height: `clamp(180px, min(28vw, 32svh), ${imageMaxH}px)`,
             }}
@@ -44,7 +44,7 @@ export default function CaseCard({
                 src={item.image}
                 alt=""
                 fill
-                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                className="object-cover object-center"
                 sizes="(max-width: 768px) 100vw, 47vw"
               />
             ) : null}
@@ -88,12 +88,12 @@ export default function CaseCard({
       href={`/cases/${item.slug}`}
       className="group flex flex-col overflow-hidden rounded-sm bg-[var(--cream)] transition-opacity hover:opacity-90"
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#232323]/5">
+      <div className="hover-zoom-media relative aspect-[16/10] w-full bg-[#232323]/5">
         <Image
           src={item.image}
           alt=""
           fill
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+          className="object-cover object-center"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
       </div>

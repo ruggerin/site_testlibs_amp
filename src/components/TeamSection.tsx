@@ -19,6 +19,9 @@ export const TEAM_MEMBERS: TeamMember[] = (rawTeamData.team as TeamMember[])
   .slice()
   .sort((a, b) => a.ordem_exibicao - b.ordem_exibicao);
 
+/** Respiro sob a navbar fixa (barra sólida) — mesma lógica da coluna da lista. */
+const TEAM_NAV_CLEAR = "clamp(5rem, 9svh, 6.5rem)";
+
 function MemberPhotoPanel({
   member,
   visible,
@@ -65,7 +68,7 @@ function MemberPhotoPanel({
             src={src}
             alt={visible ? member.nome_completo : ""}
             fill
-            className="object-cover object-[center_18%]"
+            className="object-cover object-[center_15%]"
             sizes="(max-width: 768px) 92vw, 55vh"
             priority={isFirst && idx === 0}
           />
@@ -165,9 +168,10 @@ export default function TeamSection({ members = TEAM_MEMBERS }: TeamSectionProps
       >
         {/* ── Coluna: lista + título ── */}
         <div
-          className="order-2 flex min-w-0 w-full flex-col md:order-2 md:h-[100svh] md:max-w-none md:justify-center md:pb-[clamp(1.5rem,4svh,5rem)] md:pt-[clamp(5rem,10svh,6.5rem)]"
+          className="order-2 flex min-w-0 w-full flex-col md:order-2 md:h-[100svh] md:max-w-none md:justify-center md:pb-[clamp(1.5rem,4svh,5rem)]"
           style={{
             gap: "clamp(2rem, 6svh, 4.5rem)",
+            paddingTop: TEAM_NAV_CLEAR,
             paddingLeft: "clamp(0.5rem, 1.1vw, 1rem)",
             paddingRight: "clamp(0.35rem, 0.65vw, 0.625rem)",
           }}
@@ -297,11 +301,14 @@ export default function TeamSection({ members = TEAM_MEMBERS }: TeamSectionProps
         </div>
 
         {/* ── Coluna: foto com transição e ciclo de imagens ── */}
-        <div className="team-photo order-1 z-10 min-h-0 min-w-0 w-full will-change-transform md:order-1 md:h-[100svh] md:justify-self-stretch">
+        <div
+          className="team-photo order-1 z-10 min-h-0 min-w-0 w-full will-change-transform md:order-1 md:box-border md:h-[100svh] md:justify-self-stretch"
+          style={{ paddingTop: TEAM_NAV_CLEAR }}
+        >
           <div
-            className="team-photo-frame relative h-full min-h-[min(75svh,680px)] w-full overflow-hidden bg-[#1a1a1a]
-              max-md:mx-auto max-md:max-h-[min(88svh,820px)] max-md:max-w-[min(100%,520px)]
-              md:ml-0 md:h-[100svh] md:min-h-[100svh] md:max-w-none"
+            className="team-photo-frame hover-zoom-media relative h-full min-h-[min(72svh,640px)] w-full bg-[#1a1a1a]
+              max-md:mx-auto max-md:max-h-[min(82svh,760px)] max-md:max-w-[min(100%,520px)]
+              md:ml-0 md:h-full md:min-h-0 md:max-w-none"
           >
             {members.map((member, idx) => (
               <MemberPhotoPanel

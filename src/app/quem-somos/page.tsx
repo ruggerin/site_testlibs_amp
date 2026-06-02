@@ -7,8 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
-import ClientsMarquee from "@/components/ClientsMarquee";
-import TeamSection, { TEAM_MEMBERS } from "@/components/TeamSection";
+import ClientsSection from "@/components/ClientsSection";
+import QuemSomosHeroTeamCarousel from "@/components/QuemSomosHeroTeamCarousel";
+import TeamSection from "@/components/TeamSection";
 import PhotoDriftStrip from "@/components/PhotoDriftStrip";
 import EstamosAquiSection from "@/components/EstamosAquiSection";
 import PageFooter from "@/components/PageFooter";
@@ -82,25 +83,6 @@ const BRIDGE_HARMONIA =
  * Respiro abaixo do título e entre copy e logos (entram no cálculo do título).
  */
 const NAV_OFFSET = "clamp(5rem, 9svh, 6rem)";
-const CLIENTS_SECTION_PAD_TOP = NAV_OFFSET;
-const CLIENTS_TITLE_GAP = "clamp(2rem, 4.5svh, 3.5rem)";
-const CLIENTS_COPY_GAP = "clamp(2rem, 4svh, 3rem)";
-const CLIENTS_COPY_FONT = "clamp(1.9rem, min(2.9vw, 3.1svh), 3.5rem)";
-/** Largura total da viewport — título pode usar mais área horizontal. */
-const CLIENTS_TITLE_FONT =
-  `min(13rem, 13.2vw, 32svh, calc((100svh - ${NAV_OFFSET} - 1svh - clamp(2rem, 4.5svh, 3.5rem) - clamp(5rem, 18svh, 10rem) - clamp(2rem, 4svh, 3rem) - clamp(10rem, 22svh, 13rem)) / 1.28))`;
-const CLIENTS_TITLE_STYLE = {
-  fontFamily: "var(--font-darker-grotesque)",
-  fontSize: CLIENTS_TITLE_FONT,
-  lineHeight: 0.72,
-  letterSpacing: "-0.05em",
-} as const;
-
-const CLIENTS_COPY =
-  "Grandes nomes não aceitam amadorismo. Se elas confiam a estratégia de crescimento delas à AMP, talvez você devesse se perguntar por que a sua marca ainda não está aqui.";
-
-const gibson = TEAM_MEMBERS.find((m) => m.id === "gibson");
-
 export default function QuemSomos() {
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -324,30 +306,28 @@ export default function QuemSomos() {
       );
     });
 
-    // Citação criativo — trigger no bloco inteiro: entra cedo, fica visível no meio, só sai ao deixar o bloco
+    // Citação criativo — play once ao entrar (scrub no bloco 2 falha com snap/Lenis: some antes de aparecer)
     gsap.utils.toArray<HTMLElement>(".reveal-quote-criativo").forEach((el) => {
-      const block = el.closest(".manifesto-block-2");
-      if (!block) return;
-
-      gsap.set(el, { autoAlpha: 0, xPercent: -105 });
-
-      gsap
-        .timeline({
+      const wrap = el.closest(".manifesto-quote-criativo-wrap");
+      const tween = gsap.fromTo(
+        el,
+        { autoAlpha: 0, xPercent: -102 },
+        {
+          autoAlpha: 1,
+          xPercent: 0,
+          duration: 1.15,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: block,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.85,
+            trigger: wrap ?? el,
+            start: "top 88%",
+            toggleActions: "play none none none",
+            once: true,
             invalidateOnRefresh: true,
           },
-        })
-        .fromTo(
-          el,
-          { autoAlpha: 0, xPercent: -105 },
-          { autoAlpha: 1, xPercent: 0, duration: 0.12, ease: "none" }
-        )
-        .to(el, { autoAlpha: 1, xPercent: 0, duration: 0.76, ease: "none" })
-        .to(el, { autoAlpha: 0, xPercent: -105, duration: 0.12, ease: "none" });
+        }
+      );
+      const st = tween.scrollTrigger;
+      if (st && st.progress > 0) tween.progress(1);
     });
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -543,73 +523,7 @@ export default function QuemSomos() {
                   marginTop: "0.195em",
                 }}
               >
-                {/* container de clip separado para não cortar o crédito */}
-                <span
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    overflow: "hidden",
-                    borderRadius: "clamp(3px, 0.25vw, 6px)",
-                    boxShadow: "0 0 60px rgba(255,77,0,0.6), 0 0 130px rgba(255,77,0,0.25)",
-                    display: "block",
-                    marginLeft: "8px"
-                  }}
-                >
-                  <Image
-                    src={gibson?.fotos[0] ?? ""}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: "center 45%" }}
-                    sizes="(max-width: 768px) 25vw, 25vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#141414]/40 via-transparent to-transparent" />
-                </span>
-
-                {/* Crédito ancorado à direita da imagem inline */}
-                {/* textTransform/letterSpacing/fontWeight resetam a herança do h1 */}
-                <div
-                  className="pointer-events-auto absolute hidden sm:flex flex-row items-center gap-3"
-                  style={{
-                    top: "9%",
-                    left: "100%",
-                    paddingLeft: "clamp(8px, 0.8vw, 20px)",
-                    transform: "translateY(-50%)",
-                    textTransform: "none",
-                    letterSpacing: "normal",
-                    fontWeight: "normal",
-                  }}
-                >
-                  <div
-                    aria-hidden
-                    style={{
-                      height: "15px",
-                      width: "clamp(16px, 15vw, 32px)",
-                      background: "var(--orange)",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <div className="flex flex-col">
-                    <p
-                      className="font-bold leading-tight text-white whitespace-nowrap"
-                      style={{ fontFamily: "var(--font-inter)", fontSize: "clamp(0.85rem, 1.3vw, 1.5rem)" }}
-                    >
-                      {gibson?.nome_completo.toUpperCase()}
-                    </p>
-                    <p
-                      className="mt-1 font-semibold whitespace-nowrap"
-                      style={{
-                        fontFamily: "var(--font-inter)",
-                        fontSize: "clamp(8px, 0.7vw, 11px)",
-                        color: "var(--orange)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.22em",
-                      }}
-                    >
-                      {gibson?.funcao}
-                    </p>
-                  </div>
-                </div>
+                <QuemSomosHeroTeamCarousel />
               </span>
               <span aria-hidden>S</span>
             </h1>
@@ -719,7 +633,7 @@ export default function QuemSomos() {
             className={`grid w-full max-w-none grid-cols-1 items-center gap-0 md:items-stretch md:gap-0 ${MANIFESTO_GRID_PHOTO}`}
             style={{ marginBottom: "clamp(2rem, 6svh, 5rem)" }}
           >
-            <div className="relative min-h-[240px] w-full overflow-hidden rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] md:min-h-[min(50svh,460px)]">
+            <div className="hover-zoom-media relative min-h-[240px] w-full rounded-sm ring-1 ring-white/[0.08] sm:min-h-[320px] md:min-h-[min(50svh,460px)]">
               <div className="manifesto-building-inner absolute inset-0 will-change-transform">
                 <Image
                   src={MANIFESTO_BUILDING_SRC}
@@ -793,7 +707,7 @@ export default function QuemSomos() {
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            PHOTO DRIFT — loop infinito, sangra na tela, pausa ao clicar
+            PHOTO DRIFT — loop infinito; clique abre lightbox; hover pausa
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
@@ -807,58 +721,7 @@ export default function QuemSomos() {
 
         <EstamosAquiSection />
 
-        {/* ══════════════════════════════════════════════════════════════════
-            EM EXCELENTE COMPANHIA
-        ══════════════════════════════════════════════════════════════════ */}
-        <section
-          data-section
-          className="clients-section grid h-[100svh] min-h-[100svh] max-h-[100svh] w-[100vw] max-w-[100vw] grid-rows-[auto_auto_1fr] overflow-hidden bg-white text-[var(--ink)]"
-          style={{
-            paddingTop: CLIENTS_SECTION_PAD_TOP,
-            paddingBottom: "1svh",
-          }}
-        >
-          {/* Título edge-to-edge (0px das bordas laterais) */}
-          <div
-            className="clients-title relative z-10 w-full shrink-0 overflow-x-clip px-0"
-            style={{ paddingBottom: CLIENTS_TITLE_GAP }}
-          >
-            <div style={{ overflow: "hidden" }}>
-              <h2
-                className="clients-title-1 block w-full text-right font-black uppercase whitespace-nowrap"
-                style={CLIENTS_TITLE_STYLE}
-              >
-                Em excelente
-              </h2>
-            </div>
-            <div style={{ overflow: "hidden" }}>
-              <h2
-                className="clients-title-2 block w-full text-left font-black uppercase whitespace-nowrap"
-                style={{ ...CLIENTS_TITLE_STYLE, marginTop: "-0.04em" }}
-              >
-                companhia
-              </h2>
-            </div>
-          </div>
-
-          <div
-            className="relative z-20 w-full min-h-0 shrink-0 px-0"
-            style={{ marginBottom: CLIENTS_COPY_GAP }}
-          >
-            <p
-              className="clients-sub relative z-20 w-full bg-white text-[var(--ink)]/85 font-medium leading-[1.85]
-                         md:ml-[45.6%] md:max-w-none md:pr-0"
-              style={{ fontFamily: "var(--font-inter)", fontSize: CLIENTS_COPY_FONT }}
-            >
-              {CLIENTS_COPY}
-            </p>
-          </div>
-
-          {/* Logos — largura total da viewport */}
-          <div className="relative z-0 flex min-h-0 w-full max-w-[100vw] flex-col justify-end self-stretch px-0 pb-[0.25svh]">
-            <ClientsMarquee theme="light" fill />
-          </div>
-        </section>
+        <ClientsSection />
 
         <PageFooter />
       </div>

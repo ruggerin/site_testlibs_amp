@@ -1,7 +1,5 @@
 import { figmaClamp } from "@/lib/figma-scale";
-
-/** Figma Group 33 @ x:76 — inset lateral no artboard 1920. */
-const CONTENT_PAD = "clamp(24px, 3.96vw, 76px)";
+import { FULL_BLEED, PREMIOS_PAD_X } from "@/lib/site";
 
 const HEADLINE_SIZE = figmaClamp(90, { min: 28, max: 90, vw: 4.7 });
 const BODY_SIZE = figmaClamp(28, { min: 15, max: 28, vw: 1.45 });
@@ -12,11 +10,11 @@ const INTRO =
 /** Group 33 — Figma 2:561 (1782×306). */
 export default function PremiosIntro() {
   return (
-    <section className="relative w-full overflow-x-clip bg-[#232323] py-10 md:py-14 lg:py-16">
-      <div
-        className="mx-auto w-full max-w-[1782px]"
-        style={{ paddingLeft: CONTENT_PAD, paddingRight: CONTENT_PAD }}
-      >
+    <section
+      className={`${FULL_BLEED} relative overflow-x-clip bg-[#232323] py-10 md:py-14 lg:py-16`}
+      style={{ paddingLeft: PREMIOS_PAD_X, paddingRight: PREMIOS_PAD_X }}
+    >
+      <div className="w-full max-w-none">
         <div className="grid w-full grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,726fr)_minmax(0,888fr)] lg:gap-x-[clamp(1.5rem,4vw,5rem)]">
           <h2
             className="min-w-0 font-black uppercase leading-[0.83] tracking-[-0.05em] text-[var(--orange)]"

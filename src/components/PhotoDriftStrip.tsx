@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ZoomImage from "@/components/ZoomImage";
+import ImageLightbox from "@/components/ImageLightbox";
 
 export type PhotoDriftItem = { src: string; label: string };
 
@@ -17,13 +18,26 @@ type PhotoDriftStripProps = {
   photos: PhotoDriftItem[];
 };
 
-/** Uma fileira — loop infinito; clique pausa/retoma. */
+/** Uma fileira — loop infinito; clique na foto abre lightbox; hover pausa. */
 export default function PhotoDriftStrip({ photos }: PhotoDriftStripProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
-  const [paused, setPaused] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [hoverPaused, setHoverPaused] = useState(false);
 
   const loopItems = [...photos, ...photos];
+
+  const setTrackPaused = useCallback((pause: boolean) => {
+    if (tweenRef.current) {
+      gsap.to(tweenRef.current, {
+        timeScale: pause ? 0 : 1,
+        duration: 0.35,
+        ease: "power2.out",
+      });
+    }
+  }, []);
+
+  const isPaused = hoverPaused || lightboxIndex !== null;
 
   useGSAP(
     () => {
@@ -37,53 +51,78 @@ export default function PhotoDriftStrip({ photos }: PhotoDriftStripProps) {
         repeat: -1,
       });
     },
-    { scope: rootRef, dependencies: [photos.length] }
+    { scope: rootRef, dependencies: [photos.length] },
   );
 
-  const togglePause = useCallback(() => {
-    setPaused((prev) => {
-      const next = !prev;
-      if (tweenRef.current) {
-        gsap.to(tweenRef.current, {
-          timeScale: next ? 0 : 1,
-          duration: 0.35,
-          ease: "power2.out",
-        });
-      }
-      return next;
-    });
+  useEffect(() => {
+    setTrackPaused(isPaused);
+  }, [isPaused, setTrackPaused]);
+
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index % photos.length);
+  }, [photos.length]);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null);
   }, []);
 
+  const goPrev = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i - 1 + photos.length) % photos.length,
+    );
+  }, [photos.length]);
+
+  const goNext = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i + 1) % photos.length,
+    );
+  }, [photos.length]);
+
+  const active = lightboxIndex !== null ? photos[lightboxIndex] : null;
+
   return (
-    <div
-      ref={rootRef}
-      className="photo-drift-gallery w-full overflow-hidden"
-      role="button"
-      tabIndex={0}
-      aria-pressed={paused}
-      aria-label={paused ? "Retomar carrossel de fotos" : "Pausar carrossel de fotos"}
-      onClick={togglePause}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          togglePause();
-        }
-      }}
-    >
-      <div className="cursor-pointer overflow-hidden">
-        <div className="photo-drift-track flex w-max items-stretch gap-1.5 will-change-transform sm:gap-2">
-          {loopItems.map((photo, i) => (
-            <div key={`${photo.src}-${i}`} className={CARD_CLASS}>
-              <ZoomImage
-                src={photo.src}
-                alt={photo.label}
-                className="h-full w-full"
-                overlayClassName="bg-black/20"
-              />
-            </div>
-          ))}
+    <>
+      <div
+        ref={rootRef}
+        className="photo-drift-gallery w-full overflow-hidden"
+        onMouseEnter={() => setHoverPaused(true)}
+        onMouseLeave={() => setHoverPaused(false)}
+      >
+        <div className="overflow-hidden">
+          <div className="photo-drift-track flex w-max items-stretch gap-1.5 will-change-transform sm:gap-2">
+            {loopItems.map((photo, i) => {
+              const photoIndex = i % photos.length;
+              return (
+                <button
+                  key={`${photo.src}-${i}`}
+                  type="button"
+                  className={`${CARD_CLASS} cursor-zoom-in border-0 bg-transparent p-0 text-left`}
+                  aria-label={`Ampliar foto: ${photo.label}`}
+                  onClick={() => openLightbox(photoIndex)}
+                >
+                  <ZoomImage
+                    src={photo.src}
+                    alt={photo.label}
+                    className="pointer-events-none h-full w-full"
+                    overlayClassName="bg-black/20"
+                  />
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+
+      {active ? (
+        <ImageLightbox
+          open
+          src={active.src}
+          alt={active.label}
+          onClose={closeLightbox}
+          onPrev={photos.length > 1 ? goPrev : undefined}
+          onNext={photos.length > 1 ? goNext : undefined}
+        />
+      ) : null}
+    </>
   );
 }

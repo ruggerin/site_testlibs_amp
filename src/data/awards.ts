@@ -8,22 +8,32 @@ export type Award = {
 export const AWARDS: Award[] = [
   {
     id: "1",
-    title: "pmkt 11° edição — ouro",
-    description: "aqui vai um breve texto falando sobre o projeto",
+    title: "PMKT 11ª edição — Ouro",
+    description: "Aqui vai um breve texto falando sobre o projeto",
+    image: "/assets/premios/PREMIO-PMKT-2022-OURO.webp",
   },
   {
     id: "2",
-    title: "Prêmio Colunistas — prata",
-    description: "Campanha integrada 360 com foco em performance e branding.",
+    title: "PMKT — Bronze 2022",
+    description: "Aqui vai um breve texto falando sobre o projeto",
+    image: "/assets/premios/PREMIO-PMKT-BRONZE-2022.webp",
   },
   {
     id: "3",
-    title: "Effie Awards — shortlist",
-    description: "Estratégia unificada com resultados mensuráveis em 90 dias.",
+    title: "PMKT 2021",
+    description: "Aqui vai um breve texto falando sobre o projeto",
+    image: "/assets/premios/PREMIO-PMKT-2021.webp",
   },
   {
     id: "4",
-    title: "ABMN — destaque regional",
-    description: "Reconhecimento por inovação em marketing na Amazônia.",
+    title: "PMKT 2019 — Prata",
+    description: "Aqui vai um breve texto falando sobre o projeto",
+    image: "/assets/premios/PREMIO-PMKT-2019-PRATA.webp",
+  },
+  {
+    id: "5",
+    title: "PMKT 2019 — Bronze",
+    description: "Aqui vai um breve texto falando sobre o projeto",
+    image: "/assets/premios/PREMIO-PMKT-2019-BRONZE.webp",
   },
 ];

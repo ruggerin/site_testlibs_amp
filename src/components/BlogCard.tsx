@@ -23,14 +23,14 @@ export default function BlogCard({ post, variant = "listing" }: BlogCardProps) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block min-w-0">
       <div
-        className="relative w-full overflow-hidden bg-[#D9D9D9]"
+        className="hover-zoom-media relative w-full bg-[#D9D9D9]"
         style={{ aspectRatio: isRelated ? "751 / 530" : IMAGE_ASPECT }}
       >
         <Image
           src={post.image}
           alt=""
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+          className="object-cover"
           sizes={
             isRelated
               ? "(max-width: 768px) 100vw, 40vw"

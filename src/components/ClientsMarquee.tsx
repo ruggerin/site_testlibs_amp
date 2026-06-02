@@ -4,59 +4,42 @@ import { useMemo, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { PARTNER_LOGO_SRCS } from "@/data/partners";
 
 export type PartnerLogo = {
   name: string;
   src: string;
 };
 
-/** Ordem Figma — 4 fileiras de referência. */
-const PARTNER_ROWS: PartnerLogo[][] = [
-  [
-    { name: "Supermercados COEMA", src: "/assets/parceiros/LogoSupermercadosCoema.png" },
-    { name: "Ramsons", src: "/assets/parceiros/LOGORAMSON%20NOVA.png" },
-    { name: "AmazonGás", src: "/assets/parceiros/AmazonGasLOGO.png" },
-    { name: "Missiato", src: "/assets/parceiros/MISSIATOMARCAS.png" },
-    {
-      name: "Bebidas Monte Roraima",
-      src: "/assets/parceiros/LogoBebidasMonteRoraimaAzul.png",
-    },
-  ],
-  [
-    { name: "Coca-Cola", src: "/assets/parceiros/cocacola.png" },
-    { name: "Heineken", src: "/assets/parceiros/heineken.png" },
-    { name: "Monster Energy", src: "/assets/parceiros/moster.png" },
-    { name: "Leão", src: "/assets/parceiros/leao.png" },
-    { name: "del Valle", src: "/assets/parceiros/delvalle.png" },
-  ],
-  [
-    { name: "JLN", src: "/assets/parceiros/LOGO_NOVA_JLN.png" },
-    { name: "JB MIX", src: "/assets/parceiros/LogotipoJBMIX01.png" },
-    { name: "Baratão da Construção", src: "/assets/parceiros/BarataoDaConstrucao.png" },
-    {
-      name: "Real Equipamentos",
-      src: "/assets/parceiros/Logotipo_Real%20Equipamento.png",
-    },
-    { name: "MAQPEL", src: "/assets/parceiros/MAQPEL_COLORIDA.png" },
-    { name: "Fecha com Tecidos", src: "/assets/parceiros/FCTLOGO.png" },
-  ],
-  [
-    { name: "Powertech", src: "/assets/parceiros/PowertechLogo.png" },
-    {
-      name: "Frios & Cia",
-      src: "/assets/parceiros/LogotipoFriosCiaTransparente01.png",
-    },
-    { name: "Friotrans Atacado", src: "/assets/parceiros/FriotransLogo.png" },
-    {
-      name: "Amazon Distribuidora",
-      src: "/assets/parceiros/AmazonDistribuidoraLogoTransparente.png",
-    },
-    { name: "Shopping São José", src: "/assets/parceiros/logossj.png" },
-    { name: "Salmo 91 Express", src: "/assets/parceiros/Salmo91Logo.png" },
-  ],
+const PARTNER_NAMES: string[] = [
+  "Supermercados COEMA",
+  "Ramsons",
+  "AmazonGás",
+  "Missiato",
+  "Bebidas Monte Roraima",
+  "Coca-Cola",
+  "Heineken",
+  "Monster Energy",
+  "Leão",
+  "del Valle",
+  "JLN",
+  "JB MIX",
+  "Baratão da Construção",
+  "Real Equipamentos",
+  "MAQPEL",
+  "Fecha com Tecidos",
+  "Powertech",
+  "Frios & Cia",
+  "Friotrans Atacado",
+  "Amazon Distribuidora",
+  "Shopping São José",
+  "Salmo 91 Express",
 ];
 
-const ALL_PARTNERS = PARTNER_ROWS.flat();
+const ALL_PARTNERS: PartnerLogo[] = PARTNER_LOGO_SRCS.map((src, i) => ({
+  name: PARTNER_NAMES[i] ?? "Parceiro",
+  src,
+}));
 
 function buildRowTrack(rowIndex: number, loops = 10): PartnerLogo[] {
   const step = Math.max(1, Math.floor(ALL_PARTNERS.length / 2));
@@ -87,7 +70,7 @@ function PartnerLogoSquare({
 }) {
   return (
     <div
-      className={`relative aspect-square shrink-0 overflow-hidden bg-white transition-transform duration-300 hover:z-10 hover:scale-[1.04] ${className}`}
+      className={`relative aspect-square shrink-0 overflow-hidden bg-transparent transition-transform duration-300 hover:z-10 hover:scale-[1.04] ${className}`}
     >
       <Image
         src={partner.src}
@@ -156,7 +139,7 @@ function MarqueeRow({
   );
 
   return (
-    <div ref={rowRef} className="partners-marquee-row min-h-0 flex-1 overflow-hidden">
+    <div ref={rowRef} className="partners-marquee-row min-h-0 overflow-hidden">
       <div
         ref={trackRef}
         data-partners-track
@@ -187,19 +170,25 @@ function MarqueeRow({
 export default function ClientsMarquee({
   fill = false,
   compact = false,
+  variant,
 }: {
   theme?: "dark" | "light";
   compact?: boolean;
+  /** @deprecated use variant="prototype" */
   fill?: boolean;
+  variant?: "default" | "compact" | "prototype";
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const tweensRef = useRef<gsap.core.Tween[]>([]);
 
-  const squareClass = fill
-    ? "size-[clamp(10rem,25svh,21rem)]"
-    : compact
-      ? "size-[clamp(9rem,32vw,13rem)]"
-      : "size-[clamp(10rem,28vw,14rem)]";
+  const mode = variant ?? (fill ? "prototype" : compact ? "compact" : "default");
+
+  const squareClass =
+    mode === "prototype"
+      ? "size-[clamp(9rem,20.83vw,25rem)]"
+      : mode === "compact"
+        ? "size-[clamp(9rem,32vw,13rem)]"
+        : "size-[clamp(10rem,28vw,14rem)]";
 
   const rows = useMemo(() => MARQUEE_ROWS, []);
 
@@ -255,9 +244,9 @@ export default function ClientsMarquee({
     <div
       ref={sectionRef}
       className={
-        fill
-          ? "flex h-full min-h-0 w-full cursor-grab flex-col justify-end gap-[clamp(0.2rem,0.4svh,0.4rem)] overflow-hidden active:cursor-grabbing"
-          : compact
+        mode === "prototype"
+          ? "flex w-full cursor-grab flex-col gap-[clamp(0.25rem,0.26vw,0.5rem)] overflow-hidden active:cursor-grabbing"
+          : mode === "compact"
             ? "cursor-grab space-y-1.5 overflow-hidden py-1 active:cursor-grabbing"
             : "cursor-grab space-y-2 overflow-hidden py-2 active:cursor-grabbing"
       }
@@ -274,5 +263,3 @@ export default function ClientsMarquee({
     </div>
   );
 }
-
-export { PARTNER_ROWS };

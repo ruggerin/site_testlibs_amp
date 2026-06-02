@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import PageFooter from "@/components/PageFooter";
-import ScrollReveal from "@/components/ScrollReveal";
 import ServiceBlock from "@/components/ServiceBlock";
 import ServicosConnectBanner from "@/components/ServicosConnectBanner";
 import ServicosHero from "@/components/ServicosHero";
@@ -22,15 +21,11 @@ export default function ServicosPage() {
         <ServicosHero />
       </div>
 
-      {SERVICES.map((service, i) => (
-        <ScrollReveal key={service.id} delay={i * 60}>
-          <ServiceBlock service={service} />
-        </ScrollReveal>
+      {SERVICES.map((service) => (
+        <ServiceBlock key={service.id} service={service} />
       ))}
 
-      <ScrollReveal className="overflow-visible">
-        <ServicosConnectBanner />
-      </ScrollReveal>
+      <ServicosConnectBanner />
 
       <PageFooter />
     </div>

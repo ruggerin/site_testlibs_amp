@@ -81,21 +81,24 @@ function ServiceTitleDesktop({
       </p>
 
       <span
-        className="service-accent absolute z-10 font-black text-[var(--orange)]"
+        className="service-accent service-title-accent absolute z-10 font-black text-[var(--orange)]"
         style={{ ...ampStyle, lineHeight: ampLineHeight, left: pos.amp.left, top: pos.amp.top }}
       >
         {service.accent}
       </span>
 
-      <span className={lineClass} style={{ ...titleWordStyle, left: pos.line2.left, top: pos.line2.top }}>
-        {service.line2}
+      <span
+        className={`${lineClass} service-title-line2 overflow-hidden`}
+        style={{ ...titleWordStyle, left: pos.line2.left, top: pos.line2.top }}
+      >
+        <span className="service-title-line-inner inline-block">{service.line2}</span>
       </span>
 
       <span
-        className={lineClass}
+        className={`${lineClass} service-title-line1 overflow-hidden`}
         style={{ ...titleWordStyle, left: pos.line1.left, top: pos.line1.top, maxWidth: pos.line1.maxWidth }}
       >
-        {service.line1}
+        <span className="service-title-line-inner inline-block">{service.line1}</span>
       </span>
     </div>
   );
@@ -108,17 +111,21 @@ function ServiceTitleMobile({ service }: { service: ServiceBlockData }) {
   return (
     <div className="flex flex-col gap-4 px-5 sm:px-8">
       <div className="relative flex flex-wrap items-end gap-x-1 leading-none">
-        <span className={`relative z-20 ${lineClass}`} style={titleWordStyle}>
-          {isConteudo ? service.line2 : service.line1}
+        <span className={`service-title-line1 relative z-20 overflow-hidden ${lineClass}`} style={titleWordStyle}>
+          <span className="service-title-line-inner inline-block">
+            {isConteudo ? service.line2 : service.line1}
+          </span>
         </span>
         <span
-          className="relative z-10 font-black text-[var(--orange)]"
+          className="service-title-accent relative z-10 overflow-hidden font-black text-[var(--orange)]"
           style={{ ...ampStyle, fontSize: TITLE_AMP, lineHeight: service.id === "conteudo" ? 0.35555555555555557 : 0.36 }}
         >
-          {service.accent}
+          <span className="service-title-line-inner inline-block">{service.accent}</span>
         </span>
-        <span className={`relative z-20 ${lineClass}`} style={titleWordStyle}>
-          {isConteudo ? service.line1 : service.line2}
+        <span className={`service-title-line2 relative z-20 overflow-hidden ${lineClass}`} style={titleWordStyle}>
+          <span className="service-title-line-inner inline-block">
+            {isConteudo ? service.line1 : service.line2}
+          </span>
         </span>
       </div>
       <p className="font-semibold uppercase leading-[1.31] text-[#232323]"
@@ -165,22 +172,50 @@ export default function ServiceBlock({ service }: { service: ServiceBlockData })
       });
     }
 
-    // ── Palavras do título: sobem em stagger ────────────────────────────────
-    gsap.fromTo(".service-title-word",
-      { y: 48, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.1, scrollTrigger: trigger }
-    );
+    const titleTween = {
+      duration: 0.95,
+      ease: "power3.out" as const,
+      scrollTrigger: trigger,
+    };
 
-    // ── Acento "&": escala + fade ───────────────────────────────────────────
-    gsap.fromTo(".service-accent",
-      { scale: 1.22, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.75, ease: "back.out(1.5)", scrollTrigger: trigger }
+    // ── Título: linha 1 → linha 2 → & (máscara + blur, como hero serviços) ─
+    gsap.fromTo(
+      ".service-title-line1 .service-title-line-inner",
+      { yPercent: 108, opacity: 0, filter: "blur(10px)" },
+      { yPercent: 0, opacity: 1, filter: "blur(0px)", ...titleTween },
+    );
+    gsap.fromTo(
+      ".service-title-line2 .service-title-line-inner",
+      { yPercent: 108, opacity: 0, filter: "blur(10px)" },
+      { yPercent: 0, opacity: 1, filter: "blur(0px)", ...titleTween, delay: 0.12 },
+    );
+    gsap.fromTo(
+      ".service-title-accent",
+      { scale: 1.2, opacity: 0, filter: "blur(8px)", transformOrigin: "left bottom" },
+      {
+        scale: 1,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.8,
+        ease: "back.out(1.6)",
+        scrollTrigger: trigger,
+        delay: 0.22,
+      },
     );
 
     // ── Subtítulos ──────────────────────────────────────────────────────────
-    gsap.fromTo(".service-subtitle",
-      { y: 22, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.65, ease: "power2.out", stagger: 0.1, delay: 0.2, scrollTrigger: trigger }
+    gsap.fromTo(
+      ".service-subtitle",
+      { y: 28, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: 0.1,
+        delay: 0.35,
+        scrollTrigger: trigger,
+      },
     );
 
     // ── Marcador laranja: cresce de cima ────────────────────────────────────
@@ -212,7 +247,7 @@ export default function ServiceBlock({ service }: { service: ServiceBlockData })
 
         {showHero ? (
           <div className="service-img-wrap relative" style={{ width: IMAGE_W }}>
-            <div className="relative w-full overflow-hidden" style={{ aspectRatio: figmaAspect(1360, 450) }}>
+            <div className="hover-zoom-media relative w-full" style={{ aspectRatio: figmaAspect(1360, 450) }}>
               <div className="service-img-inner absolute inset-0">
                 <Image
                   src={service.image}
@@ -251,7 +286,7 @@ export default function ServiceBlock({ service }: { service: ServiceBlockData })
 
         <div className="mt-6 md:hidden">
           {showHero ? (
-            <div className="relative mb-4 overflow-hidden" style={{ width: IMAGE_W, aspectRatio: figmaAspect(1360, 450) }}>
+            <div className="hover-zoom-media relative mb-4" style={{ width: IMAGE_W, aspectRatio: figmaAspect(1360, 450) }}>
               <Image
                 src={service.image}
                 alt=""
@@ -270,7 +305,7 @@ export default function ServiceBlock({ service }: { service: ServiceBlockData })
             <article className="service-article relative border-[3px] border-[#232323] bg-[var(--cream)] pt-6 pl-6 pr-6 pb-8 md:pt-8 md:pl-[calc(clamp(56px,4.7vw,90px)+2.5rem)] md:pr-10">
               {!showHero ? (
                 <div
-                  className="service-orange-marker absolute left-6 top-6 h-[clamp(56px,4.7vw,90px)] w-[clamp(56px,4.7vw,90px)] overflow-hidden bg-[var(--orange)] md:left-10 md:top-10"
+                  className="service-orange-marker hover-zoom-media absolute left-6 top-6 h-[clamp(56px,4.7vw,90px)] w-[clamp(56px,4.7vw,90px)] bg-[var(--orange)] md:left-10 md:top-10"
                   aria-hidden
                 >
                   <Image src={service.image} alt="" fill className="object-cover" sizes="90px" />

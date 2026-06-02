@@ -18,10 +18,8 @@ export const metadata = pageMetadata({
 export default function PremiosPage() {
   return (
     <div className="min-h-screen overflow-x-clip bg-white text-[#232323]">
-      <div className="relative">
-        <Navbar theme="light" />
-        <PremiosHero />
-      </div>
+      <Navbar theme="light" />
+      <PremiosHero />
 
       <PremiosIntro />
 

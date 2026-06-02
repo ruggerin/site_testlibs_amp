@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogArticle from "@/components/BlogArticle";
+import BlogPostNav from "@/components/BlogPostNav";
 import BlogRelated from "@/components/BlogRelated";
 import Navbar from "@/components/Navbar";
 import PageFooter from "@/components/PageFooter";
+import SmoothScroll from "@/components/SmoothScroll";
 import { POSTS, getPostBySlug, getRelatedPosts } from "@/data/posts";
+import { getAdjacentPosts } from "@/lib/posts-nav";
 import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -30,15 +33,19 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const related = getRelatedPosts(slug, 3);
+  const { prev, next } = getAdjacentPosts(slug);
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-white text-[#232323]">
-      <div className="relative">
-        <Navbar theme="light" />
+    <SmoothScroll>
+      <div className="min-h-screen overflow-x-clip bg-white text-[#232323]">
+        <div className="relative">
+          <Navbar theme="light" />
+          <BlogPostNav prev={prev} next={next} />
+        </div>
+        <BlogArticle post={post} />
+        <BlogRelated posts={related} />
+        <PageFooter />
       </div>
-      <BlogArticle post={post} />
-      <BlogRelated posts={related} />
-      <PageFooter />
-    </div>
+    </SmoothScroll>
   );
 }

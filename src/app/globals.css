@@ -73,10 +73,32 @@ body.loading {
   transform: translateX(0);
 }
 
+/* Zoom suave ao passar o mouse em fotos (containers com overflow) */
+.hover-zoom-media {
+  overflow: hidden;
+}
+
+.hover-zoom-media img {
+  transform-origin: center center;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hover-zoom-media:hover img {
+  transform: scale(1.1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .hover-zoom-media img {
+    transition: none;
+  }
+
+  .hover-zoom-media:hover img {
+    transform: none;
   }
 }

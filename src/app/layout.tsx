@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Darker_Grotesque } from "next/font/google";
+import AppShell from "@/components/AppShell";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,6 +19,11 @@ const darkerGrotesque = Darker_Grotesque({
 export const metadata: Metadata = {
   title: "AMP — Agência",
   description: "Ser 360 não é oferecer tudo. É fazer tudo funcionar junto.",
+  icons: {
+    icon: [{ url: "/amp_favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/amp_favicon.svg",
+    apple: "/amp_favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -36,7 +42,7 @@ export default function RootLayout({
         <link rel="preload" as="video" href="/assets/VIDEO_COMPILADO_2.mp4" />
       </head>
       <body className="min-h-full bg-[#181818] text-white overflow-x-hidden">
-        {children}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

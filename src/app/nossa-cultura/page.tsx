@@ -22,13 +22,11 @@ export default function NossaCulturaPage() {
 
   return (
     <div className="min-h-screen bg-[var(--cream)] text-[#232323]">
-      <div className="relative">
-        <Navbar theme="light" />
-        <CulturaHero />
-      </div>
+      <Navbar theme="light" />
+      <CulturaHero />
 
         {/* sec1 — grid 780 + foto: texto nunca invade a coluna da imagem (Figma 2:1155) */}
-        <section className="relative z-30 z-10 -mt-[clamp(80px,12svh,180px)] overflow-x-clip bg-[var(--cream)] pb-12 md:pb-20">
+        <section className="relative z-10 -mt-[clamp(80px,12svh,180px)] overflow-x-clip bg-[var(--cream)] pb-12 md:pb-20">
           <div
             className={`grid grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,780px)_1fr] md:gap-x-0 md:gap-y-0 md:pt-[clamp(48px,8.4vw,161px)] ${FRAME_PAD_X} md:pr-0`}
           >
@@ -59,18 +57,17 @@ export default function NossaCulturaPage() {
             {/* Foto — coluna direita até a borda; largura reduz em viewports estreitos */}
             <ScrollReveal className="sec1-photo relative min-w-0 -mt-[clamp(100px,21svh,320px)]" delay={80}>
               <div
-                className="group relative ml-auto w-full overflow-hidden bg-[#d9d9d9]"
+                className="hover-zoom-media relative ml-auto w-full bg-[#d9d9d9]"
                 style={{
                   aspectRatio: figmaAspect(photoW, CULTURA_SEC1.photoH),
                   maxWidth: `min(1052px, ${photoVw.toFixed(2)}vw)`,
-                  zIndex: 9999,
                 }}
               >
                 <Image
                   src="/assets/nossa_cultura/DSC04583.TOPO%20PAGINA.jpeg"
                   alt="Ambiente de trabalho AMP"
                   fill
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                  className="object-cover"
                   style={{ objectPosition: "24% center" }}
                   sizes={`(max-width: 768px) 100vw, min(42vw, ${photoVw.toFixed(0)}vw)`}
                   priority

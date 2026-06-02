@@ -29,6 +29,13 @@ export const CULTURA_SEC1 = {
 /** Padding lateral editorial (md) — espelha `md:px-16` do FRAME. */
 export const FRAME_PAD_X = "px-5 sm:px-8 md:px-16";
 
+/** /premios — Figma Group 33 @ x:76 no artboard 1920 (conteúdo edge-to-edge com respiro). */
+export const PREMIOS_PAD_X = "clamp(24px, 3.96vw, 76px)";
+
+/** Fundo da seção de borda a borda (quebra limite do container pai). */
+export const FULL_BLEED =
+  "relative left-1/2 w-[100vw] max-w-[100vw] -translate-x-1/2";
+
 export const SITE = {
   phone: "+55 92 99234-5678",
   phoneHref: "tel:+5592992345678",

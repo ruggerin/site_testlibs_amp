@@ -1,14 +1,20 @@
+import { AWARDS } from "@/data/awards";
+import { CASES } from "@/data/cases";
+import { POSTS } from "@/data/posts";
+import { SERVICES } from "@/data/services";
+import { PARTNER_LOGO_SRCS } from "@/data/partners";
 import teamData from "../../public/assets/team/team.json";
 
-/** Videos to kick off (fire-and-forget — not tracked in progress) */
+/** Vídeos pesados — download antecipado (não entram na barra de %). */
 export const PRELOAD_VIDEOS = [
   "/assets/COMPILADO-WEBM0001-1210.webm",
   "/assets/VIDEO_COMPILADO_2.mp4",
-];
+] as const;
 
-/** Static images used across all pages */
+/** Imagens estáticas fora de `src/data/*`. */
 const STATIC_IMAGES = [
   "/assets/wppr_orange_1.jpg",
+  "/assets/logo_amp_blackfont.svg",
   "/assets/ambiente/01.jpeg",
   "/assets/ambiente/02.jpeg",
   "/assets/ambiente/03.jpeg",
@@ -28,21 +34,53 @@ const STATIC_IMAGES = [
   "/assets/quem_somos/mapa_norte1.svg",
   "/assets/servicos/PERFOMANCE.png",
   "/assets/servicos/SOCIAL%20E%20CONTE%C3%9ADO.png",
-];
+  "/servicos/branding.png",
+  "/servicos/performance-trafego.png",
+  "/servicos/tecnologia-web.png",
+  "/servicos/conteudo-social.png",
+] as const;
 
-/**
- * Returns the URL to fetch so the browser caches the image correctly.
- * SVGs are served as-is; raster images go through Next.js image optimizer.
- */
-function resolveUrl(src: string, w = 1080, q = 75): string {
-  if (src.endsWith(".svg")) return src;
-  return `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=${q}`;
+function unique(paths: Iterable<string>): string[] {
+  return [...new Set([...paths].filter(Boolean))];
 }
 
-/** All image URLs to preload (next/image-compatible where applicable) */
+function collectCaseImages(): string[] {
+  return CASES.flatMap((c) => [c.image, ...(c.gallery ?? [])]);
+}
+
+function collectPostImages(): string[] {
+  return POSTS.map((p) => p.image);
+}
+
+function collectAwardImages(): string[] {
+  return AWARDS.map((a) => a.image).filter((src): src is string => Boolean(src));
+}
+
+function collectServiceImages(): string[] {
+  return SERVICES.map((s) => s.image);
+}
+
+function collectTeamPhotos(): string[] {
+  return (teamData.team as { fotos: string[] }[]).flatMap((m) => m.fotos);
+}
+
+/**
+ * URLs exatas servidas em `public/` (Next `images.unoptimized` — sem `/_next/image`).
+ * O loader usa `new Image().src` para popular o cache HTTP do navegador.
+ */
+export function getAllPreloadImageUrls(): string[] {
+  return unique([
+    ...STATIC_IMAGES,
+    ...collectCaseImages(),
+    ...collectPostImages(),
+    ...collectAwardImages(),
+    ...collectServiceImages(),
+    ...collectTeamPhotos(),
+    ...PARTNER_LOGO_SRCS,
+  ]);
+}
+
+/** @deprecated use getAllPreloadImageUrls */
 export function getAllPreloadUrls(): string[] {
-  const teamPhotos = (teamData.team as { fotos: string[] }[]).flatMap(
-    (m) => m.fotos
-  );
-  return [...STATIC_IMAGES, ...teamPhotos].map((src) => resolveUrl(src));
+  return getAllPreloadImageUrls();
 }

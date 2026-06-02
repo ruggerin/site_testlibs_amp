@@ -6,12 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { SOCIAL_ICON_BY_LABEL } from "@/components/SocialIconButtons";
 import { SOCIAL_LINKS } from "@/lib/social";
-import {
-  HOME_EDGE_X,
-  HOME_LOGO_OFFSET,
-  HOME_MENU_INSET_RIGHT,
-  HOME_NAV_WIDTH,
-} from "@/lib/site";
+import { HOME_EDGE_X, HOME_LOGO_OFFSET, HOME_NAV_WIDTH } from "@/lib/site";
+
+/** Mesma sangria direita do hero/rodapé — evita % no botão que desloca em telas largas. */
+const HOME_PAD_X = "clamp(24px, 1.5625vw, 30px)";
 
 /** Itens centrais — Figma 2:121 (textCase UPPER no arquivo; rótulos como no layout). */
 const MENU_PRIMARY: { label: string; href: string }[] = [
@@ -61,7 +59,7 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
     <>
       <nav
         ref={navRef}
-        className={`z-40 flex items-center justify-between transition-[background-color,padding,box-shadow] duration-300 ease-out ${
+        className={`z-50 flex items-center justify-between transition-[background-color,padding,box-shadow] duration-300 ease-out ${
           isHome
             ? "fixed top-0 py-6"
             : `fixed top-0 left-0 right-0 px-8 md:px-16 ${
@@ -72,7 +70,12 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
         }`}
         style={
           isHome
-            ? { left: HOME_EDGE_X, width: HOME_NAV_WIDTH, paddingLeft: 0, paddingRight: 0 }
+            ? {
+                left: HOME_EDGE_X,
+                width: HOME_NAV_WIDTH,
+                paddingLeft: 0,
+                paddingRight: HOME_PAD_X,
+              }
             : undefined
         }
       >
@@ -100,19 +103,26 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
-          className="relative z-50 flex cursor-pointer flex-col gap-[6px] group"
-          style={isHome ? { marginRight: HOME_MENU_INSET_RIGHT } : undefined}
+          className={`relative z-50 flex shrink-0 cursor-pointer flex-col justify-center gap-[6px] group ${
+            isHome ? "h-[26px] sm:h-[30px] md:h-[34px]" : "h-8 md:h-10"
+          }`}
         >
           <span
-            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${barColor}`}
+            className={`block h-[2px] origin-center transition-all duration-300 ${barColor} ${
+              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+            }`}
             style={{ transform: menuOpen ? "translateY(8px) rotate(45deg)" : "none" }}
           />
           <span
-            className={`block h-[2px] w-8 transition-opacity duration-300 ${barColor}`}
+            className={`block h-[2px] transition-opacity duration-300 ${barColor} ${
+              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+            }`}
             style={{ opacity: menuOpen ? 0 : 1 }}
           />
           <span
-            className={`block h-[2px] w-8 origin-center transition-all duration-300 ${barColor}`}
+            className={`block h-[2px] origin-center transition-all duration-300 ${barColor} ${
+              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+            }`}
             style={{ transform: menuOpen ? "translateY(-8px) rotate(-45deg)" : "none" }}
           />
         </button>
@@ -120,7 +130,7 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
 
       {/* Overlay menu — fundo #232323, tipografia laranja, redes à direita */}
       <div
-        className={`fixed inset-0 z-30 flex w-full max-w-[100vw] flex-col bg-[#232323] transition-[clip-path] duration-700 ease-[cubic-bezier(0.77,0,0.18,1)] ${
+        className={`fixed inset-0 z-40 flex w-full max-w-[100vw] flex-col bg-[#232323] transition-[clip-path] duration-700 ease-[cubic-bezier(0.77,0,0.18,1)] ${
           menuOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{

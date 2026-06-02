@@ -106,9 +106,17 @@ export default function ServicosHero() {
             scale: 1.24,
             opacity: 0,
             filter: "blur(16px)",
+            y: 28,
             transformOrigin: "left center",
           },
-          { scale: 1, opacity: 1, filter: "blur(0px)", duration: 1.4 },
+          {
+            scale: 1,
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            duration: 1.4,
+            ease: "power3.out",
+          },
           "-=0.2"
         )
         .fromTo(".servicos-tagline-marker",

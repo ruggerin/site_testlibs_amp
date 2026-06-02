@@ -2,8 +2,11 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { figmaClamp } from "@/lib/figma-scale";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 /** Hero /blog — Figma head 2:435 (2401×1007; grupo em x:-68 no frame 1920). */
 const ARTBOARD_W = 1920;
@@ -25,6 +28,8 @@ const INTRO_SIZE = figmaClamp(28, { min: 15, max: 28, vw: 1.45 });
 
 const INTRO =
   "Explore nossa curadoria de insights sobre marketing 360, dados e branding para entender como o mercado está evoluindo e como sua marca pode liderar essa mudança.";
+
+const BLEED_LEFT = "-2vw";
 
 /** Coordenadas no frame 1920 (offset do grupo head -68 já somado). */
 const FIGMA = {
@@ -48,6 +53,13 @@ const heroHeight = figmaClamp(HEAD_H, {
   vw: (HEAD_H / ARTBOARD_W) * 100,
 });
 
+const titleStyle = {
+  fontFamily: "var(--font-darker-grotesque)",
+  fontSize: TITLE_SIZE,
+  lineHeight: 0.165,
+  letterSpacing: "-0.06em",
+} as const;
+
 type TaglineProps = {
   lines: string[];
   align: "left" | "right";
@@ -55,33 +67,35 @@ type TaglineProps = {
 };
 
 function BlogTagline({ lines, align, markerAtRight }: TaglineProps) {
-  const textAlign = align === "right" ? "text-right" : "text-left";
+  const lineClass = `block font-semibold uppercase leading-[1.154] text-[#232323] ${
+    align === "right" ? "text-right" : "text-left"
+  }`;
 
   return (
     <div
-      className={`relative flex w-full flex-col gap-3 ${
+      className={`blog-tagline relative flex w-full flex-col gap-3 ${
         align === "right" ? "items-end" : "items-start"
       }`}
     >
       <span
-        className={`absolute bg-[var(--orange)] ${markerAtRight ? "right-0" : "left-0"}`}
+        className={`blog-tagline-marker absolute bg-[var(--orange)] ${markerAtRight ? "right-0" : "left-0"}`}
         aria-hidden
         style={{
           bottom: "calc(100% + clamp(0.45rem, 1.1em, 1.25rem))",
           width: "clamp(48px, 4.3vw, 83px)",
           height: "clamp(10px, 0.68vw, 13px)",
+          transformOrigin: markerAtRight ? "right center" : "left center",
         }}
       />
-      <div
-        className={textAlign}
-        style={{ fontFamily: "var(--font-inter)", fontSize: TAG_SIZE }}
-      >
+      <div style={{ fontFamily: "var(--font-inter)", fontSize: TAG_SIZE }}>
         {lines.map((line) => (
-          <span
-            key={line}
-            className={`block font-semibold uppercase leading-[1.154] text-[#232323] ${textAlign}`}
-          >
-            {line}
+          <span key={line} style={{ display: "block", overflow: "hidden" }}>
+            <span
+              className={`blog-tagline-line ${lineClass}`}
+              style={{ display: "inline-block" }}
+            >
+              {line}
+            </span>
           </span>
         ))}
       </div>
@@ -94,29 +108,61 @@ export default function BlogHero() {
 
   useGSAP(
     () => {
+      const hero = rootRef.current;
+      if (!hero) return;
+
       gsap
         .timeline({ defaults: { ease: "power3.out" } })
+        .fromTo(".hero-blog-wrap", { x: -40 }, { x: 0, duration: 1.1 })
         .fromTo(
           ".blog-hero-title",
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.9, stagger: 0.06 }
+          {
+            scale: 1.18,
+            opacity: 0,
+            filter: "blur(14px)",
+            transformOrigin: "left center",
+          },
+          {
+            scale: 1,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 1.25,
+            stagger: 0.08,
+          },
+          "-=0.15",
         )
         .fromTo(
-          ".blog-hero-tag, .blog-hero-intro",
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 },
-          "-=0.5"
+          ".blog-tagline-marker",
+          { scaleX: 0 },
+          { scaleX: 1, duration: 1.1, stagger: 0.3, ease: "power2.inOut" },
+          "-=0.85",
+        )
+        .fromTo(
+          ".blog-tagline-line",
+          { y: "108%" },
+          { y: "0%", duration: 1.35, stagger: 0.15, ease: "power3.out" },
+          "<0.12",
+        )
+        .fromTo(
+          ".blog-hero-intro",
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.85 },
+          "-=0.9",
         );
-    },
-    { scope: rootRef }
-  );
 
-  const titleStyle = {
-    fontFamily: "var(--font-darker-grotesque)",
-    fontSize: TITLE_SIZE,
-    lineHeight: 0.165,
-    letterSpacing: "-0.06em",
-  } as const;
+      gsap.to(".hero-blog-wrap", {
+        xPercent: -12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.9,
+        },
+      });
+    },
+    { scope: rootRef },
+  );
 
   return (
     <section
@@ -143,27 +189,32 @@ export default function BlogHero() {
           />
         </div>
 
-        <span
-          className="blog-hero-title pointer-events-none absolute z-10 m-0 whitespace-nowrap font-black uppercase text-[var(--orange)]"
-          style={{
-            ...titleStyle,
-            top: pxTop(FIGMA.blog.y),
-            left: pxLeft(FIGMA.blog.x),
-          }}
+        <div
+          className="hero-blog-wrap pointer-events-none absolute inset-0 z-10"
+          style={{ transform: `translateX(${BLEED_LEFT})` }}
         >
-          blog
-        </span>
+          <span
+            className="blog-hero-title absolute m-0 whitespace-nowrap font-black uppercase text-[var(--orange)]"
+            style={{
+              ...titleStyle,
+              top: pxTop(FIGMA.blog.y),
+              left: pxLeft(FIGMA.blog.x),
+            }}
+          >
+            blog
+          </span>
 
-        <span
-          className="blog-hero-title pointer-events-none absolute z-10 m-0 whitespace-nowrap font-black uppercase text-[var(--orange)]"
-          style={{
-            ...titleStyle,
-            top: pxTop(FIGMA.amp.y),
-            left: pxLeft(FIGMA.amp.x),
-          }}
-        >
-          amp
-        </span>
+          <span
+            className="blog-hero-title absolute m-0 whitespace-nowrap font-black uppercase text-[var(--orange)]"
+            style={{
+              ...titleStyle,
+              top: pxTop(FIGMA.amp.y),
+              left: pxLeft(FIGMA.amp.x),
+            }}
+          >
+            amp
+          </span>
+        </div>
 
         <p
           className="blog-hero-intro pointer-events-none absolute z-20 m-0 font-normal leading-[2.21] text-[#232323]"
