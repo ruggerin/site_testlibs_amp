@@ -158,7 +158,7 @@ export default function CulturaHero() {
   }, { scope: heroRef });
 
   return (
-    <section ref={heroRef} className="relative overflow-visible bg-[var(--orange)]">
+    <section ref={heroRef} data-page-hero className="relative overflow-visible bg-[var(--orange)]">
       <div className="pointer-events-none absolute inset-0 min-h-full" aria-hidden>
         <Image
           src="/nossa-cultura/hero-bg.svg"

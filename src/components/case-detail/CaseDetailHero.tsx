@@ -105,7 +105,7 @@ export default function CaseDetailHero({ item, prev, next }: Props) {
   );
 
   return (
-    <header ref={heroRef} className="relative bg-[var(--orange)] text-[#232323]">
+    <header ref={heroRef} data-page-hero className="relative bg-[var(--orange)] text-[#232323]">
       <div className="relative z-20">
         <Navbar theme="light" />
       </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import ImageLightbox from "@/components/ImageLightbox";
 import { figmaClamp } from "@/lib/figma-scale";
 import { FULL_BLEED } from "@/lib/site";
 import type { Award } from "@/data/awards";
@@ -117,6 +118,7 @@ function CarouselArrow({
 
 export default function AwardsCarousel({ awards }: { awards: Award[] }) {
   const [current, setCurrent] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -128,6 +130,7 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
   const hasEnteredRef = useRef(false);
   const isVisibleRef = useRef(false);
   const autoplayPausedRef = useRef(false);
+  const lightboxOpenRef = useRef(false);
   currentRef.current = current;
 
   const measure = useCallback(() => {
@@ -266,6 +269,31 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
     [awards.length, applyFrame]
   );
 
+  const openLightbox = useCallback((index: number) => {
+    if (!awards[index]?.image) return;
+    lightboxOpenRef.current = true;
+    autoplayPausedRef.current = true;
+    setLightboxIndex(index);
+  }, [awards]);
+
+  const closeLightbox = useCallback(() => {
+    lightboxOpenRef.current = false;
+    autoplayPausedRef.current = false;
+    setLightboxIndex(null);
+  }, []);
+
+  const goLightboxPrev = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i - 1 + awards.length) % awards.length,
+    );
+  }, [awards.length]);
+
+  const goLightboxNext = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i + 1) % awards.length,
+    );
+  }, [awards.length]);
+
   // Avanço automático (pausa no hover, aba oculta ou durante animação)
   useEffect(() => {
     if (awards.length <= 1) return;
@@ -278,6 +306,7 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
         document.hidden ||
         !isVisibleRef.current ||
         autoplayPausedRef.current ||
+        lightboxOpenRef.current ||
         animating.current
       ) {
         return;
@@ -299,6 +328,8 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
   }, [awards.length, step]);
 
   const active = awards[current]!;
+  const lightboxAward =
+    lightboxIndex !== null ? awards[lightboxIndex] : null;
 
   return (
     <section
@@ -365,6 +396,14 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
                       sizes="(max-width: 768px) 70vw, 573px"
                     />
                   ) : null}
+                  {i === current && award.image ? (
+                    <button
+                      type="button"
+                      className="absolute inset-0 z-10 cursor-zoom-in border-0 bg-transparent p-0"
+                      aria-label={`Ampliar prêmio: ${award.title}`}
+                      onClick={() => openLightbox(i)}
+                    />
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -387,21 +426,34 @@ export default function AwardsCarousel({ awards }: { awards: Award[] }) {
               >
                 {active.title}
               </p>
-              <p
-                className="font-black uppercase leading-[0.98] text-[#F7F7F7]"
-                style={{
-                  fontFamily: "var(--font-darker-grotesque)",
-                  fontSize: DESC_SIZE,
-                }}
-              >
-                {active.description}
-              </p>
+              {active.description ? (
+                <p
+                  className="font-black uppercase leading-[0.98] text-[#F7F7F7]"
+                  style={{
+                    fontFamily: "var(--font-darker-grotesque)",
+                    fontSize: DESC_SIZE,
+                  }}
+                >
+                  {active.description}
+                </p>
+              ) : null}
             </div>
 
             <CarouselArrow direction="next" onClick={() => step(1)} />
           </div>
         </div>
       </div>
+
+      {lightboxAward?.image ? (
+        <ImageLightbox
+          open
+          src={lightboxAward.image}
+          alt={lightboxAward.title}
+          onClose={closeLightbox}
+          onPrev={awards.length > 1 ? goLightboxPrev : undefined}
+          onNext={awards.length > 1 ? goLightboxNext : undefined}
+        />
+      ) : null}
     </section>
   );
 }

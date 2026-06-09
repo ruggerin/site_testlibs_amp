@@ -15,6 +15,25 @@ export type CaseStudy = {
   gallery?: string[];
 };
 
+/**
+ * Cases fora do site — remover slug daqui para republicar.
+ * esplanada · lacqua-residencial · amp-ai
+ */
+export const ARCHIVED_CASE_SLUGS = [
+  "esplanada",
+  "lacqua-residencial",
+  "amp-ai",
+] as const;
+
+export function isCaseArchived(slug: string): boolean {
+  return (ARCHIVED_CASE_SLUGS as readonly string[]).includes(slug);
+}
+
+/** Cases visíveis no grid e nas rotas públicas. */
+export function getPublishedCases(): CaseStudy[] {
+  return CASES.filter((c) => !isCaseArchived(c.slug));
+}
+
 /** Conteúdo — public/assets/secao_cases.txt */
 export const CASES: CaseStudy[] = [
   {
@@ -98,6 +117,7 @@ export const CASES: CaseStudy[] = [
     result:
       "Giro de estoque acelerado e consolidação da presença da marca em toda a região.",
   },
+  /* arquivado — ver ARCHIVED_CASE_SLUGS */
   {
     slug: "esplanada",
     client: "esplanada",
@@ -114,6 +134,7 @@ export const CASES: CaseStudy[] = [
     result:
       "Lojas completamente lotadas na inauguração e um fluxo intenso de clientes no retorno ao mercado.",
   },
+  /* arquivado — ver ARCHIVED_CASE_SLUGS */
   {
     slug: "lacqua-residencial",
     client: "lacqua residencial",
@@ -146,6 +167,7 @@ export const CASES: CaseStudy[] = [
     result:
       "Loja tomada por clientes, alto volume de vendas e um novo padrão de campanha para a região.",
   },
+  /* arquivado — ver ARCHIVED_CASE_SLUGS */
   {
     slug: "amp-ai",
     client: "agência amp",
@@ -168,6 +190,14 @@ export function getCaseBySlug(slug: string): CaseStudy | undefined {
   return CASES.find((c) => c.slug === slug);
 }
 
+/** Case publicado — retorna `undefined` se arquivado. */
+export function getPublishedCaseBySlug(slug: string): CaseStudy | undefined {
+  const item = getCaseBySlug(slug);
+  return item && !isCaseArchived(slug) ? item : undefined;
+}
+
 export function getRelatedCases(slug: string, limit = 3): CaseStudy[] {
-  return CASES.filter((c) => c.slug !== slug).slice(0, limit);
+  return getPublishedCases()
+    .filter((c) => c.slug !== slug)
+    .slice(0, limit);
 }

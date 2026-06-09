@@ -11,12 +11,12 @@ const CLIENTS_TITLE_FONT = figmaClamp(250, { min: 40, max: 250 });
 const CLIENTS_COPY_FONT = figmaClamp(28, { min: 15, max: 28 });
 
 const CLIENTS_COPY =
-  "Grandes nomes não aceitam amadorismo. Se elas confiam a estratégia de crescimento delas à AMP, talvez você devesse se perguntar por que a sua marca ainda não está aqui.";
+  "Grandes marcas não aceitam amadorismo. Se elas confiam a estratégia de crescimento à AMP, talvez você devesse se perguntar por que a sua marca ainda não está aqui.";
 
 const TITLE_STYLE = {
   fontFamily: "var(--font-darker-grotesque)",
   fontSize: CLIENTS_TITLE_FONT,
-  lineHeight: 0.652,
+  lineHeight: 0.82,
   letterSpacing: "-0.06em",
 } as const;
 
@@ -39,7 +39,9 @@ export default function ClientsSection() {
         }}
       >
         {/* Títulos — posições do grupo sec3 (1:131) */}
-        <div className="clients-title relative z-10 w-full overflow-visible">
+        <div
+          className="clients-title relative z-10 flex w-full flex-col gap-[clamp(0.75rem,1.6vw,2.25rem)] overflow-visible"
+        >
           <h2
             className="clients-title-1 block font-black uppercase whitespace-nowrap text-right md:ml-[25.83%] md:w-[75.2%]"
             style={TITLE_STYLE}
@@ -48,17 +50,14 @@ export default function ClientsSection() {
           </h2>
           <h2
             className="clients-title-2 block font-black uppercase whitespace-nowrap text-left md:max-w-[63.4%]"
-            style={{
-              ...TITLE_STYLE,
-              marginTop: "clamp(-0.45em, -1.1vw, -21px)",
-            }}
+            style={TITLE_STYLE}
           >
             companhia
           </h2>
         </div>
 
         <p
-          className="clients-sub relative z-20 mt-[clamp(1.25rem,2.2vw,2.625rem)] w-full font-medium text-[var(--ink)]/85
+          className="clients-sub relative z-20 mt-[clamp(2.5rem,4.5vw,5.5rem)] w-full font-medium text-[var(--ink)]/85
                      md:ml-[46.875%] md:max-w-[44.58%] md:pr-6"
           style={{
             fontFamily: "var(--font-inter)",

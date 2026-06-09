@@ -69,18 +69,6 @@
       ]
     },
     {
-      "id": "emanuel",
-      "ordem_exibicao": 7,
-      "nome_completo": "Emanuel Lucas",
-      "funcao": "Social Media",
-      "historico": "Atuação em marketing digital com foco em varejo, planejamento estratégico, criação de conteúdo, edição e produção audiovisual.",
-      "fotos": [
-        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019865954.png",
-        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019881265.png",
-        "/assets/team/EMANUEL/magnific_ultra-realistic-cinematic_3019920572.png"
-      ]
-    },
-    {
       "id": "michelle",
       "ordem_exibicao": 8,
       "nome_completo": "Michelle Soares",
@@ -218,7 +206,7 @@
       "ordem_exibicao": 20,
       "nome_completo": "Geise Araújo",
       "funcao": "Coordenadora Financeira e Mídia AMP",
-      "historico": "Organiza e otimiza processos para decisões mais eficientes da empresa e clientes, através de negociações com parceiros e veículos.",
+      "historico": "Organizo e otimizo processos para decisões mais eficientes da empresa e clientes, através de negociações com parceiros e veículos.",
       "fotos": [
         "/assets/team/GEISE/Ultra_realistic_cinematic_editorial_portrait_202605250228.jpeg",
         "/assets/team/GEISE/Ultra_realistic_cinematic_editorial_portrait_202605250232.jpeg"

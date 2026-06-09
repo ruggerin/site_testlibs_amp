@@ -8,7 +8,7 @@ import NorteBrasilMap, { type NorteStateId } from "@/components/NorteBrasilMap";
 const LEFT_COL_FR = 683;
 const ARTBOARD_W = 1910;
 
-const STATES = ["acre", "amapá", "amazonas", "pará", "rondônia", "roraima"] as const;
+const STATES = ["amazonas", "acre", "amapá", "pará", "rondônia", "roraima"] as const;
 const DEFAULT_STATE: NorteStateId = "amazonas";
 
 const TITLE_SIZE = figmaClamp(250, { min: 40, max: 180, vw: 8.5 });
@@ -41,19 +41,24 @@ function StatesMenu({ highlighted, onHighlight, className = "" }: StatesMenuProp
           <li key={state} className="min-w-0">
             <button
               type="button"
-              className={`state-item flex ${STATE_ROW_H} w-full items-center gap-2 border-2 border-[var(--orange)] px-[clamp(12px,1.2vw,22px)] transition-colors duration-200 ${
-                isActive ? "bg-[var(--orange)]" : "bg-transparent hover:bg-[var(--orange)]/15"
+              className={`state-item flex ${STATE_ROW_H} w-full items-center gap-2 border-2 border-[var(--orange)] px-[clamp(12px,1.2vw,22px)] transition-all duration-200 ${
+                isActive
+                  ? "bg-[var(--orange)] scale-[1.02]"
+                  : "bg-transparent scale-100 hover:bg-[var(--orange)]/15"
               }`}
               onMouseEnter={() => onHighlight(state)}
               onFocus={() => onHighlight(state)}
             >
-              {isActive ? (
-                <span className="size-2 shrink-0 rounded-full bg-[var(--cream)]" aria-hidden />
-              ) : (
-                <span className="size-2 shrink-0" aria-hidden />
-              )}
               <span
-                className={`font-medium lowercase ${isActive ? "text-[#232332]" : "text-[var(--cream)]"}`}
+                className="size-2 shrink-0 rounded-full bg-[var(--cream)] transition-all duration-200"
+                style={{
+                  opacity: isActive ? 1 : 0,
+                  transform: isActive ? "scale(1)" : "scale(0)",
+                }}
+                aria-hidden
+              />
+              <span
+                className={`font-medium lowercase transition-colors duration-200 ${isActive ? "text-[#232323]" : "text-[var(--cream)]"}`}
                 style={{ fontFamily: "var(--font-inter)", fontSize: STATE_FONT }}
               >
                 {state}
@@ -72,7 +77,7 @@ function CopyBlock({ className = "" }: { className?: string }) {
       className={`estamos-text max-w-[min(100%,595px)] font-medium text-[var(--cream)] ${className}`}
       style={BODY_STYLE}
     >
-      Presença estratégica com alcance nacional.
+      Presença local com alcance nacional.
       <br />
       <br />
       Para quem pensa grande, o Brasil é logo ali e, com a AMP, o destino é sempre o topo.
@@ -144,7 +149,7 @@ export default function EstamosAquiSection() {
           <StatesMenu highlighted={highlighted} onHighlight={handleHighlight} />
         </div>
 
-        <div className="relative flex h-full min-h-0 min-w-0 items-center justify-end overflow-hidden">
+        <div className="relative flex h-full min-h-0 min-w-0 items-start justify-end overflow-hidden pt-[4svh]">
           <NorteBrasilMap
             highlighted={highlighted}
             onHighlight={handleHighlight}

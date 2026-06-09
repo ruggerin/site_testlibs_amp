@@ -6,10 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SOCIAL_ICON_BY_LABEL } from "@/components/SocialIconButtons";
 import { SOCIAL_LINKS } from "@/lib/social";
-import { HOME_EDGE_X, HOME_LOGO_OFFSET, HOME_NAV_WIDTH } from "@/lib/site";
-
-/** Mesma sangria direita do hero/rodapé — evita % no botão que desloca em telas largas. */
-const HOME_PAD_X = "clamp(24px, 1.5625vw, 30px)";
+import { HOME_FIGMA, homeRect } from "@/lib/home-figma";
 
 /** Itens centrais — Figma 2:121 (textCase UPPER no arquivo; rótulos como no layout). */
 const MENU_PRIMARY: { label: string; href: string }[] = [
@@ -38,6 +35,8 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
   const isHome = pathname === "/";
   const isCulturaHero = pathname === "/nossa-cultura";
   const useDarkChrome = theme === "light" || isHome || isCulturaHero;
+  const homeLogo = homeRect(HOME_FIGMA.logo);
+  const homeMenu = homeRect(HOME_FIGMA.menu); // top: -2.5%
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -59,43 +58,48 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
     <>
       <nav
         ref={navRef}
-        className={`z-50 flex items-center justify-between transition-[background-color,padding,box-shadow] duration-300 ease-out ${
+        className={`z-50 transition-[background-color,padding,box-shadow] duration-300 ease-out ${
           isHome
-            ? "fixed top-0 py-6"
-            : `fixed top-0 left-0 right-0 px-8 md:px-16 ${
+            ? "pointer-events-none absolute inset-0 z-50 h-full w-full"
+            : `fixed top-0 left-0 right-0 flex items-center justify-between px-8 md:px-16 ${
                 showScrollBar
                   ? "bg-[#232323]/95 py-4 shadow-[0_2px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm"
                   : "py-6"
               }`
         }`}
-        style={
-          isHome
-            ? {
-                left: HOME_EDGE_X,
-                width: HOME_NAV_WIDTH,
-                paddingLeft: 0,
-                paddingRight: HOME_PAD_X,
-              }
-            : undefined
-        }
       >
         <Link
           href="/"
           className={`relative z-50 block shrink-0 transition-opacity hover:opacity-90 ${
-            effectiveDarkChrome
+            isHome
+              ? "pointer-events-auto absolute"
+              : effectiveDarkChrome
               ? "h-[26px] w-[4.6rem] sm:h-[30px] sm:w-[5.35rem] md:h-[34px] md:w-[6.1rem]"
               : "h-8 w-[7.5rem] sm:h-9 sm:w-[8.5rem] md:h-10 md:w-40"
           }`}
-          style={isHome ? { marginLeft: HOME_LOGO_OFFSET } : undefined}
+          style={isHome ? homeLogo : undefined}
         >
-          <Image
-            src={effectiveDarkChrome ? LOGO_DARK : LOGO_LIGHT}
-            alt="Agência AMP"
-            fill
-            className="object-contain object-left"
-            sizes={effectiveDarkChrome ? "(max-width: 768px) 74px, 98px" : "(max-width: 768px) 140px, 180px"}
-            priority
-          />
+          {isHome ? (
+            // SVG 185×66 — mesma caixa do Figma; img nativo evita crop do next/image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={LOGO_DARK}
+              alt="Agência AMP"
+              width={185}
+              height={66}
+              className="block h-full w-full"
+              draggable={false}
+            />
+          ) : (
+            <Image
+              src={effectiveDarkChrome ? LOGO_DARK : LOGO_LIGHT}
+              alt="Agência AMP"
+              fill
+              className="object-contain object-left"
+              sizes={effectiveDarkChrome ? "(max-width: 768px) 74px, 185px" : "(max-width: 768px) 140px, 180px"}
+              priority
+            />
+          )}
         </Link>
 
         <button
@@ -103,25 +107,28 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
-          className={`relative z-50 flex shrink-0 cursor-pointer flex-col justify-center gap-[6px] group ${
-            isHome ? "h-[26px] sm:h-[30px] md:h-[34px]" : "h-8 md:h-10"
+          className={`relative z-50 m-0 flex shrink-0 cursor-pointer flex-col border-0 bg-transparent p-0 group ${
+            isHome
+              ? "pointer-events-auto absolute min-h-0 justify-start gap-[8px]"
+              : "h-8 justify-center gap-[6px] md:h-10"
           }`}
+          style={isHome ? homeMenu : undefined}
         >
           <span
             className={`block h-[2px] origin-center transition-all duration-300 ${barColor} ${
-              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+              isHome ? "w-full" : "w-8"
             }`}
             style={{ transform: menuOpen ? "translateY(8px) rotate(45deg)" : "none" }}
           />
           <span
             className={`block h-[2px] transition-opacity duration-300 ${barColor} ${
-              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+              isHome ? "w-full" : "w-8"
             }`}
             style={{ opacity: menuOpen ? 0 : 1 }}
           />
           <span
             className={`block h-[2px] origin-center transition-all duration-300 ${barColor} ${
-              isHome ? "w-[clamp(28px,2.1vw,32px)]" : "w-8"
+              isHome ? "w-full" : "w-8"
             }`}
             style={{ transform: menuOpen ? "translateY(-8px) rotate(-45deg)" : "none" }}
           />
@@ -153,18 +160,31 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
                     <Link
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
-                      className={`flex w-full items-center px-5 py-[0.12em] uppercase leading-none tracking-[-0.02em] transition-[background-color,color] duration-300 ease-out
-                        ${
-                          active
-                            ? "bg-[var(--orange)] font-black text-[var(--ink)]"
-                            : "font-medium text-[var(--orange)] hover:bg-[var(--orange)] hover:text-[var(--ink)]"
-                        }`}
+                      className={`group/nav relative flex min-h-[1em] w-full items-center px-5 uppercase tracking-[-0.02em] ${
+                        active ? "font-black" : "font-medium"
+                      }`}
                       style={{
                         fontFamily: "var(--font-darker-grotesque)",
                         fontSize: "clamp(1.85rem, 5.2vw, 4.5625rem)",
                       }}
                     >
-                      {item.label}
+                      <span
+                        aria-hidden
+                        className={`pointer-events-none absolute inset-x-0 top-1/2 h-[1em] -translate-y-1/2 transition-colors duration-300 ease-out ${
+                          active
+                            ? "bg-[var(--orange)]"
+                            : "bg-transparent group-hover/nav:bg-[var(--orange)] group-focus-visible/nav:bg-[var(--orange)]"
+                        }`}
+                      />
+                      <span
+                        className={`relative z-10 leading-none transition-colors duration-300 ease-out ${
+                          active
+                            ? "text-[var(--ink)]"
+                            : "text-[var(--orange)] group-hover/nav:text-[var(--ink)] group-focus-visible/nav:text-[var(--ink)]"
+                        }`}
+                      >
+                        {item.label}
+                      </span>
                     </Link>
                   </li>
                 );
@@ -179,27 +199,31 @@ export default function Navbar({ theme = "dark" }: NavbarProps) {
                 const Icon =
                   SOCIAL_ICON_BY_LABEL[s.label] ?? SOCIAL_ICON_BY_LABEL.LinkedIn;
                 return (
-                  <li key={s.label} className="flex flex-row items-center gap-7 sm:gap-8">
+                  <li key={s.label} className="-mx-5 sm:-mx-8 lg:-mx-10">
                     <a
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex size-12 shrink-0 items-center justify-center bg-[var(--orange)] text-[var(--ink)] transition-colors duration-300 ease-out hover:bg-[var(--ink)] hover:text-[var(--orange)]"
                       aria-label={s.label}
+                      className="group/social relative flex h-12 w-full items-center gap-7 px-5 focus-visible:outline-none sm:gap-8 sm:px-8 lg:px-10"
                     >
-                      <Icon className="h-[22px] w-[22px]" />
-                    </a>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="min-w-0 font-medium uppercase leading-[1.356] text-[var(--orange)] transition-[color,opacity] duration-300 ease-out hover:text-[var(--ink)] hover:opacity-90"
-                      style={{
-                        fontFamily: "var(--font-darker-grotesque)",
-                        fontSize: "clamp(1.125rem, 2.35vw, 2.5rem)",
-                      }}
-                    >
-                      {s.label.toLowerCase()}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-transparent transition-colors duration-300 ease-out group-hover/social:bg-[var(--orange)] group-focus-visible/social:bg-[var(--orange)]"
+                      />
+                      <span className="relative z-10 flex size-12 shrink-0 items-center justify-center bg-[var(--orange)] text-[var(--ink)]">
+                        <Icon className="h-[22px] w-[22px]" aria-hidden />
+                      </span>
+                      <span
+                        className="relative z-10 flex h-12 min-w-0 items-center font-medium uppercase text-[var(--orange)] transition-colors duration-300 ease-out group-hover/social:text-[var(--ink)] group-focus-visible/social:text-[var(--ink)]"
+                        style={{
+                          fontFamily: "var(--font-darker-grotesque)",
+                          fontSize: "clamp(1.125rem, 2.35vw, 2.5rem)",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {s.label.toLowerCase()}
+                      </span>
                     </a>
                   </li>
                 );

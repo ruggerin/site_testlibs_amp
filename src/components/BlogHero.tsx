@@ -167,6 +167,7 @@ export default function BlogHero() {
   return (
     <section
       ref={rootRef}
+      data-page-hero
       className="relative overflow-x-clip bg-white"
       aria-label="Blog AMP"
     >

@@ -102,3 +102,36 @@ body.loading {
     transform: none;
   }
 }
+
+/* ─── Mapa Interativo — Norte do Brasil ───────────────────────── */
+.norte-map-path {
+  transition: fill 0.35s ease, stroke-width 0.25s ease;
+}
+
+.norte-map-path:not([data-map-label]) {
+  fill: rgba(255, 91, 0, 0);
+  stroke: #FF5B00;
+  stroke-width: 3;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.norte-map-path:not([data-map-label]).is-active {
+  fill: #FF5B00;
+  stroke-width: 6;
+}
+
+.norte-map-path[data-map-role="amazonas"] {
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+
+.norte-map-path[data-map-label] {
+  fill: rgba(35, 35, 35, 0);
+  pointer-events: none !important;
+  transition: fill 0.3s ease;
+}
+
+.norte-map-path[data-map-label].is-active {
+  fill: #232323;
+}

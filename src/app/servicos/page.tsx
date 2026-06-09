@@ -1,9 +1,9 @@
 import Navbar from "@/components/Navbar";
 import PageFooter from "@/components/PageFooter";
-import ServiceBlock from "@/components/ServiceBlock";
+import ServiceSection from "@/components/ServiceSection";
 import ServicosConnectBanner from "@/components/ServicosConnectBanner";
 import ServicosHero from "@/components/ServicosHero";
-import { SERVICES } from "@/data/services";
+import { SERVICOS_SECTIONS } from "@/data/servicos-sections";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -15,14 +15,14 @@ export const metadata = pageMetadata({
 
 export default function ServicosPage() {
   return (
-    <div className="min-h-screen bg-white text-[#232323]">
+    <div className="min-h-screen bg-[var(--cream)] text-[#232323]">
       <div className="relative">
         <Navbar theme="light" />
         <ServicosHero />
       </div>
 
-      {SERVICES.map((service) => (
-        <ServiceBlock key={service.id} service={service} />
+      {SERVICOS_SECTIONS.map((section) => (
+        <ServiceSection key={section.id} section={section} />
       ))}
 
       <ServicosConnectBanner />

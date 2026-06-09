@@ -141,7 +141,7 @@ export default function ServicosHero() {
   );
 
   return (
-    <section ref={heroRef} className="relative overflow-x-clip overflow-y-visible bg-white">
+    <section ref={heroRef} data-page-hero className="relative overflow-x-clip overflow-y-visible bg-white">
       <div
         className="relative w-full overflow-visible"
         style={{ height: heroHeight, minHeight: heroHeight }}

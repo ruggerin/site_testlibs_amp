@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { getAllPreloadImageUrls, PRELOAD_VIDEOS } from "@/lib/preload-assets";
+import { getPreloadImageUrls, PRELOAD_VIDEOS } from "@/lib/preload-assets";
 
 // ─── Paths originais de cada letra ────────────────────────────────────────────
 const PATH_A =
@@ -28,7 +28,7 @@ function progressToWidth(pct: number): number {
 }
 
 const MIN_MS = 2800; // tempo mínimo de branding no loader
-const MAX_MS = 30000; // failsafe — muitas imagens HD
+const MAX_MS = 12000; // failsafe — poucas imagens críticas
 
 interface LoaderProps {
   onComplete?: () => void;
@@ -42,7 +42,7 @@ export default function Loader({ onComplete }: LoaderProps) {
   useEffect(() => {
     document.body.classList.add("loading");
 
-    const urls = getAllPreloadImageUrls();
+    const urls = getPreloadImageUrls();
     const total = Math.max(urls.length, 1);
     let loaded = 0;
     const startAt = Date.now();
@@ -98,7 +98,7 @@ export default function Loader({ onComplete }: LoaderProps) {
       v.src = src;
     });
 
-    // Preload all images, tracking real progress
+    // Preload imagens críticas (primeira de cada página), tracking progress
     urls.forEach((url) => {
       const img = new Image();
       img.onload = img.onerror = () => {

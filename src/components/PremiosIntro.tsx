@@ -23,7 +23,7 @@ export default function PremiosIntro() {
               fontSize: HEADLINE_SIZE,
             }}
           >
-            Suco de cevadiss deixa as pessoas mais interessantis
+            O padrão de qualidade que nos move.
           </h2>
           <p
             className="min-w-0 font-normal leading-[2.21] text-[#F7F7F7] lg:pt-1"

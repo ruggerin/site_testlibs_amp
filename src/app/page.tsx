@@ -4,68 +4,49 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import SocialIconButtons from "@/components/SocialIconButtons";
 import { figmaClamp } from "@/lib/figma-scale";
-import {
-  HOME_CONTENT_W,
-  HOME_EDGE_X,
-  HOME_HERO_SCALE_X,
-  HOME_HERO_SCALE_Y,
-  HOME_NAV_WIDTH,
-  SITE,
-} from "@/lib/site";
-
-/** Figma Início 2:170 — Desktop 1920×1080. */
-const FIGMA_W = 1920;
-const FIGMA_H = 1080;
-
+import { HOME_ARTBOARD_W, HOME_FIGMA, homeRect } from "@/lib/home-figma";
+import { SITE } from "@/lib/site";
 
 const FOOTER_FONT = figmaClamp(20, {
   min: 11,
   max: 20,
-  vw: (20 / FIGMA_W) * 100,
+  vw: (20 / HOME_ARTBOARD_W) * 100,
 });
 
-/** Sangria no topo; respiro leve abaixo do header (entre 0 e o y:95 do frame). */
-const HERO_TOP = figmaClamp(22, { min: 12, max: 28, vw: (22 / FIGMA_W) * 100 });
-/** Faixa do rodapé + folga mínima para não “estourar” o SVG. */
-const FOOTER_RESERVE = `calc(${((FIGMA_H - 997) / FIGMA_H) * 100}% + clamp(10px, 0.85vh, 18px))`;
-const FOOTER_BOTTOM = `${((FIGMA_H - 997 - 47) / FIGMA_H) * 100}%`;
 export default function Home() {
-  return (
-    <>
-      <div className="relative h-[100svh] w-full overflow-hidden bg-[var(--orange)]">
-        <div className="home-bg-texture" aria-hidden>
-          <Image
-            src="/assets/wppr_orange_1.jpg"
-            alt=""
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-        </div>
+  const hero = homeRect(HOME_FIGMA.hero);
+  const footer = homeRect(HOME_FIGMA.footer);
 
+  return (
+    <div className="relative h-[100svh] w-full overflow-hidden bg-[var(--orange)]">
+      <div className="home-bg-texture" aria-hidden>
+        <Image
+          src="/assets/wppr_orange_1.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+      </div>
+
+      {/* Frame Figma 1920×1080 — tudo posicionado em % do artboard. */}
+      <div
+        className="relative mx-auto h-full w-full"
+        style={{ maxWidth: HOME_FIGMA.frame.maxWidth }}
+      >
         <Navbar />
 
-        {/* 10 ANOS — mesma coluna da logo/menu; escala proporcional (meet). */}
         <div
           className="pointer-events-none absolute z-[1] overflow-hidden"
-          style={{
-            top: HERO_TOP,
-            bottom: FOOTER_RESERVE,
-            left: HOME_EDGE_X,
-            width: HOME_CONTENT_W,
-          }}
+          style={hero}
         >
           <svg
             viewBox="0 0 1872 836"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="h-full w-full"
-            style={{
-              transform: `scale(${HOME_HERO_SCALE_X}, ${HOME_HERO_SCALE_Y})`,
-              transformOrigin: "top left",
-            }}
-            preserveAspectRatio="xMinYMin meet"
+            preserveAspectRatio="none"
             role="img"
             aria-label="10 Anos"
           >
@@ -89,20 +70,16 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* Rodapé — Figma 2:192 y:997, faixa 1872×47 */}
         <footer
           className="absolute z-10"
           style={{
-            bottom: FOOTER_BOTTOM,
-            left: HOME_EDGE_X,
-            width: HOME_NAV_WIDTH,
+            ...footer,
             fontFamily: "var(--font-inter)",
             fontSize: FOOTER_FONT,
             lineHeight: 1.21,
           }}
         >
-          {/* Desktop — Figma 2:192 (354 | 390 | 291 | 354 em 1872px) */}
-          <div className="relative mx-auto hidden min-h-[47px] w-full max-w-[1872px] lg:block">
+          <div className="relative hidden h-full w-full lg:block">
             <p className="absolute left-0 top-0 w-[18.91%] text-left text-[#232323]">
               Agência AMP ® {new Date().getFullYear()}
               <br />
@@ -110,7 +87,7 @@ export default function Home() {
             </p>
 
             <p className="absolute left-[28.63%] top-0 w-[20.83%] text-center text-[#232323]">
-              Rua Andrea Limongi, N16 - Parque Dez de Novembro | Manaus - AM
+              Rua Andrea Limonge, N16 - Parque Dez de Novembro | Manaus - AM
             </p>
 
             <div className="absolute top-1/2 left-[61.64%] -translate-y-1/2">
@@ -125,8 +102,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile — mesma faixa inferior, conteúdo empilhado */}
-          <div className="flex flex-col gap-3 pb-1 text-[#232323] lg:hidden">
+          <div className="flex h-full flex-col justify-center gap-3 text-[#232323] lg:hidden">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <p>
                 Agência AMP ® {new Date().getFullYear()}
@@ -141,7 +117,7 @@ export default function Home() {
               </div>
             </div>
             <p className="text-center text-[clamp(10px,2.8vw,14px)]">
-              Rua Andrea Limongi, N16 - Parque Dez de Novembro | Manaus - AM
+              Rua Andrea Limonge, N16 - Parque Dez de Novembro | Manaus - AM
             </p>
             <div className="flex justify-center">
               <SocialIconButtons variant="on-light" />
@@ -149,6 +125,6 @@ export default function Home() {
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 }

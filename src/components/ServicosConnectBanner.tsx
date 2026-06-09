@@ -30,7 +30,7 @@ export default function ServicosConnectBanner() {
 
       gsap.fromTo(
         ".scb-headline-line",
-        { yPercent: 110, opacity: 0, filter: "blur(8px)" },
+        { yPercent: 100, opacity: 0, filter: "blur(6px)" },
         {
           yPercent: 0,
           opacity: 1,
@@ -62,18 +62,18 @@ export default function ServicosConnectBanner() {
     <section ref={sectionRef} className="w-full overflow-visible bg-white py-10 md:py-14">
       <div className="w-full" style={{ paddingLeft: SIDE_PAD, paddingRight: SIDE_PAD }}>
         <div className="w-full rounded-[35px] border-[3px] border-[#232323]/15 md:grid md:min-h-[clamp(280px,22vw,520px)] md:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
-          <div className="relative flex min-h-[240px] flex-col justify-center overflow-hidden rounded-t-[32px] bg-[var(--cream)] p-6 md:min-h-0 md:rounded-l-[32px] md:rounded-tr-none md:p-8 lg:px-10 lg:py-12">
+          <div className="relative flex min-h-[240px] flex-col justify-center overflow-visible rounded-t-[32px] bg-[var(--cream)] p-6 md:min-h-0 md:rounded-l-[32px] md:rounded-tr-none md:p-8 lg:px-10 lg:py-12">
             <p
-              className="font-black uppercase leading-[0.75] tracking-[-0.04em] text-[var(--orange)]"
+              className="font-black uppercase tracking-[-0.04em] text-[var(--orange)]"
               style={{
                 fontFamily: "var(--font-darker-grotesque)",
                 fontSize: HEADLINE_SIZE,
               }}
             >
-              {(["Quando", "tudo", "isso se", "conecta,"] as const).map((line, i) => (
-                <span key={line} className="block overflow-hidden">
+              {(["Quando", "tudo", "isso se", "conecta"] as const).map((line, i) => (
+                <span key={line} className="block overflow-hidden leading-[1.08]">
                   <span
-                    className={`scb-headline-line inline-block ${i === 2 ? "md:pl-[clamp(1.5rem,8vw,7rem)]" : ""}`}
+                    className={`scb-headline-line block leading-[0.88] ${i === 2 ? "md:pl-[clamp(1.5rem,8vw,7rem)]" : ""}`}
                   >
                     {line}
                   </span>

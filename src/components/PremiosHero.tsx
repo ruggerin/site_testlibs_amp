@@ -112,6 +112,7 @@ export default function PremiosHero() {
   return (
     <section
       ref={heroRef}
+      data-page-hero
       className={`${FULL_BLEED} z-10 h-[100svh] min-h-[100svh] overflow-hidden bg-white`}
       aria-label="Prêmios"
     >

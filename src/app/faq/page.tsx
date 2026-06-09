@@ -16,6 +16,7 @@ export default function FaqPage() {
         <Navbar theme="light" />
 
         <section
+          data-page-hero
           className="relative bg-[var(--orange)]"
           aria-label="FAQ"
           style={{ paddingTop: "clamp(6.25rem, 13vh, 8.5rem)" }}

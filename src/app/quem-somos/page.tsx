@@ -17,7 +17,6 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 /** Manifesto — bloco 1: foto 60%; bloco 2: 50/50 (desproporção vs. coluna de cima). */
 const MANIFESTO_GRID_PHOTO = "md:grid-cols-[minmax(0,60%)_minmax(0,1fr)]";
-const MANIFESTO_GRID_TEXT = "md:grid-cols-2";
 
 /** Hero `head` — Figma node 1:21 (grupo 2053×1417). */
 const HERO_HEAD_FIGMA = { w: 2053, h: 1417 } as const;
@@ -58,25 +57,19 @@ const PHOTOS = [
   { src: "/assets/ambiente/10.jpg", label: "Ambiente AMP" },
 ];
 
-const MANIFESTO_INTRO =
-  "Ser uma agência de marketing 360 vai além de reunir serviços sob o mesmo teto. Trata-se de operar como um verdadeiro hub de marketing, sendo um sistema onde cada frente conversa, se alimenta e evolui em conjunto.";
+const MANIFESTO_LONG = `Sabemos bem como funciona: branding sem performance é só um quadro bonito na parede, e performance sem branding é gastar recurso com quem não vai lembrar o seu nome amanhã.
 
-const MANIFESTO_LONG = `Sabemos bem como funciona: branding sem performance é só um quadro bonito na parede, e performance sem branding é queimar recurso com quem não vai lembrar o seu nome amanhã.
+Para nós da AMP, tudo precisa estar interligado e falando a mesma língua. Então, um conteúdo só pode ser eficaz se trouxer público qualificado, e a tecnologia só faz sentido se a experiência do seu cliente for tão fluida e intuitiva que ele nem perceba o que está sendo vendido.
 
-Na AMP, acreditamos que tudo precisa estar interligando e falando a mesma língua. Então um conteúdo só pode ser eficaz se trouxer público qualificado, e a tecnologia só faz sentido se a experiência do seu cliente for tão fluida e intuitiva que ele nem perceba o que está sendo vendido.
-
-É assim que pegamos aquele monte de ações soltas que você fazia antes e transforma em uma operação de verdade. Com clareza para você decidir, eficiência para o seu time respirar e crescimento para o seu caixa sentir o impacto.
+É assim que pegamos aquele monte de ações soltas que você fazia antes e as transformamos em uma operação de verdade. Com clareza para você decidir, eficiência para o seu time respirar e crescimento para o seu caixa sentir o impacto.
 
 No fim das contas, entregamos o que falta em quase toda agência por aí: coerência.`;
 
 const QUOTE_DECADA =
   "Ao longo de mais de uma década, a AMP entendeu que resultados consistentes não nascem de esforços isolados.";
 
-const QUOTE_CRIATIVO =
-  "Aqui, o criativo não caminha sem o dado. E os dados não existem sem direção estratégica.";
-
-const BRIDGE_HARMONIA =
-  "Eles nascem da harmonia entre estratégia, criatividade e análise.";
+const MANIFESTO_BRIDGE_INTRO =
+  "Eles nascem da harmonia entre estratégia, criatividade e análise. Ser uma agência de marketing 360 vai além de reunir serviços sob o mesmo teto. Trata-se de operar como um verdadeiro hub de marketing, sendo um sistema no qual cada frente conversa, se alimenta e evolui em conjunto.";
 
 /**
  * Navbar fixa ocupa ~80px no topo — seções não-hero precisam desse respiro.
@@ -306,30 +299,6 @@ export default function QuemSomos() {
       );
     });
 
-    // Citação criativo — play once ao entrar (scrub no bloco 2 falha com snap/Lenis: some antes de aparecer)
-    gsap.utils.toArray<HTMLElement>(".reveal-quote-criativo").forEach((el) => {
-      const wrap = el.closest(".manifesto-quote-criativo-wrap");
-      const tween = gsap.fromTo(
-        el,
-        { autoAlpha: 0, xPercent: -102 },
-        {
-          autoAlpha: 1,
-          xPercent: 0,
-          duration: 1.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: wrap ?? el,
-            start: "top 88%",
-            toggleActions: "play none none none",
-            once: true,
-            invalidateOnRefresh: true,
-          },
-        }
-      );
-      const st = tween.scrollTrigger;
-      if (st && st.progress > 0) tween.progress(1);
-    });
-
     // ─────────────────────────────────────────────────────────────────────────
     // MANIFESTO — parallax na foto do edifício
     // ─────────────────────────────────────────────────────────────────────────
@@ -479,6 +448,7 @@ export default function QuemSomos() {
         ══════════════════════════════════════════════════════════════════ */}
         <section
           data-section
+          data-page-hero
           className={`hero-section relative ${SECTION_SCREEN} overflow-hidden bg-[#141414] h-[100svh] min-h-[100svh]`}
         >
           {/* ── Glow ambiente atrás da foto ─────────────────────────────── */}
@@ -659,42 +629,23 @@ export default function QuemSomos() {
                 </p>
               </div>
 
-              <div className="flex flex-col gap-6 px-5 pb-8 sm:px-8 lg:px-10 lg:pb-0">
-                <p
-                  className="reveal-text text-[var(--cream)] font-bold uppercase leading-snug tracking-[0.04em]
-                             text-[clamp(14px,1.65vw,32px)]"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  {BRIDGE_HARMONIA}
-                </p>
+              <div className="px-5 pb-8 sm:px-8 lg:px-10 lg:pb-0">
                 <p
                   className="reveal-text text-[var(--cream)]/90 font-medium leading-[2.2] text-[clamp(15px,1.45vw,28px)]"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  {MANIFESTO_INTRO}
+                  {MANIFESTO_BRIDGE_INTRO}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* ── Bloco 2: quote criativo + texto longo (citação no topo do bloco) ── */}
-          <div
-            className={`manifesto-block-2 grid w-full max-w-none grid-cols-1 items-start gap-0 md:items-start md:gap-0 ${MANIFESTO_GRID_TEXT}`}
-          >
-            <div className="manifesto-marker-wrap manifesto-quote-criativo-wrap mt-[25px] flex w-full items-start justify-start overflow-hidden pb-8 sm:pb-10 lg:pb-12">
-              <p
-                className="reveal-quote-criativo m-0 ml-10 max-w-none font-black uppercase tracking-[-0.06em] text-[var(--ink)] will-change-transform"
-                style={{
-                  fontFamily: "var(--font-darker-grotesque)",
-                  fontSize: "clamp(1.05rem, 2.7vw, 3.25rem)",
-                }}
-              >
-                <span className="marker-quote-bg">{QUOTE_CRIATIVO}</span>
-              </p>
-            </div>
-
-            <div className="manifesto-slide-2-parallax will-change-transform px-5 sm:px-8 lg:px-10"
-                 style={{ paddingTop: 0, paddingBottom: "clamp(0.75rem, 2svh, 2.5rem)" }}>
+          {/* ── Bloco 2: texto longo do manifesto (PDF — sem citação criativo) ── */}
+          <div className="manifesto-block-2 w-full max-w-none">
+            <div
+              className="manifesto-slide-2-parallax will-change-transform px-5 sm:px-8 lg:px-10"
+              style={{ paddingTop: "clamp(0.75rem, 2svh, 2.5rem)", paddingBottom: "clamp(0.75rem, 2svh, 2.5rem)" }}
+            >
               <p
                 className="reveal-text whitespace-pre-line text-[var(--cream)]/90 font-medium leading-[1.8] lg:leading-[2.2]
                            text-[clamp(15px,1.45vw,28px)]"

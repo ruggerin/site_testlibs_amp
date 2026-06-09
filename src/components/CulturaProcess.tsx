@@ -47,8 +47,7 @@ const DEFAULT_STEPS: CulturaStep[] = [
     number: 1,
     title: "Imersão",
     icon: "/assets/nossa_cultura/icones/item_1.png",
-    description:
-      "Antes de qualquer plano, a gente entende: negócio, mercado, momento e histórico. Uma estratégia consistente não pode ser construída no raso. É aqui que as peças começam a fazer sentido.",
+    description: "Antes de qualquer plano, levamos em consideração:",
     placement: {
       top: pctY(116),
       left: pctX(798),

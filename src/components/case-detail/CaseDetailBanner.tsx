@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { figmaClamp } from "@/lib/figma-scale";
+import { SITE } from "@/lib/site";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -91,13 +91,15 @@ export default function CaseDetailBanner() {
               Nós não apenas pensamos fora da caixa, nós criamos uma nova caixa onde sua marca
               brilha e seus concorrentes ficam se perguntando o que aconteceu.
             </p>
-            <Link
-              href="/quem-somos"
+            <a
+              href={SITE.captureUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="cdb-cta inline-flex w-fit max-w-full shrink-0 items-center justify-center border-[3px] border-[var(--orange)] px-10 py-4 font-semibold uppercase tracking-[0.1em] text-[var(--orange)] transition-colors hover:bg-[var(--orange)] hover:text-white"
               style={{ fontFamily: "var(--font-inter)", fontSize: CTA_SIZE }}
             >
               Cansei de ser médio
-            </Link>
+            </a>
           </div>
         </div>
       </div>

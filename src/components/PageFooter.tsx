@@ -1,6 +1,6 @@
 import SocialIconButtons from "@/components/SocialIconButtons";
+import { FOOTER_INNER, FOOTER_PAD_X, SITE } from "@/lib/site";
 import { FOOTER_SOCIAL_LINKS } from "@/lib/social";
-import { FRAME, SITE } from "@/lib/site";
 
 const LEGAL_LINKS: { label: string; href: string }[] = [
   { label: "FAQ", href: "/faq" },
@@ -8,46 +8,92 @@ const LEGAL_LINKS: { label: string; href: string }[] = [
   { label: "Privacidade", href: "#" },
 ];
 
+const FOOTER_TEXT =
+  "text-[clamp(13px,1.04vw,20px)] font-normal leading-[1.21]";
+
 export default function PageFooter() {
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-[#161616] text-[var(--orange)]">
       <div
-        className={`${FRAME} flex flex-col items-start justify-between gap-8 px-5 py-10 sm:px-8 sm:py-12 md:px-16 lg:flex-row lg:items-center`}
+        className={`${FOOTER_INNER} ${FOOTER_PAD_X}`}
+        style={{ fontFamily: "var(--font-inter)" }}
       >
-        <p
-          className="text-[clamp(13px,1.1vw,20px)] font-normal leading-snug"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
-          Agência AMP ® {year}
-          <br />
-          Todos os direitos reservados.
-        </p>
-
+        {/* Desktop — Figma 1:138: copyright | ícones | fale conosco */}
         <div
-          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8"
-          style={{ fontFamily: "var(--font-inter)" }}
+          className="relative hidden w-full lg:block"
+          style={{ minHeight: "clamp(120px,7.5vw,144px)" }}
         >
-          <div className="text-[clamp(13px,1.1vw,20px)] font-normal">
+          <p
+            className={`${FOOTER_TEXT} absolute left-0 top-[clamp(32px,2.29vw,44px)] w-[18.44%] text-left`}
+          >
+            Agência AMP ® {year}
+            <br />
+            Todos os direitos reservados.
+          </p>
+
+          <div className="absolute left-1/2 top-[clamp(32px,2.29vw,44px)] -translate-x-1/2">
+            <SocialIconButtons
+              variant="on-dark"
+              links={FOOTER_SOCIAL_LINKS}
+              className="gap-[14px]"
+            />
+          </div>
+
+          <div
+            className={`${FOOTER_TEXT} absolute right-0 top-[clamp(32px,2.29vw,44px)] w-[18.44%] text-right`}
+          >
             <span className="block">Fale conosco</span>
             <a href={SITE.phoneHref} className="transition-opacity hover:opacity-80">
               {SITE.phone}
             </a>
           </div>
 
-          <SocialIconButtons variant="on-dark" links={FOOTER_SOCIAL_LINKS} />
+          <div className="absolute bottom-4 left-0 right-0 flex flex-wrap justify-center gap-4 text-[10px] uppercase tracking-widest text-[var(--orange)]/70">
+            {LEGAL_LINKS.map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="transition-colors duration-300 hover:text-[var(--cream)]"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
         </div>
 
-        <div
-          className="flex flex-wrap gap-4 text-[10px] uppercase tracking-widest text-[var(--orange)]/70 sm:text-xs"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
-          {LEGAL_LINKS.map(({ label, href }) => (
-            <a key={label} href={href} className="transition-colors duration-300 hover:text-[var(--cream)]">
-              {label}
-            </a>
-          ))}
+        {/* Mobile */}
+        <div className="flex flex-col gap-6 py-10 sm:py-12 lg:hidden">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <p className={FOOTER_TEXT}>
+              Agência AMP ® {year}
+              <br />
+              Todos os direitos reservados.
+            </p>
+            <div className={`${FOOTER_TEXT} text-right`}>
+              <span className="block">Fale conosco</span>
+              <a href={SITE.phoneHref} className="transition-opacity hover:opacity-80">
+                {SITE.phone}
+              </a>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <SocialIconButtons variant="on-dark" links={FOOTER_SOCIAL_LINKS} />
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4 text-[10px] uppercase tracking-widest text-[var(--orange)]/70">
+            {LEGAL_LINKS.map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="transition-colors duration-300 hover:text-[var(--cream)]"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

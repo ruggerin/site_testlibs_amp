@@ -1,18 +1,19 @@
-import { CASES, type CaseStudy } from "@/data/cases";
+import { getPublishedCases, type CaseStudy } from "@/data/cases";
 
 export function getCaseIndex(slug: string): number {
-  return CASES.findIndex((c) => c.slug === slug);
+  return getPublishedCases().findIndex((c) => c.slug === slug);
 }
 
 export function getAdjacentCases(slug: string): {
   prev: CaseStudy | null;
   next: CaseStudy | null;
 } {
-  const i = getCaseIndex(slug);
+  const published = getPublishedCases();
+  const i = published.findIndex((c) => c.slug === slug);
   if (i < 0) return { prev: null, next: null };
   return {
-    prev: i > 0 ? CASES[i - 1]! : null,
-    next: i < CASES.length - 1 ? CASES[i + 1]! : null,
+    prev: i > 0 ? published[i - 1]! : null,
+    next: i < published.length - 1 ? published[i + 1]! : null,
   };
 }
 

@@ -70,7 +70,7 @@ function PartnerLogoSquare({
 }) {
   return (
     <div
-      className={`relative aspect-square shrink-0 overflow-hidden bg-transparent transition-transform duration-300 hover:z-10 hover:scale-[1.04] ${className}`}
+      className={`hover-zoom-media relative aspect-square shrink-0 overflow-hidden bg-transparent ${className}`}
     >
       <Image
         src={partner.src}

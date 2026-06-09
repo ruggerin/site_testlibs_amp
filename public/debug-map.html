@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Debug Mapa Norte — path indices</title>
+<style>
+  body { background: #111; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: monospace; color: #fff; }
+  h1 { font-size: 14px; margin-bottom: 4px; }
+  p { font-size: 12px; color: #aaa; margin-bottom: 16px; }
+  .wrap { position: relative; width: 1227px; }
+  svg { width: 100%; height: auto; display: block; }
+  .legend { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .dot { width: 12px; height: 12px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<h1>SVG paths do mapa — identifique cada estado pelo índice</h1>
+<p>Cada path tem uma cor diferente. O número dentro é o índice em PATH_STATE_BY_INDEX.</p>
+<div class="wrap">
+  <svg id="map" width="1227" height="829" viewBox="0 0 1227 829" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+<div class="legend" id="legend"></div>
+
+<script>
+const COLORS = [
+  "#FF5B00", // 0 — laranja
+  "#00C2FF", // 1 — azul claro
+  "#00FF8C", // 2 — verde (amazonas — já sabemos)
+  "#FFE500", // 3 — amarelo
+  "#FF2D8A", // 4 — rosa
+  "#B266FF", // 5 — roxo
+  "#FFFFFF", // 6 — branco (label AM)
+];
+
+const LABELS = [
+  "idx 0 (atual: acre)",
+  "idx 1 (atual: amapá)",
+  "idx 2 (atual: amazonas ✓)",
+  "idx 3 (atual: pará)",
+  "idx 4 (atual: rondônia)",
+  "idx 5 (atual: roraima)",
+  "idx 6 (label AM)",
+];
+
+fetch("/assets/quem_somos/mapa_norte1.svg")
+  .then(r => r.text())
+  .then(svgText => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgText, "image/svg+xml");
+    const paths = doc.querySelectorAll("path");
+    const svgEl = document.getElementById("map");
+
+    // copy defs
+    const defs = doc.querySelector("defs");
+    if (defs) svgEl.appendChild(document.importNode(defs, true));
+
+    paths.forEach((path, i) => {
+      const el = document.importNode(path, false);
+      const color = COLORS[i] || "#fff";
+
+      if (i === 6) {
+        // label text path
+        el.setAttribute("fill", color);
+        el.style.pointerEvents = "none";
+      } else if (i === 2) {
+        // amazonas — thick
+        el.setAttribute("fill", color + "55");
+        el.setAttribute("stroke", color);
+        el.setAttribute("stroke-width", "4");
+      } else {
+        el.setAttribute("fill", color + "44");
+        el.setAttribute("stroke", color);
+        el.setAttribute("stroke-width", "3");
+      }
+
+      svgEl.appendChild(el);
+
+      // overlay index label at centroid approximation
+      if (i !== 6) {
+        const bbox = el.getBBox ? el.getBBox() : null;
+        // inline bbox estimate by taking the starting M coordinates
+        const d = el.getAttribute("d") || "";
+        const mMatch = d.match(/M\s*(-?[\d.]+)\s+(-?[\d.]+)/);
+        if (mMatch) {
+          const tx = parseFloat(mMatch[1]);
+          const ty = parseFloat(mMatch[2]);
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", tx + 12);
+          text.setAttribute("y", ty + 18);
+          text.setAttribute("fill", color);
+          text.setAttribute("font-size", "28");
+          text.setAttribute("font-weight", "bold");
+          text.setAttribute("font-family", "monospace");
+          text.setAttribute("stroke", "#000");
+          text.setAttribute("stroke-width", "3");
+          text.setAttribute("paint-order", "stroke");
+          text.textContent = String(i);
+          svgEl.appendChild(text);
+        }
+      }
+    });
+
+    // legend
+    const leg = document.getElementById("legend");
+    LABELS.forEach((label, i) => {
+      const div = document.createElement("div");
+      div.className = "leg";
+      div.innerHTML = `<div class="dot" style="background:${COLORS[i]}"></div><span>${label}</span>`;
+      leg.appendChild(div);
+    });
+  });
+</script>
+</body>
+</html>

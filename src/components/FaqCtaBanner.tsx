@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { figmaClamp } from "@/lib/figma-scale";
+import { SITE } from "@/lib/site";
 
 const SIDE_PAD = "clamp(24px, 1.75vw, 36px)";
 
@@ -32,13 +32,15 @@ export default function FaqCtaBanner() {
               ...você precisa da nossa estratégia 360. Sem firula, com inteligência de dados e
               UI de alto impacto.
             </p>
-            <Link
-              href="tel:+5592992345678"
+            <a
+              href={SITE.captureUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex w-fit max-w-full items-center justify-center border-[3px] border-[var(--cream)] bg-white px-8 py-3 font-semibold uppercase tracking-[0.1em] text-[var(--ink)] transition-colors hover:bg-[var(--cream)] md:px-10 md:py-3.5"
               style={{ fontFamily: "var(--font-inter)", fontSize: CTA_SIZE }}
             >
               Quero o padrão AMP
-            </Link>
+            </a>
           </div>
         </div>
       </div>

@@ -1,20 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { figmaAspect } from "@/lib/figma-scale";
 
 const MAP_SRC = "/assets/quem_somos/mapa_norte1.svg";
 
-/** Ordem dos `<path>` no SVG exportado do Figma. */
+/** Ordem confirmada via debug-map.html */
 const PATH_STATE_BY_INDEX = [
-  "acre",
-  "amapá",
-  "amazonas",
-  "pará",
-  "rondônia",
-  "roraima",
-  "pará",
-  "amazonas",
+  "acre",      // 0
+  "amapá",     // 1
+  "pará",      // 2
+  "roraima",   // 3
+  "rondônia",  // 4
+  "amazonas",  // 5 — contorno principal
+  "amazonas",  // 6 — label "AM"
 ] as const;
 
 export type NorteStateId =
@@ -29,16 +29,15 @@ type NorteBrasilMapProps = {
   highlighted: NorteStateId;
   onHighlight: (state: NorteStateId | null) => void;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 };
 
 function mapPathRole(pathIndex: number): "region" | "amazonas" | "label" {
-  if (pathIndex === 2) return "amazonas";
-  if (pathIndex === 7) return "label";
+  if (pathIndex === 5) return "amazonas";
+  if (pathIndex === 6) return "label";
   return "region";
 }
 
-/** Remove máscara do Figma — o `<path>` interno quebrava a indexação dos estados. */
 function prepareSvgSource(svgText: string, clipId: string): string {
   return svgText
     .replace(/<mask[\s\S]*?<\/mask>\s*/g, "")
@@ -47,46 +46,23 @@ function prepareSvgSource(svgText: string, clipId: string): string {
     .replace(/url\(#clip0_1_111\)/g, `url(#${clipId})`);
 }
 
+/**
+ * Injeta atributos data-* e classe `norte-map-path` em cada <path>.
+ * O estado inicial (amazonas) recebe `is-active` direto no HTML.
+ * `pointer-events="all"` como atributo SVG garante que toda a área geométrica
+ * do path (inclusive interior transparente) aciona eventos de mouse — CSS
+ * pointer-events sozinho não é suficiente quando o fill é transparente.
+ */
 function injectMapInteractivity(svgText: string, clipId: string): string {
   let pathIndex = 0;
   return prepareSvgSource(svgText, clipId).replace(/<path /g, () => {
     const state = PATH_STATE_BY_INDEX[pathIndex];
     const role = mapPathRole(pathIndex);
-    pathIndex += 1;
     const isLabel = role === "label";
-    return `<path data-state="${state}" data-map-role="${role}"${isLabel ? ' data-map-label="true"' : ""} class="norte-map-path" `;
-  });
-}
-
-function applyHighlight(root: HTMLElement, highlighted: NorteStateId) {
-  root.querySelectorAll<SVGPathElement>(".norte-map-path").forEach((path) => {
-    const state = path.getAttribute("data-state") as NorteStateId | null;
-    const role = path.getAttribute("data-map-role");
-    const isLabel = role === "label" || path.hasAttribute("data-map-label");
-    const active = state === highlighted;
-    const strokeW = active ? "6" : "3";
-
-    if (isLabel) {
-      path.style.pointerEvents = "none";
-      path.style.fill = active ? "#232332" : "transparent";
-      return;
-    }
-
-    path.style.cursor = "pointer";
-    path.style.pointerEvents = "all";
-    path.style.stroke = "#FF5B00";
-    path.style.transition = "fill 0.25s ease, stroke-width 0.25s ease";
-
-    if (role === "amazonas") {
-      path.style.fill = active ? "#FF5B00" : "transparent";
-      path.style.strokeWidth = strokeW;
-      path.style.strokeLinejoin = "round";
-      path.style.paintOrder = "stroke fill";
-      return;
-    }
-
-    path.style.fill = active ? "#FF5B00" : "transparent";
-    path.style.strokeWidth = strokeW;
+    const isActive = state === "amazonas"; // sede sempre ativa no carregamento
+    pathIndex += 1;
+    const pe = isLabel ? 'pointer-events="none"' : 'pointer-events="all"';
+    return `<path ${pe} data-state="${state}" data-map-role="${role}"${isLabel ? ' data-map-label="true"' : ""} class="norte-map-path${isActive ? " is-active" : ""}" `;
   });
 }
 
@@ -100,6 +76,7 @@ export default function NorteBrasilMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const [svgHtml, setSvgHtml] = useState<string | null>(null);
 
+  // Fetch único — estado default baked no HTML (sem animação de entrada)
   useEffect(() => {
     let cancelled = false;
     fetch(MAP_SRC)
@@ -115,48 +92,42 @@ export default function NorteBrasilMap({
     };
   }, [clipId]);
 
-  const bindRegionEvents = useCallback(() => {
+  // Delegação via mouseover no container — mais confiável que mouseenter por path
+  // porque o evento borbulha e captura qualquer target dentro do SVG.
+  const bindEvents = useCallback(() => {
     const root = containerRef.current;
     if (!root) return;
-
-    const paths = root.querySelectorAll<SVGPathElement>(".norte-map-path[data-state]");
-    const cleanups: (() => void)[] = [];
-
-    paths.forEach((path) => {
-      if (path.hasAttribute("data-map-label")) return;
-
-      const enter = () => {
-        const state = path.getAttribute("data-state") as NorteStateId | null;
-        if (state) onHighlight(state);
-      };
-
-      path.addEventListener("mouseenter", enter);
-      cleanups.push(() => path.removeEventListener("mouseenter", enter));
-    });
-
-    return () => cleanups.forEach((fn) => fn());
+    const handleOver = (e: Event) => {
+      const target = (e as MouseEvent).target as Element | null;
+      if (!target) return;
+      const path = target.closest<SVGPathElement>(".norte-map-path");
+      if (!path || path.hasAttribute("data-map-label")) return;
+      const state = path.getAttribute("data-state") as NorteStateId | null;
+      if (state) onHighlight(state);
+    };
+    root.addEventListener("mouseover", handleOver);
+    return () => root.removeEventListener("mouseover", handleOver);
   }, [onHighlight]);
 
   useEffect(() => {
-    if (!svgHtml || !containerRef.current) return;
+    if (!svgHtml) return;
+    return bindEvents();
+  }, [svgHtml, bindEvents]);
 
-    applyHighlight(containerRef.current, highlighted);
-    return bindRegionEvents();
-  }, [svgHtml, bindRegionEvents]);
-
+  // Sincroniza is-active → CSS transition anima automaticamente
   useEffect(() => {
-    if (!containerRef.current) return;
-    applyHighlight(containerRef.current, highlighted);
-  }, [highlighted]);
+    const root = containerRef.current;
+    if (!root || !svgHtml) return;
+    root.querySelectorAll<SVGPathElement>(".norte-map-path").forEach((path) => {
+      path.classList.toggle("is-active", path.getAttribute("data-state") === highlighted);
+    });
+  }, [svgHtml, highlighted]);
 
   if (!svgHtml) {
     return (
       <div
         className={`map-svg bg-[#232323]/40 ${className}`}
-        style={{
-          aspectRatio: figmaAspect(1227, 829),
-          ...style,
-        }}
+        style={{ aspectRatio: figmaAspect(1227, 829), ...style }}
         aria-hidden
       />
     );

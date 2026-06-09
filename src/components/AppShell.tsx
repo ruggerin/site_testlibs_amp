@@ -2,8 +2,9 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Loader from "@/components/Loader";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
-const STORAGE_KEY = "amp-media-preloaded-v2";
+const STORAGE_KEY = "amp-media-preloaded-v3";
 
 type Phase = "checking" | "loading" | "ready";
 
@@ -12,7 +13,7 @@ type AppShellProps = {
 };
 
 /**
- * Loader na primeira visita da sessão — pré-baixa mídias e libera navegação sem lag.
+ * Loader na primeira visita da sessão — pré-baixa imagens críticas (1ª por página) e vídeos do hero.
  */
 export default function AppShell({ children }: AppShellProps) {
   const [phase, setPhase] = useState<Phase>("checking");
@@ -48,5 +49,10 @@ export default function AppShell({ children }: AppShellProps) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <ScrollToTopButton />
+    </>
+  );
 }

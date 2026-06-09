@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { FRAME } from "@/lib/site";
+import { FRAME, SITE } from "@/lib/site";
 
 type CtaBannerProps = {
   title: string;
@@ -12,7 +11,7 @@ export default function CtaBanner({
   title,
   subtitle,
   ctaLabel = "Quero o padrão AMP",
-  ctaHref = "/quem-somos",
+  ctaHref = SITE.captureUrl,
 }: CtaBannerProps) {
   return (
     <section className="bg-white py-16 md:py-24">
@@ -35,13 +34,15 @@ export default function CtaBanner({
                 {subtitle}
               </p>
             ) : null}
-            <Link
+            <a
               href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex w-fit items-center justify-center border-2 border-[var(--cream)] px-8 py-4 text-sm font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[var(--cream)] hover:text-[#232323]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               {ctaLabel}
-            </Link>
+            </a>
           </div>
         </div>
       </div>

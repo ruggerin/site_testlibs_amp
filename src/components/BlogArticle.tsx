@@ -207,6 +207,7 @@ export default function BlogArticle({ post }: BlogArticleProps) {
   return (
     <article ref={articleRef} className="w-full bg-white">
       <div
+        data-page-hero
         className="hover-zoom-media relative w-full bg-[#D9D9D9]"
         style={{ aspectRatio: `1920 / ${HERO_H}` }}
       >

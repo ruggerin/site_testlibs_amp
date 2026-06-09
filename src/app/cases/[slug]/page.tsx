@@ -7,19 +7,19 @@ import CaseDetailHero from "@/components/case-detail/CaseDetailHero";
 import CaseDetailRelated from "@/components/case-detail/CaseDetailRelated";
 import PageFooter from "@/components/PageFooter";
 import SmoothScroll from "@/components/SmoothScroll";
-import { CASES, getCaseBySlug } from "@/data/cases";
+import { getPublishedCaseBySlug, getPublishedCases } from "@/data/cases";
 import { getAdjacentCases, getCaseGallery } from "@/lib/cases-nav";
 import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return CASES.map((c) => ({ slug: c.slug }));
+  return getPublishedCases().map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = getCaseBySlug(slug);
+  const item = getPublishedCaseBySlug(slug);
   if (!item) return { title: "Projeto — AMP" };
   return pageMetadata({
     title: `${item.client} — ${item.campaign}`,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getCaseBySlug(slug);
+  const item = getPublishedCaseBySlug(slug);
   if (!item) notFound();
 
   const { prev, next } = getAdjacentCases(slug);

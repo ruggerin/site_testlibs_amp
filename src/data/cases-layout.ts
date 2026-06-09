@@ -1,13 +1,10 @@
-/** Ordem do grid — secao_cases.txt (Cases 01–08). */
+/** Ordem do grid — secao_cases.txt (publicados: 01–04, 07). */
 export const CASES_GRID_SLUGS = [
   "amazongas",
   "ramsons",
   "supermercados-coema",
   "skarloff",
-  "esplanada",
-  "lacqua-residencial",
   "mobili-store",
-  "amp-ai",
 ] as const;
 
 /** Card — Figma case1–6 (910×970; imagem 910×643). */

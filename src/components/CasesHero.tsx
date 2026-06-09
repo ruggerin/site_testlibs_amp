@@ -122,6 +122,7 @@ export default function CasesHero() {
   return (
     <section
       ref={heroRef}
+      data-page-hero
       className="relative overflow-x-clip bg-[var(--orange)]"
       aria-label="Projetos"
     >
@@ -167,7 +168,7 @@ export default function CasesHero() {
           }}
         >
           <CasesTagline
-            lines={["o resultado deixa de ser esforço"]}
+            lines={["o resultado deixa de ser esforço."]}
             align="left"
           />
         </div>

@@ -1,6 +1,6 @@
 import CaseCard from "@/components/CaseCard";
 import ScrollReveal from "@/components/ScrollReveal";
-import { getCaseBySlug } from "@/data/cases";
+import { getPublishedCaseBySlug } from "@/data/cases";
 import { CASES_GRID_LAYOUT, CASES_GRID_SLUGS } from "@/data/cases-layout";
 import { figmaClamp } from "@/lib/figma-scale";
 import { FRAME, FRAME_PAD_X } from "@/lib/site";
@@ -13,7 +13,7 @@ const EXCERPT_SIZE = figmaClamp(32 * S, { min: 12, max: 22, vw: 1.25 });
 
 export default function CasesGrid() {
   const items = CASES_GRID_SLUGS.flatMap((slug) => {
-    const item = getCaseBySlug(slug);
+    const item = getPublishedCaseBySlug(slug);
     return item ? [{ item, key: slug }] : [];
   });
 
